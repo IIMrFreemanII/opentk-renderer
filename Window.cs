@@ -10,25 +10,29 @@ namespace open_tk_renderer;
 
 public class Window : GameWindow
 {
-    public float[] Vertices =
-    {
-        -0.5f, -0.5f, 0.0f, //Bottom-left vertex
-        0.5f, -0.5f, 0.0f, //Bottom-right vertex
-        0.0f, 0.5f, 0.0f //Top vertex
-    };
-
     private Shader _shader;
+    private Mesh _mesh;
 
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings) : base(
         gameWindowSettings, nativeWindowSettings)
     {
+        _mesh = new Mesh(QuadMeshData.vertexAttribs);
+        _shader = new Shader(DefaultShader.VertexSrc, DefaultShader.FragSrc);
+    }
+
+    protected override void OnRenderFrame(FrameEventArgs args)
+    {
+        base.OnRenderFrame(args);
+
+        GL.Clear(ClearBufferMask.ColorBufferBit);
+
+        Graphics.DrawMesh(_mesh, _shader);
+
+        Context.SwapBuffers();
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
-        GL.Clear(ClearBufferMask.ColorBufferBit);
-        Context.SwapBuffers();
-
         base.OnUpdateFrame(args);
 
         if (!IsFocused) // Check to see if the window is focused
@@ -45,9 +49,8 @@ public class Window : GameWindow
     protected override void OnLoad()
     {
         base.OnLoad();
+
         GL.ClearColor(Color.Gray);
-        
-        _shader = new Shader(DefaultShader.VertexSrc, DefaultShader.FragSrc);
     }
 
     protected override void OnResize(ResizeEventArgs e)

@@ -6,9 +6,20 @@ public class BufferElement
 {
     public string name;
     public VertexAttribPointerType type;
-    public int size;
-    public int offset;
-    public bool normalized;
+    // bytes amount
+    public int bytes;
+    // count of elements
+    public int count;
+    public int offset = 0;
+    public bool normalized = false;
+
+    public BufferElement(string name, VertexAttribPointerType type, int count, int bytes)
+    {
+        this.name = name;
+        this.type = type;
+        this.count = count;
+        this.bytes = bytes;
+    }
 }
 
 public class BufferLayout
@@ -29,8 +40,8 @@ public class BufferLayout
         foreach (BufferElement element in elements)
         {
             element.offset = offset;
-            offset += element.size;
-            stride += element.size;
+            offset += element.bytes;
+            stride += element.bytes;
         }
     }
 }

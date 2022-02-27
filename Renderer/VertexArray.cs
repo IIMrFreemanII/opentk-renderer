@@ -6,7 +6,7 @@ public class VertexArray
 {
     public int id;
     public VertexBuffer[] vertexBuffers;
-    
+
     private int _vertexBufferIndex = 0;
 
     public VertexArray(VertexBuffer[] vertexBuffers)
@@ -16,14 +16,23 @@ public class VertexArray
         id = GL.GenVertexArray();
         Bind();
 
-        foreach (VertexBuffer vertexBuffer in vertexBuffers)
+        foreach (var vertexBuffer in vertexBuffers)
         {
             vertexBuffer.Bind();
 
-            foreach (BufferElement element in vertexBuffer.layout.elements)
+            foreach (var element in vertexBuffer.layout.elements)
             {
                 GL.EnableVertexAttribArray(_vertexBufferIndex);
-                // GL.VertexAttribPointer(_vertexBufferIndex, 0, Ver);
+                GL.VertexAttribPointer(
+                    _vertexBufferIndex,
+                    element.count,
+                    element.type,
+                    element.normalized,
+                    vertexBuffer.layout.stride,
+                    element.offset
+                );
+
+                _vertexBufferIndex++;
             }
         }
     }
@@ -32,9 +41,9 @@ public class VertexArray
     {
         GL.BindVertexArray(id);
     }
-    
+
     public void Unbind()
     {
         GL.BindVertexArray(0);
-    } 
+    }
 }
