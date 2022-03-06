@@ -4,9 +4,10 @@ namespace open_tk_renderer.Renderer;
 
 public static class Graphics
 {
-    public static void DrawMesh(Mesh mesh, Shader shader)
+    public static void DrawMesh(Mesh mesh, Material material)
     {
-        shader.Use();
+        material.shader.Use();
+        material.SetUniforms();
         DrawArrays(mesh);
     }
     public static void DrawArrays(Mesh mesh)

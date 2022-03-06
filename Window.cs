@@ -1,7 +1,10 @@
 using System.Drawing;
 using open_tk_renderer.Assets;
+using open_tk_renderer.Components;
 using open_tk_renderer.Renderer;
+using open_tk_renderer.Renderer.UI;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -10,52 +13,164 @@ namespace open_tk_renderer;
 
 public class Window : GameWindow
 {
-    private Shader _shader;
-    private Mesh _mesh;
+  public static Matrix4 Projection = Matrix4.Identity;
+  public static Matrix4 View = Matrix4.Identity;
 
-    public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings) : base(
-        gameWindowSettings, nativeWindowSettings)
-    {
-        _mesh = new Mesh(QuadMeshData.vertexAttribs);
-        _shader = new Shader(DefaultShader.VertexSrc, DefaultShader.FragSrc);
-    }
+  public static Material DefaultMaterial;
+  public static Mesh QuadMesh;
+  private HookWidget hookWidget;
+  private Widget widget;
+  private bool _shouldRenderUi = false;
 
-    protected override void OnRenderFrame(FrameEventArgs args)
-    {
-        base.OnRenderFrame(args);
+  public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings) : base(
+    gameWindowSettings,
+    nativeWindowSettings
+  )
+  {
+    VSync = VSyncMode.On;
+  }
 
-        GL.Clear(ClearBufferMask.ColorBufferBit);
+  protected override void OnLoad()
+  {
+    base.OnLoad();
 
-        Graphics.DrawMesh(_mesh, _shader);
+    QuadMesh = new Mesh(QuadMeshData.vertexAttribs);
+    DefaultMaterial = new Material(new Shader("default", DefaultShader.VertexSrc, DefaultShader.FragSrc));
 
-        Context.SwapBuffers();
-    }
+    GL.ClearColor(Color.Gray);
 
-    protected override void OnUpdateFrame(FrameEventArgs args)
-    {
-        base.OnUpdateFrame(args);
-
-        if (!IsFocused) // Check to see if the window is focused
+    // ui
+    RunUi(
+      new Column(
+        new()
         {
-            return;
+          new Row(
+            new()
+            {
+              new Container(Color4.Red, new(100, 100)),
+              new Container(Color4.Green, new(100, 100)),
+              new Container(Color4.Blue, new(100, 100)),
+            }
+          ),
+          new Column(
+            new()
+            {
+              new Container(Color4.Red, new(100, 100)),
+              new Container(Color4.Green, new(100, 100)),
+              new Container(Color4.Blue, new(100, 100)),
+            }
+          ),
         }
+      )
+    );
+  }
 
-        if (KeyboardState.IsKeyDown(Keys.Escape))
-        {
-            Close();
-        }
-    }
+  private void RunUi(Widget widget)
+  {
+    // this.hookWidget = hookWidget;
+    // BuildWidget(widget);
+    // MountWidget(widget);
+    LayoutWidget(widget);
 
-    protected override void OnLoad()
+    this.widget = widget;
+  }
+
+  // private Widget ExtractWidgets(HookWidget hookWidget)
+  // {
+  //     Widget? widget = hookWidget.Build();
+  //     if (widget is HookWidget hWidget)
+  //     {
+  //         
+  //     }
+  // }
+
+  private void BuildWidget(Widget widget)
+  {
+    var child = widget.Build();
+    if (child != null)
     {
-        base.OnLoad();
+      child.parent = widget;
+      widget.children.Add(child);
 
-        GL.ClearColor(Color.Gray);
+      BuildWidget(child);
     }
-
-    protected override void OnResize(ResizeEventArgs e)
+    else
     {
-        GL.Viewport(0, 0, Size.X, Size.Y);
-        base.OnResize(e);
+      foreach (var widgetChild in widget.children)
+      {
+        BuildWidget(widgetChild);
+      }
     }
+  }
+
+  private void MountWidget(Widget widget)
+  {
+    widget.Mount();
+    foreach (var widgetChild in widget.children)
+    {
+      MountWidget(widgetChild);
+    }
+  }
+
+  private void LayoutWidget(Widget widget)
+  {
+    widget.CalcLayout(this);
+    foreach (var widgetChild in widget.children)
+    {
+      LayoutWidget(widgetChild);
+    }
+  }
+
+  private void RenderWidget(Widget widget)
+  {
+    widget.Render();
+    foreach (var widgetChild in widget.children)
+    {
+      RenderWidget(widgetChild);
+    }
+  }
+
+  protected override void OnRenderFrame(FrameEventArgs args)
+  {
+    base.OnRenderFrame(args);
+    if (_shouldRenderUi)
+    {
+      Render();
+      _shouldRenderUi = false;
+    }
+  }
+
+  private void Render()
+  {
+    GL.Clear(ClearBufferMask.ColorBufferBit);
+
+    RenderWidget(widget);
+
+    SwapBuffers();
+  }
+
+  protected override void OnUpdateFrame(FrameEventArgs args)
+  {
+    base.OnUpdateFrame(args);
+
+    if (!IsFocused) // Check to see if the window is focused
+      return;
+
+    if (IsKeyDown(Keys.Escape)) Close();
+  }
+
+  protected override void OnResize(ResizeEventArgs e)
+  {
+    base.OnResize(e);
+
+    // Projection = Matrix4.CreateOrthographic(e.Width, e.Height, -1, 1);
+    // Projection = Matrix4.CreateOrthographicOffCenter(0, ClientSize.X, ClientSize.Y, 0, -1, 1);
+    Projection = Matrix4.CreateOrthographicOffCenter(0, Size.X, Size.Y, 0, -1, 1);
+
+    // on MacOs retina display has more pixels that is why use ClientSize to match pixel size
+    GL.Viewport(0, 0, ClientSize.X, ClientSize.Y);
+    // GL.Viewport(0, 0, Size.X, Size.X);
+
+    Render();
+  }
 }

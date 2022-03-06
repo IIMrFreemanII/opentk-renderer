@@ -10,15 +10,28 @@ public static class TriangleMeshData
         0.5f, -0.5f, 0.0f, // Bottom-right vertex
         0.0f, 0.5f, 0.0f // Top vertex
     };
-    
+
     public static readonly VertexAttrib[] vertexAttribs =
     {
-        new ("a_position", vertices, VertexAttribTypeCount.Three)
+        new("a_position", vertices, VertexAttribTypeCount.Three)
     };
 }
 
 public static class QuadMeshData
 {
+    public static float[] GetQuadVertices(float w, float h, float x = 0, float y = 0)
+    {
+        return new[]
+        {
+            x, y, 0, // top-left
+            x, y + h, 0, // bottom-left
+            x + w, y + h, 0, // bottom-right
+            x, y, 0, // top-left
+            x + w, y + h, 0, // bottom-right
+            x + w, y, 0, // top-right
+        };
+    }
+
     public static readonly float[] vertices =
     {
         -0.5f, -0.5f, 0.0f, // Bottom-left vertex
@@ -31,6 +44,6 @@ public static class QuadMeshData
 
     public static readonly VertexAttrib[] vertexAttribs =
     {
-        new ("a_position", vertices, VertexAttribTypeCount.Three)
+        new("a_position", GetQuadVertices(1, 1), VertexAttribTypeCount.Three)
     };
 }

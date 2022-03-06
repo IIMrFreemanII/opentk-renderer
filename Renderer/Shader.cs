@@ -3,19 +3,35 @@ using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer;
 
+public struct UniformInfo
+{
+    public string name;
+    public int location;
+    public ActiveUniformType type;
+
+    public UniformInfo(string name, int location, ActiveUniformType type)
+    {
+        this.name = name;
+        this.location = location;
+        this.type = type;
+    }
+}
+
 public class Shader : IDisposable
 {
+    public readonly string name;
     public readonly int id;
 
-    private readonly Dictionary<string, int> _uniformLocations;
+    public readonly Dictionary<string, UniformInfo> uniformInfos;
 
-    public Shader(string vertexSrc, string fragmentSrc)
+    public Shader(string name, string vertexSrc, string fragmentSrc)
     {
+        this.name = name;
         int vertexShader = CompileShader(ShaderType.VertexShader, vertexSrc);
         int fragmentShader = CompileShader(ShaderType.FragmentShader, fragmentSrc);
 
         id = CreateProgram(vertexShader, fragmentShader);
-        _uniformLocations = ExtractUniformLocations();
+        uniformInfos = ExtractUniformInfos();
     }
 
     private int CompileShader(ShaderType type, string shaderSrc)
@@ -56,19 +72,19 @@ public class Shader : IDisposable
         return program;
     }
 
-    private Dictionary<string, int> ExtractUniformLocations()
+    private Dictionary<string, UniformInfo> ExtractUniformInfos()
     {
         GL.GetProgram(id, GetProgramParameterName.ActiveUniforms, out int numberOfUniforms);
         
-        var uniformLocations = new Dictionary<string, int>();
+        var uniformInfos = new Dictionary<string, UniformInfo>();
         for (int i = 0; i < numberOfUniforms; i++)
         {
             var key = GL.GetActiveUniform(id, i, out _, out ActiveUniformType type);
             var location = GL.GetUniformLocation(id, key);
-            uniformLocations.Add(key, location);
+            uniformInfos.Add(key, new UniformInfo(key, location, type));
         }
 
-        return uniformLocations;
+        return uniformInfos;
     }
 
     // The shader sources provided with this project use hardcoded layout(location)-s. If you want to do it dynamically,
@@ -98,25 +114,5 @@ public class Shader : IDisposable
 
             _disposedValue = true;
         }
-    }
-
-    public void SetInt(string name, int data)
-    {
-        GL.Uniform1(_uniformLocations[name], data);
-    }
-
-    public void SetFloat(string name, float data)
-    {
-        GL.Uniform1(_uniformLocations[name], data);
-    }
-
-    public void SetMatrix4(string name, Matrix4 data)
-    {
-        GL.UniformMatrix4(_uniformLocations[name], true, ref data);
-    }
-
-    public void SetVector3(string name, Vector3 data)
-    {
-        GL.Uniform3(_uniformLocations[name], data);
     }
 }

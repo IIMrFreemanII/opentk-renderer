@@ -3,11 +3,16 @@ namespace open_tk_renderer.Assets;
 public static class DefaultShader
 {
     public static string VertexSrc = @"#version 330 core
-layout (location = 0) in vec3 aPosition;
+layout (location = 0) in vec3 a_position;
+
+uniform mat4 u_projection;
+uniform mat4 u_model;
+uniform mat4 u_view;
 
 void main()
 {
-    gl_Position = vec4(aPosition, 1.0);
+    vec4 position = u_projection * u_view * u_model * vec4(a_position, 1);
+    gl_Position = position;
 }";
 
     public static string FragSrc = @"#version 330 core
@@ -17,8 +22,6 @@ uniform vec4 u_color;
 
 void main()
 {
-    vec4 color = u_color;
-
-    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+    FragColor = u_color;
 }";
 }
