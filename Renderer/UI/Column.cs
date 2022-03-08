@@ -14,66 +14,31 @@ public class Column : Widget
     this.children = children;
   }
 
-  public override void CalcLayout(Window window)
+  public override void CalcLayout(Vector2i parentSize)
   {
-    base.CalcLayout(window);
+    size = parentSize;
 
-    int nextY = position.Y;
+    Vector2i nextPosition = position;
+    Vector2i availableSize = size;
+    Vector2i ownSize = Vector2i.Zero;
     foreach (Widget child in children)
     {
-      int childY = GetChildY(child);
-      child.position = position with { Y = nextY };
-      nextY += childY;
-      child.CalcLayout(window);
-    }
+      child.position = nextPosition;
+      child.CalcLayout(availableSize);
+      availableSize -= new Vector2i(0, child.size.Y);
+      // availableSize = Vector2i.Clamp(availableSize - new Vector2i(0, child.size.Y), Vector2i.Zero, size);
+      nextPosition += new Vector2i(0, child.size.Y);
 
-    // calc own size
-    Vector2i size = Vector2i.Zero;
-    foreach (var child in children)
-    {
       // full height
-      size += new Vector2i(0, child.size.Y);
-
+      ownSize += new Vector2i(0, child.size.Y);
+      
       // max width
-      if (child.size.X > size.X)
+      if (child.size.X > ownSize.X)
       {
-        size += new Vector2i(child.size.X, 0);
+        ownSize = ownSize with { X = child.size.X };
       }
     }
 
-    this.size = size;
-  }
-
-  private int GetChildY(Widget widget)
-  {
-    if (widget.size.Y == 0)
-    {
-      if (widget is Row)
-      {
-        int maxY = 0;
-
-        foreach (var widgetChild in widget.children)
-        {
-          int temp = GetChildY(widgetChild);
-          if (temp > maxY)
-          {
-            maxY = temp;
-          }
-        }
-
-        return maxY;
-      }
-
-      int fullY = 0;
-
-      foreach (var widgetChild in widget.children)
-      {
-        fullY += GetChildY(widgetChild);
-      }
-
-      return fullY;
-    }
-
-    return widget.size.Y;
+    size = ownSize;
   }
 }

@@ -24,9 +24,9 @@ public class Boxes : HookWidget
     return new Row(
       new()
       {
-        new Container(Color4.Red, new(100 + count, 100)),
-        new Container(Color4.Green, new(100 + count, 100)),
-        new Container(Color4.Blue, new(100 + count, 100)),
+        new Rect(Color4.Red, new(100 + count, 100)),
+        new Rect(Color4.Green, new(100 + count, 100)),
+        new Rect(Color4.Blue, new(100 + count, 100)),
       }
     );
   }

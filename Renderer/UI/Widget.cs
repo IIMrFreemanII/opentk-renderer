@@ -17,9 +17,9 @@ public class Widget
         Rebuild?.Invoke(widget);
     }
 
-    public virtual Widget? Build()
+    public virtual Widget Build()
     {
-        return null;
+        return this;
     }
 
     public virtual void Mount()
@@ -32,15 +32,15 @@ public class Widget
         mounted = false;
     }
 
-    public virtual void CalcLayout(Window window)
+    public virtual void CalcLayout(Vector2i parentSize)
     {
-        if (parent != null)
-        {
-            if (position == Vector2i.Zero)
-            {
-                position = parent.position;
-            }
-        }
+        // if (parent != null)
+        // {
+        //     if (position == Vector2i.Zero)
+        //     {
+        //         position = parent.position;
+        //     }
+        // }
     }
 
     public virtual void Render()

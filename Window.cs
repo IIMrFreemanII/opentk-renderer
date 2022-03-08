@@ -40,27 +40,43 @@ public class Window : GameWindow
     GL.ClearColor(Color.Gray);
 
     // ui
+    // RunUi(new App());
     RunUi(
-      new Column(
-        new()
-        {
-          new Row(
-            new()
-            {
-              new Container(Color4.Red, new(100, 100)),
-              new Container(Color4.Green, new(100, 100)),
-              new Container(Color4.Blue, new(100, 100)),
-            }
-          ),
-          new Column(
-            new()
-            {
-              new Container(Color4.Red, new(100, 100)),
-              new Container(Color4.Green, new(100, 100)),
-              new Container(Color4.Blue, new(100, 100)),
-            }
-          ),
-        }
+      new Container(
+        Color4.Aqua,
+        // new (300),
+        padding: new EdgeInsets(10),
+        margin: new EdgeInsets(10, 10),
+        // child: new Container(Color4.Red, new(400))
+        child: new Column(
+          new()
+          {
+            new Row(
+              new()
+              {
+                new Container(Color4.Red, new(100, 100)),
+                new Container(Color4.Green, new(100, 100)),
+                new Container(Color4.Blue, new(100, 100)),
+              }
+            ),
+            new Column(
+              new()
+              {
+                new Container(Color4.Red, new(100, 100)),
+                new Container(Color4.Green, new(100, 100)),
+                new Container(Color4.Blue, new(100, 100)),
+              }
+            ),
+            // new Row(
+            //   new()
+            //   {
+            //     new Container(Color4.Red, new(100, 100)),
+            //     new Container(Color4.Green, new(100, 100)),
+            //     new Container(Color4.Blue, new(100, 100)),
+            //   }
+            // ),
+          }
+        )
       )
     );
   }
@@ -68,11 +84,11 @@ public class Window : GameWindow
   private void RunUi(Widget widget)
   {
     // this.hookWidget = hookWidget;
-    // BuildWidget(widget);
-    // MountWidget(widget);
-    LayoutWidget(widget);
+    var result = BuildWidget(widget);
+    LayoutWidget(result);
+    MountWidget(result);
 
-    this.widget = widget;
+    this.widget = result;
   }
 
   // private Widget ExtractWidgets(HookWidget hookWidget)
@@ -84,23 +100,15 @@ public class Window : GameWindow
   //     }
   // }
 
-  private void BuildWidget(Widget widget)
+  private Widget BuildWidget(Widget widget)
   {
     var child = widget.Build();
-    if (child != null)
+    for (int i = 0; i < child.children.Count; i++)
     {
-      child.parent = widget;
-      widget.children.Add(child);
+      child.children[i] = BuildWidget(child.children[i]);
+    }
 
-      BuildWidget(child);
-    }
-    else
-    {
-      foreach (var widgetChild in widget.children)
-      {
-        BuildWidget(widgetChild);
-      }
-    }
+    return child;
   }
 
   private void MountWidget(Widget widget)
@@ -114,11 +122,7 @@ public class Window : GameWindow
 
   private void LayoutWidget(Widget widget)
   {
-    widget.CalcLayout(this);
-    foreach (var widgetChild in widget.children)
-    {
-      LayoutWidget(widgetChild);
-    }
+    widget.CalcLayout(Size);
   }
 
   private void RenderWidget(Widget widget)
