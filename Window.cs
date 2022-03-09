@@ -3,6 +3,7 @@ using open_tk_renderer.Assets;
 using open_tk_renderer.Components;
 using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.UI;
+using open_tk_renderer.Renderer.UI.Widgets;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -44,39 +45,39 @@ public class Window : GameWindow
     RunUi(
       new Container(
         Color4.Aqua,
-        // new (300),
         padding: new EdgeInsets(10),
-        margin: new EdgeInsets(10, 10),
-        // child: new Container(Color4.Red, new(400))
-        child: new Column(
-          new()
-          {
-            new Row(
-              new()
-              {
-                new Container(Color4.Red, new(100, 100)),
-                new Container(Color4.Green, new(100, 100)),
-                new Container(Color4.Blue, new(100, 100)),
-              }
-            ),
-            new Column(
-              new()
-              {
-                new Container(Color4.Red, new(100, 100)),
-                new Container(Color4.Green, new(100, 100)),
-                new Container(Color4.Blue, new(100, 100)),
-              }
-            ),
-            // new Row(
-            //   new()
-            //   {
-            //     new Container(Color4.Red, new(100, 100)),
-            //     new Container(Color4.Green, new(100, 100)),
-            //     new Container(Color4.Blue, new(100, 100)),
-            //   }
-            // ),
-          }
-        )
+        margin: new EdgeInsets(10),
+        alignment: Alignment.BottomCenter,
+        child: new Container(Color4.Red, new(100))
+        // child: new Column(
+        //   new()
+        //   {
+        //     new Row(
+        //       new()
+        //       {
+        //         new Container(Color4.Red, new(100, 100)),
+        //         new Container(Color4.Green, new(100, 100)),
+        //         new Container(Color4.Blue, new(100, 100)),
+        //       }
+        //     ),
+        //     new Column(
+        //       new()
+        //       {
+        //         new Container(Color4.Red, new(100, 100)),
+        //         new Container(Color4.Green, new(100, 100)),
+        //         new Container(Color4.Blue, new(100, 100)),
+        //       }
+        //     ),
+        //     // new Row(
+        //     //   new()
+        //     //   {
+        //     //     new Container(Color4.Red, new(100, 100)),
+        //     //     new Container(Color4.Green, new(100, 100)),
+        //     //     new Container(Color4.Blue, new(100, 100)),
+        //     //   }
+        //     // ),
+        //   }
+        // )
       )
     );
   }
@@ -85,6 +86,7 @@ public class Window : GameWindow
   {
     // this.hookWidget = hookWidget;
     var result = BuildWidget(widget);
+    // var result = widget;
     LayoutWidget(result);
     MountWidget(result);
 

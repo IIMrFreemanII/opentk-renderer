@@ -1,6 +1,6 @@
 using OpenTK.Mathematics;
 
-namespace open_tk_renderer.Renderer.UI;
+namespace open_tk_renderer.Renderer.UI.Widgets;
 
 public class Row : Widget
 {
@@ -14,23 +14,23 @@ public class Row : Widget
     this.children = children;
   }
 
-  public override void CalcLayout(Vector2i parentSize)
+  public override void CalcLayout(Vector2 parentSize)
   {
     size = parentSize;
 
-    Vector2i nextPosition = position;
-    Vector2i availableSize = size;
-    Vector2i ownSize = Vector2i.Zero;
+    Vector2 nextPosition = position;
+    Vector2 availableSize = size;
+    Vector2 ownSize = Vector2.Zero;
     foreach (Widget child in children)
     {
       child.position = nextPosition;
       child.CalcLayout(availableSize);
-      availableSize -= new Vector2i(child.size.X, 0);
+      availableSize -= new Vector2(child.size.X, 0);
       // availableSize = Vector2i.Clamp(availableSize - new Vector2i(child.size.X, 0), Vector2i.Zero, size);
-      nextPosition += new Vector2i(child.size.X, 0);
+      nextPosition += new Vector2(child.size.X, 0);
 
       // full width
-      ownSize += new Vector2i(child.size.X, 0);
+      ownSize += new Vector2(child.size.X, 0);
 
       // max height
       if (child.size.Y > ownSize.Y)

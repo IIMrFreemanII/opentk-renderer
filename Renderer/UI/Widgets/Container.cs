@@ -1,13 +1,16 @@
 using OpenTK.Mathematics;
 
-namespace open_tk_renderer.Renderer.UI;
+namespace open_tk_renderer.Renderer.UI.Widgets;
 
 public class Container : Widget
 {
-  protected Color4 color = Color4.WhiteSmoke;
+  public Color4 color = Color4.WhiteSmoke;
+
   public int rotation = 0;
-  public EdgeInsets padding;
+  public EdgeInsets? padding;
   public EdgeInsets margin;
+  public Alignment? alignment;
+
   private Matrix4 model = Matrix4.Identity;
 
   private readonly Material _material;
@@ -15,10 +18,11 @@ public class Container : Widget
 
   public Container(
     Color4? color = null,
-    Vector2i? size = null,
+    Vector2? size = null,
     Widget? child = null,
+    EdgeInsets? margin = null,
     EdgeInsets? padding = null,
-    EdgeInsets? margin = null
+    Alignment? alignment = null
   )
   {
     _material = Window.DefaultMaterial;
@@ -26,7 +30,7 @@ public class Container : Widget
 
     if (size != null)
     {
-      this.size = (Vector2i)size;
+      this.size = (Vector2)size;
     }
 
     if (color != null)
@@ -34,19 +38,13 @@ public class Container : Widget
       this.color = (Color4)color;
     }
 
-    if (padding != null)
-    {
-      this.padding = (EdgeInsets)padding;
-    }
-    
-    if (margin != null)
-    {
-      this.margin = (EdgeInsets)margin;
-    }
+    this.padding = padding;
+    this.margin = margin ?? new EdgeInsets(0);
+    this.alignment = alignment;
 
     if (child != null)
     {
-      children.Add(child);
+      children.Add(new Padding(this.padding, new Align(this.alignment, child)));
     }
   }
 
@@ -68,19 +66,24 @@ public class Container : Widget
       Matrix4.CreateTranslation(position.X, position.Y, 0);
   }
 
-  public override void CalcLayout(Vector2i parentSize)
+  public override void CalcLayout(Vector2 parentSize)
   {
-    size = size == Vector2i.Zero ? parentSize : size;
+    size = size == Vector2.Zero
+      ? parentSize
+      : size;
     // size = size == Vector2i.Zero ? parentSize : Vector2i.Clamp(size, Vector2i.Zero, parentSize);
 
     position += margin.size;
+    size -= margin.size * 2;
+    
     if (children.Count > 0)
     {
       Widget child = children[0];
-      child.position = position + padding.size;
-      child.CalcLayout(size - padding.size * 2);
+      child.position = position;
+      child.CalcLayout(size);
 
-      size = Vector2i.Clamp(child.size + padding.size * 2, Vector2i.Zero, size);
+      // size to fit child
+      // size = child.size;
     }
   }
 }

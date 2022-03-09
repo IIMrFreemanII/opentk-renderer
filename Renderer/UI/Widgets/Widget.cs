@@ -1,14 +1,14 @@
 using OpenTK.Mathematics;
 
-namespace open_tk_renderer.Renderer.UI;
+namespace open_tk_renderer.Renderer.UI.Widgets;
 
 public class Widget
 {
     protected bool mounted = false;
     public Widget? parent;
     public List<Widget> children = new ();
-    public Vector2i position = new(0, 0);
-    public Vector2i size = new(0, 0);
+    public Vector2 position = new(0, 0);
+    public Vector2 size = new(0, 0);
 
     public event Action<Widget>? Rebuild;
 
@@ -32,7 +32,7 @@ public class Widget
         mounted = false;
     }
 
-    public virtual void CalcLayout(Vector2i parentSize)
+    public virtual void CalcLayout(Vector2 parentSize)
     {
         // if (parent != null)
         // {

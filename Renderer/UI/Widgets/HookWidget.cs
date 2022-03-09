@@ -1,4 +1,4 @@
-namespace open_tk_renderer.Renderer.UI;
+namespace open_tk_renderer.Renderer.UI.Widgets;
 
 public class UseStateArgs
 {

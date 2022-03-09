@@ -1,6 +1,6 @@
 using OpenTK.Mathematics;
 
-namespace open_tk_renderer.Renderer.UI;
+namespace open_tk_renderer.Renderer.UI.Widgets;
 
 public class Rect : Widget
 {
@@ -11,14 +11,14 @@ public class Rect : Widget
     private readonly Material _material;
     private readonly Mesh _mesh;
 
-    public Rect(Color4? color = null, Vector2i? size = null)
+    public Rect(Color4? color = null, Vector2? size = null)
     {
         _material = Window.DefaultMaterial;
         _mesh = Window.QuadMesh;
 
         if (size != null)
         {
-            this.size = (Vector2i)size;
+            this.size = (Vector2)size;
         }
         if (color != null)
         {

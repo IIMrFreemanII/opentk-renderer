@@ -7,7 +7,7 @@ public struct EdgeInsets
   public int vertical;
   public int horizontal;
 
-  public Vector2i size => new (horizontal, vertical);
+  public Vector2 size => new (horizontal, vertical);
 
   public EdgeInsets(int size) : this(size, size)
   {
