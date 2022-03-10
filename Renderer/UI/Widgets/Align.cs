@@ -36,6 +36,9 @@ public class Align : Widget
       }
 
       child.position = position + (size / 2 - child.size / 2) + alignment.pivot * (size / 2 - child.size / 2);
+      
+      // recalculate again to take into account new position
+      child.CalcLayout(size);
     }
   }
 }

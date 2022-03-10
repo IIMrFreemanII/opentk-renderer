@@ -45,39 +45,43 @@ public class Window : GameWindow
     RunUi(
       new Container(
         Color4.Aqua,
+        // new Vector2(200),
         padding: new EdgeInsets(10),
         margin: new EdgeInsets(10),
         alignment: Alignment.BottomCenter,
-        child: new Container(Color4.Red, new(100))
-        // child: new Column(
-        //   new()
-        //   {
-        //     new Row(
-        //       new()
-        //       {
-        //         new Container(Color4.Red, new(100, 100)),
-        //         new Container(Color4.Green, new(100, 100)),
-        //         new Container(Color4.Blue, new(100, 100)),
-        //       }
-        //     ),
-        //     new Column(
-        //       new()
-        //       {
-        //         new Container(Color4.Red, new(100, 100)),
-        //         new Container(Color4.Green, new(100, 100)),
-        //         new Container(Color4.Blue, new(100, 100)),
-        //       }
-        //     ),
-        //     // new Row(
-        //     //   new()
-        //     //   {
-        //     //     new Container(Color4.Red, new(100, 100)),
-        //     //     new Container(Color4.Green, new(100, 100)),
-        //     //     new Container(Color4.Blue, new(100, 100)),
-        //     //   }
-        //     // ),
-        //   }
-        // )
+        // child: new Container(Color4.Red, new(100))
+        child: new Row(
+          new List<Widget>
+          {
+            new Container(Color4.Red, new Vector2(100, 100)),
+            new Container(Color4.Green, new Vector2(100, 100)),
+            new Container(Color4.Blue, new Vector2(100, 100))
+            // new Row(
+            //   new()
+            //   {
+            //     new Container(Color4.Red, new(100, 100)),
+            //     new Container(Color4.Green, new(100, 100)),
+            //     new Container(Color4.Blue, new(100, 100)),
+            //   }
+            // ),
+            // new Column(
+            //   new()
+            //   {
+            //     new Container(Color4.Red, new(100, 100)),
+            //     new Container(Color4.Green, new(100, 100)),
+            //     new Container(Color4.Blue, new(100, 100)),
+            //   }
+            // ),
+            // new Row(
+            //   new()
+            //   {
+            //     new Container(Color4.Red, new(100, 100)),
+            //     new Container(Color4.Green, new(100, 100)),
+            //     new Container(Color4.Blue, new(100, 100)),
+            //   }
+            // ),
+          }
+        )
       )
     );
   }
@@ -105,10 +109,7 @@ public class Window : GameWindow
   private Widget BuildWidget(Widget widget)
   {
     var child = widget.Build();
-    for (int i = 0; i < child.children.Count; i++)
-    {
-      child.children[i] = BuildWidget(child.children[i]);
-    }
+    for (var i = 0; i < child.children.Count; i++) child.children[i] = BuildWidget(child.children[i]);
 
     return child;
   }
@@ -116,10 +117,7 @@ public class Window : GameWindow
   private void MountWidget(Widget widget)
   {
     widget.Mount();
-    foreach (var widgetChild in widget.children)
-    {
-      MountWidget(widgetChild);
-    }
+    foreach (var widgetChild in widget.children) MountWidget(widgetChild);
   }
 
   private void LayoutWidget(Widget widget)
@@ -130,10 +128,7 @@ public class Window : GameWindow
   private void RenderWidget(Widget widget)
   {
     widget.Render();
-    foreach (var widgetChild in widget.children)
-    {
-      RenderWidget(widgetChild);
-    }
+    foreach (var widgetChild in widget.children) RenderWidget(widgetChild);
   }
 
   protected override void OnRenderFrame(FrameEventArgs args)
