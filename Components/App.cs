@@ -1,5 +1,6 @@
 using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
+using open_tk_renderer.Renderer.UI.Widgets.Layout;
 using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Components;
@@ -22,11 +23,13 @@ public class App : HookWidget
     //
     // Console.WriteLine($"state1 {count}");
     // // Console.WriteLine($"state2 {count1}");
-    return new Row(new ()
-    {
-      new Boxes(),
-      new Boxes(),
-    });
+    return new Flex(
+      new List<Widget>
+      {
+        new Boxes(),
+        new Boxes()
+      }
+    );
 
     // return new Column(new ()
     // {

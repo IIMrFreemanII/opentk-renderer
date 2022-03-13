@@ -1,6 +1,6 @@
 using OpenTK.Mathematics;
 
-namespace open_tk_renderer.Renderer.UI.Widgets;
+namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
 
 public class Align : Widget
 {
@@ -16,29 +16,26 @@ public class Align : Widget
     this.alignment = alignment ?? Alignment.TopLeft;
     this.sizeFactor = sizeFactor;
 
-    if (child != null)
+    if (child != null) children.Add(child);
+  }
+
+  public override void CalcSize(Vector2 parentSize)
+  {
+    size = parentSize;
+
+    foreach (var child in children)
     {
-      children.Add(child);
+      child.CalcSize(size);
+      if (sizeFactor.HasValue) size = child.size * sizeFactor.Value;
     }
   }
 
-  public override void CalcLayout(Vector2 parentSize)
+  public override void CalcPosition()
   {
-    size = parentSize;
-    if (children.Count > 0)
+    foreach (var child in children)
     {
-      Widget child = children[0];
-      child.CalcLayout(size);
-
-      if (sizeFactor.HasValue)
-      {
-        size = child.size * sizeFactor.Value;
-      }
-
       child.position = position + (size / 2 - child.size / 2) + alignment.pivot * (size / 2 - child.size / 2);
-      
-      // recalculate again to take into account new position
-      child.CalcLayout(size);
+      child.CalcPosition();
     }
   }
 }

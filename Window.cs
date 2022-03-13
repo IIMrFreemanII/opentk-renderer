@@ -1,9 +1,9 @@
-using System.Drawing;
 using open_tk_renderer.Assets;
 using open_tk_renderer.Components;
 using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
+using open_tk_renderer.Renderer.UI.Widgets.Layout;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -38,48 +38,38 @@ public class Window : GameWindow
     QuadMesh = new Mesh(QuadMeshData.vertexAttribs);
     DefaultMaterial = new Material(new Shader("default", DefaultShader.VertexSrc, DefaultShader.FragSrc));
 
-    GL.ClearColor(Color.Gray);
+    GL.ClearColor(Colors.DefaultBgColor);
 
     // ui
     // RunUi(new App());
     RunUi(
       new Container(
-        Color4.Aqua,
-        // new Vector2(200),
-        padding: new EdgeInsets(10),
         margin: new EdgeInsets(10),
-        alignment: Alignment.BottomCenter,
-        // child: new Container(Color4.Red, new(100))
-        child: new Row(
-          new List<Widget>
+        color: Color4.Black,
+        child: new Flex(
+          mainAxisAlignment: MainAxisAlignment.Center,
+          crossAxisAlignment: CrossAxisAlignment.Center,
+          textDirection: TextDirection.Rtl,
+          children: new()
           {
-            new Container(Color4.Red, new Vector2(100, 100)),
-            new Container(Color4.Green, new Vector2(100, 100)),
-            new Container(Color4.Blue, new Vector2(100, 100))
-            // new Row(
-            //   new()
-            //   {
-            //     new Container(Color4.Red, new(100, 100)),
-            //     new Container(Color4.Green, new(100, 100)),
-            //     new Container(Color4.Blue, new(100, 100)),
-            //   }
-            // ),
-            // new Column(
-            //   new()
-            //   {
-            //     new Container(Color4.Red, new(100, 100)),
-            //     new Container(Color4.Green, new(100, 100)),
-            //     new Container(Color4.Blue, new(100, 100)),
-            //   }
-            // ),
-            // new Row(
-            //   new()
-            //   {
-            //     new Container(Color4.Red, new(100, 100)),
-            //     new Container(Color4.Green, new(100, 100)),
-            //     new Container(Color4.Blue, new(100, 100)),
-            //   }
-            // ),
+            new Container(
+              margin: new EdgeInsets(10),
+              color: Colors.Red,
+              size: new(100),
+              child: new Container(Color4.Aqua, new (30))
+            ),
+            new Container(
+              margin: new EdgeInsets(10),
+              color: Colors.Green,
+              size: new(100),
+              child: new Container(Color4.Aqua, new (30))
+            ),
+            new Container(
+              margin: new EdgeInsets(10),
+              color: Colors.Blue,
+              size: new(100),
+              child: new Container(Color4.Aqua, new (30))
+            ),
           }
         )
       )
@@ -92,19 +82,11 @@ public class Window : GameWindow
     var result = BuildWidget(widget);
     // var result = widget;
     LayoutWidget(result);
+    SizeAndPositionWidget(result);
     MountWidget(result);
 
     this.widget = result;
   }
-
-  // private Widget ExtractWidgets(HookWidget hookWidget)
-  // {
-  //     Widget? widget = hookWidget.Build();
-  //     if (widget is HookWidget hWidget)
-  //     {
-  //         
-  //     }
-  // }
 
   private Widget BuildWidget(Widget widget)
   {
@@ -122,13 +104,26 @@ public class Window : GameWindow
 
   private void LayoutWidget(Widget widget)
   {
-    widget.CalcLayout(Size);
+    widget.Layout();
+    foreach (var widgetChild in widget.children)
+    {
+      LayoutWidget(widgetChild);
+    }
+  }
+
+  private void SizeAndPositionWidget(Widget widget)
+  {
+    widget.CalcSize(Size);
+    widget.CalcPosition();
   }
 
   private void RenderWidget(Widget widget)
   {
     widget.Render();
-    foreach (var widgetChild in widget.children) RenderWidget(widgetChild);
+    foreach (var widgetChild in widget.children)
+    {
+      RenderWidget(widgetChild);
+    }
   }
 
   protected override void OnRenderFrame(FrameEventArgs args)

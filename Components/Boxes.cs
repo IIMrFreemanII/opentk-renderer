@@ -1,5 +1,6 @@
 using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
+using open_tk_renderer.Renderer.UI.Widgets.Layout;
 using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Components;
@@ -22,12 +23,12 @@ public class Boxes : HookWidget
 
     Console.WriteLine($"state1 {count}");
     // Console.WriteLine($"state2 {count1}");
-    return new Row(
-      new()
+    return new Flex(
+      new List<Widget>
       {
-        new Rect(Color4.Red, new(100 + count, 100)),
-        new Rect(Color4.Green, new(100 + count, 100)),
-        new Rect(Color4.Blue, new(100 + count, 100)),
+        new Container(Color4.Red, new Vector2(100 + count, 100)),
+        new Container(Color4.Green, new Vector2(100 + count, 100)),
+        new Container(Color4.Blue, new Vector2(100 + count, 100))
       }
     );
   }
