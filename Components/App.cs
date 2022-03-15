@@ -24,7 +24,7 @@ public class App : HookWidget
     // Console.WriteLine($"state1 {count}");
     // // Console.WriteLine($"state2 {count1}");
     return new Flex(
-      new List<Widget>
+      children: new List<Widget>
       {
         new Boxes(),
         new Boxes()

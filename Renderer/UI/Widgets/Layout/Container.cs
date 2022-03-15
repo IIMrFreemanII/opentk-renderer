@@ -48,10 +48,7 @@ public class Container : Widget
       ? parentSize
       : Vector2.Clamp(size + margin.size * 2, Vector2.Zero, parentSize);
 
-    foreach (var child in children)
-    {
-      child.CalcSize(size);
-    }
+    foreach (var child in children) child.CalcSize(size);
   }
 
   public override void CalcPosition()

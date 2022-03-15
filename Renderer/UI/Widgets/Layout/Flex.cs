@@ -4,50 +4,89 @@ namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
 
 public class Flex : Widget
 {
-  public const Axis Direction = Axis.Horizontal;
-
   public MainAxisAlignment mainAxisAlignment;
   public CrossAxisAlignment crossAxisAlignment;
+  public Axis direction;
   public TextDirection textDirection;
   public VerticalDirection verticalDirection;
 
   public Flex(
-    List<Widget> children,
+    Axis direction = Axis.Horizontal,
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.Start,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.Start,
     TextDirection textDirection = TextDirection.Ltr,
-    VerticalDirection verticalDirection = VerticalDirection.Down
+    VerticalDirection verticalDirection = VerticalDirection.Down,
+    List<Widget>? children = null
   )
   {
+    this.direction = direction;
     this.mainAxisAlignment = mainAxisAlignment;
     this.crossAxisAlignment = crossAxisAlignment;
     this.textDirection = textDirection;
     this.verticalDirection = verticalDirection;
 
-    foreach (var child in children) child.parent = this;
-
-    this.children = children;
+    this.children = children ?? new List<Widget>();
+    foreach (var child in this.children) child.parent = this;
   }
 
   public override void Layout()
   {
-    if (textDirection == TextDirection.Rtl)
+    switch (direction)
     {
-      children.Reverse();
+      case Axis.Horizontal:
+      {
+        switch (textDirection)
+        {
+          case TextDirection.Ltr:
+          {
+            break;
+          }
+          case TextDirection.Rtl:
+          {
+            children.Reverse();
+            break;
+          }
+        }
+        break;
+      }
+      case Axis.Vertical:
+      {
+        switch (verticalDirection)
+        {
+          case VerticalDirection.Down:
+          {
+            break;
+          }
+          case VerticalDirection.Up:
+          {
+            children.Reverse();
+            break;
+          }
+        }
+        break;
+      }
     }
   }
 
   public override void CalcSize(Vector2 parentSize)
   {
-    size = parentSize;
+    this.size = parentSize;
 
     if (crossAxisAlignment == CrossAxisAlignment.Stretch)
     {
+      var horizontal = new Vector2(1, 0);
+      var vertical = new Vector2(0, 1);
+      var axisMultiplier = direction == Axis.Horizontal
+        ? horizontal
+        : vertical;
+      // for cross axis swap x and y of axisMultiplier
+      axisMultiplier = axisMultiplier.Yx;
+      var size = this.size * axisMultiplier;
+
       foreach (var child in children)
       {
-        Vector2 stretchedSize = child.size with { Y = size.Y };
-        child.size = stretchedSize;
-        child.CalcSize(size);
+        child.size += size;
+        child.CalcSize(this.size);
       }
     }
     else
@@ -59,9 +98,19 @@ public class Flex : Widget
 
   public override void CalcPosition()
   {
-    float totalChildrenWidth = 0;
-    foreach (var child in children) totalChildrenWidth += child.size.X;
-    
+    var horizontal = new Vector2(1, 0);
+    var vertical = new Vector2(0, 1);
+    var axisMultiplier = direction == Axis.Horizontal
+      ? horizontal
+      : vertical;
+
+    var totalChildrenSize = Vector2.Zero;
+    foreach (var child in children) totalChildrenSize += child.size;
+    totalChildrenSize *= axisMultiplier;
+
+    var size = this.size * axisMultiplier;
+    var position = this.position * axisMultiplier;
+
     switch (mainAxisAlignment)
     {
       case MainAxisAlignment.Start:
@@ -69,96 +118,101 @@ public class Flex : Widget
         var nextPosition = position;
         foreach (var child in children)
         {
-          child.position = nextPosition;
-          nextPosition += new Vector2(child.size.X, 0);
+          child.position += nextPosition;
+          nextPosition += child.size * axisMultiplier;
         }
 
         break;
       }
       case MainAxisAlignment.Center:
       {
-        var startPosition = size.X / 2 - totalChildrenWidth / 2;
+        var startPosition = position + size / 2 - totalChildrenSize / 2;
         foreach (var child in children)
         {
-          child.position = position with { X = startPosition };
-          startPosition += child.size.X;
+          child.position = startPosition;
+          startPosition += child.size * axisMultiplier;
         }
 
         break;
       }
       case MainAxisAlignment.End:
       {
-        float startX = size.X - totalChildrenWidth;
+        var startPosition = size - totalChildrenSize;
         foreach (var child in children)
         {
-          child.position = position + new Vector2(startX, 0);
-          startX += child.size.X;
+          child.position += position + startPosition;
+          startPosition += child.size * axisMultiplier;
         }
 
         break;
       }
       case MainAxisAlignment.SpaceBetween:
       {
-        var freeSpace = size.X - totalChildrenWidth;
+        var freeSpace = size - totalChildrenSize;
         var spaceBetween = freeSpace / (children.Count - 1);
-
+      
         var nextPosition = position;
         foreach (var child in children)
         {
-          child.position = nextPosition;
-          nextPosition += new Vector2(child.size.X + spaceBetween, 0);
+          child.position += nextPosition;
+          nextPosition += child.size * axisMultiplier + spaceBetween;
         }
-
+      
         break;
       }
       case MainAxisAlignment.SpaceEvenly:
       {
-        var freeSpace = size.X - totalChildrenWidth;
+        var freeSpace = size - totalChildrenSize;
         var spaceBetween = freeSpace / (children.Count + 1);
-
+      
         var nextPosition = position;
         foreach (var child in children)
         {
-          nextPosition += new Vector2(spaceBetween, 0);
-          child.position = nextPosition;
-          nextPosition += new Vector2(child.size.X, 0);
+          nextPosition += spaceBetween;
+          child.position += nextPosition;
+          nextPosition += child.size * axisMultiplier;
         }
-
+      
         break;
       }
       case MainAxisAlignment.SpaceAround:
       {
-        var freeSpace = size.X - totalChildrenWidth;
+        var freeSpace = size - totalChildrenSize;
         var spaceBetween = freeSpace / children.Count;
-
+      
         var nextPosition = position;
         for (var i = 0; i < children.Count; i++)
         {
           var child = children[i];
           if (i == 0)
           {
-            nextPosition += new Vector2(spaceBetween / 2, 0);
-            child.position = nextPosition;
-            nextPosition += new Vector2(child.size.X, 0);
+            nextPosition += spaceBetween / 2;
+            child.position += nextPosition;
+            nextPosition += child.size * axisMultiplier;
           }
           else
           {
-            nextPosition += new Vector2(spaceBetween, 0);
-            child.position = nextPosition;
-            nextPosition += new Vector2(child.size.X, 0);
+            nextPosition += spaceBetween;
+            child.position += nextPosition;
+            nextPosition += child.size * axisMultiplier;
           }
         }
-
+      
         break;
       }
     }
 
+    // for cross axis swap x and y of axisMultiplier
+    axisMultiplier = axisMultiplier.Yx;
+    size = this.size * axisMultiplier;
+    position = this.position * axisMultiplier;
     switch (crossAxisAlignment)
     {
       case CrossAxisAlignment.Start:
       {
+        var nextPosition = position;
         foreach (var child in children)
-          child.position = new Vector2(child.position.X, position.Y);
+          child.position += nextPosition;
 
         break;
       }
@@ -167,10 +221,10 @@ public class Flex : Widget
         var nextPosition = position;
         foreach (var child in children)
         {
-          var halfOfParentHeight = size.Y / 2;
-          var halfOfChildHeight = child.size.Y / 2;
-          var centerOfHeight = halfOfParentHeight - halfOfChildHeight;
-          child.position += nextPosition + new Vector2(0, centerOfHeight);
+          var halfOfParentSize = size / 2;
+          var halfOfChildSize = child.size * axisMultiplier / 2;
+          var center = halfOfParentSize - halfOfChildSize;
+          child.position += nextPosition + center;
         }
 
         break;
@@ -178,7 +232,16 @@ public class Flex : Widget
       case CrossAxisAlignment.End:
       {
         foreach (var child in children)
-          child.position = new Vector2(child.position.X, position.Y + size.Y - child.size.Y);
+          child.position += position + size - child.size * axisMultiplier;
+        break;
+      }
+      case CrossAxisAlignment.Stretch:
+      {
+        foreach (var child in children)
+        {
+          child.position += position;
+        }
+
         break;
       }
       case CrossAxisAlignment.Baseline:

@@ -1,5 +1,4 @@
 using open_tk_renderer.Assets;
-using open_tk_renderer.Components;
 using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
@@ -20,7 +19,9 @@ public class Window : GameWindow
   public static Material DefaultMaterial;
   public static Mesh QuadMesh;
   private HookWidget hookWidget;
-  private Widget widget;
+
+  private Widget root;
+
   private bool _shouldRenderUi = false;
 
   public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings) : base(
@@ -42,38 +43,37 @@ public class Window : GameWindow
 
     // ui
     // RunUi(new App());
-    RunUi(
-      new Container(
-        margin: new EdgeInsets(10),
-        color: Color4.Black,
-        child: new Flex(
-          mainAxisAlignment: MainAxisAlignment.Center,
-          crossAxisAlignment: CrossAxisAlignment.Center,
-          textDirection: TextDirection.Rtl,
-          children: new()
-          {
-            new Container(
-              margin: new EdgeInsets(10),
-              color: Colors.Red,
-              size: new(100),
-              child: new Container(Color4.Aqua, new (30))
-            ),
-            new Container(
-              margin: new EdgeInsets(10),
-              color: Colors.Green,
-              size: new(100),
-              child: new Container(Color4.Aqua, new (30))
-            ),
-            new Container(
-              margin: new EdgeInsets(10),
-              color: Colors.Blue,
-              size: new(100),
-              child: new Container(Color4.Aqua, new (30))
-            ),
-          }
-        )
-      )
-    );
+    // RunUi(
+    //   new Container(
+    //     margin: new EdgeInsets(10),
+    //     child: new Flex(
+    //       mainAxisAlignment: MainAxisAlignment.Center,
+    //       crossAxisAlignment: CrossAxisAlignment.Center,
+    //       textDirection: TextDirection.Rtl,
+    //       children: new List<Widget>
+    //       {
+    //         new Container(
+    //           margin: new EdgeInsets(10),
+    //           color: Colors.Red,
+    //           size: new Vector2(100),
+    //           child: new Container(Color4.Aqua, new Vector2(30))
+    //         ),
+    //         new Container(
+    //           margin: new EdgeInsets(10),
+    //           color: Colors.Green,
+    //           size: new Vector2(100),
+    //           child: new Container(Color4.Aqua, new Vector2(30))
+    //         ),
+    //         new Container(
+    //           margin: new EdgeInsets(10),
+    //           color: Colors.Blue,
+    //           size: new Vector2(100),
+    //           child: new Container(Color4.Aqua, new Vector2(30))
+    //         )
+    //       }
+    //     )
+    //   )
+    // );
   }
 
   private void RunUi(Widget widget)
@@ -85,7 +85,7 @@ public class Window : GameWindow
     SizeAndPositionWidget(result);
     MountWidget(result);
 
-    this.widget = result;
+    root = result;
   }
 
   private Widget BuildWidget(Widget widget)
@@ -105,10 +105,7 @@ public class Window : GameWindow
   private void LayoutWidget(Widget widget)
   {
     widget.Layout();
-    foreach (var widgetChild in widget.children)
-    {
-      LayoutWidget(widgetChild);
-    }
+    foreach (var widgetChild in widget.children) LayoutWidget(widgetChild);
   }
 
   private void SizeAndPositionWidget(Widget widget)
@@ -120,27 +117,58 @@ public class Window : GameWindow
   private void RenderWidget(Widget widget)
   {
     widget.Render();
-    foreach (var widgetChild in widget.children)
-    {
-      RenderWidget(widgetChild);
-    }
+    foreach (var widgetChild in widget.children) RenderWidget(widgetChild);
   }
 
   protected override void OnRenderFrame(FrameEventArgs args)
   {
     base.OnRenderFrame(args);
-    if (_shouldRenderUi)
-    {
-      Render();
-      _shouldRenderUi = false;
-    }
+    Render();
+    // if (_shouldRenderUi)
+    // {
+    //   Render();
+    //   _shouldRenderUi = false;
+    // }
   }
 
   private void Render()
   {
     GL.Clear(ClearBufferMask.ColorBufferBit);
 
-    RenderWidget(widget);
+    root = new Container(
+      margin: new EdgeInsets(10),
+      color: Color4.Black,
+      child: new Flex(
+        Axis.Vertical,
+        MainAxisAlignment.SpaceAround,
+        CrossAxisAlignment.Stretch,
+        verticalDirection: VerticalDirection.Up,
+        children: new List<Widget>
+        {
+          new Container(
+            margin: new EdgeInsets(10),
+            color: Colors.Red,
+            size: new Vector2(100),
+            child: new Container(Color4.Aqua, new Vector2(30))
+          ),
+          new Container(
+            margin: new EdgeInsets(10),
+            color: Colors.Green,
+            size: new Vector2(100),
+            child: new Container(Color4.Aqua, new Vector2(30))
+          ),
+          new Container(
+            margin: new EdgeInsets(10),
+            color: Colors.Blue,
+            size: new Vector2(100),
+            child: new Container(Color4.Aqua, new Vector2(30))
+          )
+        }
+      )
+    );
+    LayoutWidget(root);
+    SizeAndPositionWidget(root);
+    RenderWidget(root);
 
     SwapBuffers();
   }
