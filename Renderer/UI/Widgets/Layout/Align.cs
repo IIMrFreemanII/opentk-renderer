@@ -1,3 +1,4 @@
+using open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
 using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
@@ -19,14 +20,14 @@ public class Align : Widget
     if (child != null) children.Add(child);
   }
 
-  public override void CalcSize(Vector2 parentSize)
+  public override void CalcSize(BoxConstraints constraints)
   {
-    size = parentSize;
+    size = constraints.Biggest;
 
     foreach (var child in children)
     {
-      child.CalcSize(size);
-      if (sizeFactor.HasValue) size = child.size * sizeFactor.Value;
+      child.CalcSize(constraints);
+      if (sizeFactor.HasValue) size = constraints.Constrain(child.size * sizeFactor.Value);
     }
   }
 
@@ -34,7 +35,8 @@ public class Align : Widget
   {
     foreach (var child in children)
     {
-      child.position = position + (size / 2 - child.size / 2) + alignment.pivot * (size / 2 - child.size / 2);
+      child.position = position + (size / 2 - child.size / 2) +
+                       alignment.pivot * (size / 2 - child.size / 2);
       child.CalcPosition();
     }
   }

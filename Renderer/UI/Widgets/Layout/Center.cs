@@ -1,3 +1,4 @@
+using open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
 using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
@@ -13,11 +14,10 @@ public class Center : Widget
     this.sizeFactor = sizeFactor;
   }
 
-  public override void CalcSize(Vector2 parentSize)
+  public override void CalcSize(BoxConstraints constraints)
   {
-    size = parentSize;
-
-    foreach (var child in children) child.CalcSize(size);
+    size = constraints.Biggest;
+    foreach (var child in children) child.CalcSize(constraints);
   }
 
   public override void CalcPosition()

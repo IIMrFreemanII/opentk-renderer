@@ -1,3 +1,5 @@
+using open_tk_renderer.Renderer.UI.Widgets.Layout;
+using open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
 using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets;
@@ -31,29 +33,12 @@ public class Widget
   {
     mounted = false;
   }
-  
-  public virtual void Layout()
-  {
-  }
 
-  public virtual void CalcSize(Vector2 parentSize)
-  {
-  }
+  public virtual void Layout() { }
 
-  // public virtual void ResetSize()
-  // {
-  //   size = Vector2.Zero;
-  //   foreach (var child in children)
-  //   {
-  //     child.ResetSize();
-  //   }
-  // }
+  public virtual void CalcSize(BoxConstraints constraints) { }
 
-  public virtual void CalcPosition()
-  {
-  }
+  public virtual void CalcPosition() { }
 
-  public virtual void Render()
-  {
-  }
+  public virtual void Render() { }
 }

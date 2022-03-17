@@ -1,3 +1,4 @@
+using open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
 using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
@@ -8,6 +9,7 @@ public class Container : Widget
   public EdgeInsets? padding;
   public EdgeInsets margin;
   public Alignment? alignment;
+  public BoxConstraints? constraints;
 
   public Container(
     Color4? color = null,
@@ -15,7 +17,8 @@ public class Container : Widget
     Widget? child = null,
     EdgeInsets? margin = null,
     EdgeInsets? padding = null,
-    Alignment? alignment = null
+    Alignment? alignment = null,
+    BoxConstraints? constraints = null
   )
   {
     this.size = size ?? Vector2.Zero;
@@ -24,6 +27,7 @@ public class Container : Widget
     this.padding = padding;
     this.margin = margin ?? new EdgeInsets(0);
     this.alignment = alignment;
+    this.constraints = constraints;
 
     children.Add(
       new Padding(
@@ -42,13 +46,18 @@ public class Container : Widget
     );
   }
 
-  public override void CalcSize(Vector2 parentSize)
+  public override void CalcSize(BoxConstraints constraints)
   {
     size = size == Vector2.Zero
-      ? parentSize
-      : Vector2.Clamp(size + margin.size * 2, Vector2.Zero, parentSize);
+      ? constraints.Biggest
+      : constraints.Constrain(size + margin.size * 2);
 
-    foreach (var child in children) child.CalcSize(size);
+    foreach (var child in children)
+    {
+      child.CalcSize(
+        this.constraints ?? BoxConstraints.Loose(size)
+      );
+    }
   }
 
   public override void CalcPosition()

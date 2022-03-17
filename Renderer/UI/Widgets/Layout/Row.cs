@@ -2,19 +2,19 @@ using open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
 
-public class Column : Flex
+public class Row : Flex
 {
-  public Column(
+  public Row(
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.Start,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.Start,
-    VerticalDirection verticalDirection = VerticalDirection.Down,
+    TextDirection textDirection = TextDirection.Ltr,
     List<Widget>? children = null
   ) : base(
-    Axis.Vertical,
+    Axis.Horizontal,
     mainAxisAlignment,
     crossAxisAlignment,
-    TextDirection.Ltr,
-    verticalDirection,
+    textDirection,
+    VerticalDirection.Down,
     children
   ) { }
 }

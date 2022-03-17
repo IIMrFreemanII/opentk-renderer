@@ -1,6 +1,6 @@
 using OpenTK.Mathematics;
 
-namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
+namespace open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
 
 public struct EdgeInsets
 {
@@ -9,9 +9,7 @@ public struct EdgeInsets
 
   public Vector2 size => new(horizontal, vertical);
 
-  public EdgeInsets(int size) : this(size, size)
-  {
-  }
+  public EdgeInsets(int size) : this(size, size) { }
 
   public EdgeInsets(int vertical, int horizontal)
   {

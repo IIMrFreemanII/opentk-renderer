@@ -3,6 +3,7 @@ using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
 using open_tk_renderer.Renderer.UI.Widgets.Layout;
+using open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -24,7 +25,10 @@ public class Window : GameWindow
 
   private bool _shouldRenderUi = false;
 
-  public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings) : base(
+  public Window(
+    GameWindowSettings gameWindowSettings,
+    NativeWindowSettings nativeWindowSettings
+  ) : base(
     gameWindowSettings,
     nativeWindowSettings
   )
@@ -37,7 +41,8 @@ public class Window : GameWindow
     base.OnLoad();
 
     QuadMesh = new Mesh(QuadMeshData.vertexAttribs);
-    DefaultMaterial = new Material(new Shader("default", DefaultShader.VertexSrc, DefaultShader.FragSrc));
+    DefaultMaterial =
+      new Material(new Shader("default", DefaultShader.VertexSrc, DefaultShader.FragSrc));
 
     GL.ClearColor(Colors.DefaultBgColor);
 
@@ -91,7 +96,8 @@ public class Window : GameWindow
   private Widget BuildWidget(Widget widget)
   {
     var child = widget.Build();
-    for (var i = 0; i < child.children.Count; i++) child.children[i] = BuildWidget(child.children[i]);
+    for (var i = 0; i < child.children.Count; i++)
+      child.children[i] = BuildWidget(child.children[i]);
 
     return child;
   }
@@ -110,7 +116,8 @@ public class Window : GameWindow
 
   private void SizeAndPositionWidget(Widget widget)
   {
-    widget.CalcSize(Size);
+    widget.size = Size;
+    widget.CalcSize(BoxConstraints.Loose(Size));
     widget.CalcPosition();
   }
 
@@ -138,18 +145,19 @@ public class Window : GameWindow
     root = new Container(
       margin: new EdgeInsets(10),
       color: Color4.Black,
-      child: new Flex(
-        Axis.Vertical,
-        MainAxisAlignment.SpaceAround,
+      child: new Row(
+        MainAxisAlignment.Start,
         CrossAxisAlignment.Stretch,
-        verticalDirection: VerticalDirection.Up,
-        children: new List<Widget>
+        TextDirection.Ltr,
+        new List<Widget>
         {
-          new Container(
-            margin: new EdgeInsets(10),
-            color: Colors.Red,
-            size: new Vector2(100),
-            child: new Container(Color4.Aqua, new Vector2(30))
+          new Expanded(
+            child: new Container(
+              margin: new EdgeInsets(10),
+              color: Colors.Red,
+              size: new Vector2(100),
+              child: new Container(Color4.Aqua, new Vector2(30))
+            )
           ),
           new Container(
             margin: new EdgeInsets(10),

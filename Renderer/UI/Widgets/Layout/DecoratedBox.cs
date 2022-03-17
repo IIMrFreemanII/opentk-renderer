@@ -1,3 +1,4 @@
+using open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
 using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
@@ -20,10 +21,7 @@ public class DecoratedBox : Widget
 
     this.color = color ?? Colors.DefaultBgColor;
 
-    if (child != null)
-    {
-      children.Add(child);
-    }
+    if (child != null) children.Add(child);
   }
 
   public override void Render()
@@ -43,13 +41,13 @@ public class DecoratedBox : Widget
       Matrix4.CreateTranslation(position.X, position.Y, 0);
   }
 
-  public override void CalcSize(Vector2 parentSize)
+  public override void CalcSize(BoxConstraints constraints)
   {
-    size = parentSize;
-    
+    size = constraints.Biggest;
+
     foreach (var child in children)
     {
-      child.CalcSize(size);
+      child.CalcSize(constraints);
     }
   }
 

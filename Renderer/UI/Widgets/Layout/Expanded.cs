@@ -3,27 +3,22 @@ using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
 
-public class Padding : Widget
+public class Expanded : Widget
 {
-  public EdgeInsets padding;
+  public int flex;
 
-  public Padding(
-    EdgeInsets? padding = null,
-    Widget? child = null
-  )
+  public Expanded(int flex = 1, Widget? child = null)
   {
-    this.padding = padding ?? new EdgeInsets(0);
+    this.flex = flex;
     if (child is not null) children.Add(child);
   }
 
   public override void CalcSize(BoxConstraints constraints)
   {
-    size = constraints.Biggest;
-
     foreach (var child in children)
     {
-      child.CalcSize(constraints.Deflate(padding));
-      size = constraints.Constrain(child.size + padding.size * 2);
+      child.CalcSize(constraints);
+      size = child.size;
     }
   }
 
@@ -31,7 +26,7 @@ public class Padding : Widget
   {
     foreach (var child in children)
     {
-      child.position = position + padding.size;
+      child.position = position;
       child.CalcPosition();
     }
   }

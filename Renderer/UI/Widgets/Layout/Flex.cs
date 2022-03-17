@@ -1,3 +1,5 @@
+using open_tk_renderer.Extensions;
+using open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
 using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
@@ -47,6 +49,7 @@ public class Flex : Widget
             break;
           }
         }
+
         break;
       }
       case Axis.Vertical:
@@ -63,36 +66,60 @@ public class Flex : Widget
             break;
           }
         }
+
         break;
       }
     }
   }
 
-  public override void CalcSize(Vector2 parentSize)
+  public override void CalcSize(BoxConstraints constraints)
   {
-    this.size = parentSize;
+    this.size = constraints.Biggest;
 
+    var horizontal = new Vector2(1, 0);
+    var vertical = new Vector2(0, 1);
+    var axisMultiplier = direction == Axis.Horizontal
+      ? horizontal
+      : vertical;
+
+    var size = this.size;
     if (crossAxisAlignment == CrossAxisAlignment.Stretch)
     {
-      var horizontal = new Vector2(1, 0);
-      var vertical = new Vector2(0, 1);
-      var axisMultiplier = direction == Axis.Horizontal
-        ? horizontal
-        : vertical;
       // for cross axis swap x and y of axisMultiplier
       axisMultiplier = axisMultiplier.Yx;
-      var size = this.size * axisMultiplier;
+      size = this.size * axisMultiplier;
+    }
 
-      foreach (var child in children)
+    int totalFlexFactor = 0;
+    foreach (var child in children)
+    {
+      if (child is Expanded expanded)
       {
-        child.size += size;
-        child.CalcSize(this.size);
+        totalFlexFactor += expanded.flex;
       }
     }
-    else
+
+    var ownConstraint = constraints with { minWidth = size.X, minHeight = size.Y };
+    axisMultiplier = axisMultiplier.Yx;
+    var expandSize = this.size * axisMultiplier;
+    foreach (var child in children)
     {
-      foreach (var child in children)
-        child.CalcSize(size);
+      if (child is not Expanded)
+      {
+        child.CalcSize(ownConstraint);
+        expandSize -= child.size * axisMultiplier;
+      }
+    }
+
+    expandSize = Vector2.Clamp(expandSize, Vector2.Zero, Vector2.PositiveInfinity);
+
+    foreach (var child in children)
+    {
+      if (child is Expanded expanded)
+      {
+        var elemSize = expandSize * expanded.flex / totalFlexFactor + size;
+        child.CalcSize(BoxConstraints.Tight(elemSize));
+      }
     }
   }
 
@@ -150,21 +177,21 @@ public class Flex : Widget
       {
         var freeSpace = size - totalChildrenSize;
         var spaceBetween = freeSpace / (children.Count - 1);
-      
+
         var nextPosition = position;
         foreach (var child in children)
         {
           child.position += nextPosition;
           nextPosition += child.size * axisMultiplier + spaceBetween;
         }
-      
+
         break;
       }
       case MainAxisAlignment.SpaceEvenly:
       {
         var freeSpace = size - totalChildrenSize;
         var spaceBetween = freeSpace / (children.Count + 1);
-      
+
         var nextPosition = position;
         foreach (var child in children)
         {
@@ -172,14 +199,14 @@ public class Flex : Widget
           child.position += nextPosition;
           nextPosition += child.size * axisMultiplier;
         }
-      
+
         break;
       }
       case MainAxisAlignment.SpaceAround:
       {
         var freeSpace = size - totalChildrenSize;
         var spaceBetween = freeSpace / children.Count;
-      
+
         var nextPosition = position;
         for (var i = 0; i < children.Count; i++)
         {
@@ -197,7 +224,7 @@ public class Flex : Widget
             nextPosition += child.size * axisMultiplier;
           }
         }
-      
+
         break;
       }
     }
@@ -237,10 +264,7 @@ public class Flex : Widget
       }
       case CrossAxisAlignment.Stretch:
       {
-        foreach (var child in children)
-        {
-          child.position += position;
-        }
+        foreach (var child in children) child.position += position;
 
         break;
       }
