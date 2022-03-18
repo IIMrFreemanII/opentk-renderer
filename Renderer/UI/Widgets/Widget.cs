@@ -1,5 +1,5 @@
 using open_tk_renderer.Renderer.UI.Widgets.Layout;
-using open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
+using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets;

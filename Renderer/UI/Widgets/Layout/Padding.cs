@@ -1,5 +1,4 @@
-using open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
-using OpenTK.Mathematics;
+using open_tk_renderer.Renderer.UI.Widgets.Utils;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
 
@@ -12,7 +11,7 @@ public class Padding : Widget
     Widget? child = null
   )
   {
-    this.padding = padding ?? new EdgeInsets(0);
+    this.padding = padding ?? EdgeInsets.All(0);
     if (child is not null) children.Add(child);
   }
 
@@ -23,7 +22,7 @@ public class Padding : Widget
     foreach (var child in children)
     {
       child.CalcSize(constraints.Deflate(padding));
-      size = constraints.Constrain(child.size + padding.size * 2);
+      size = constraints.Constrain(padding.InflateSize(child.size));
     }
   }
 
@@ -31,7 +30,7 @@ public class Padding : Widget
   {
     foreach (var child in children)
     {
-      child.position = position + padding.size;
+      child.position = position + padding.TopLeft;
       child.CalcPosition();
     }
   }

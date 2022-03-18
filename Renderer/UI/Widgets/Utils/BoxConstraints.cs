@@ -1,6 +1,6 @@
 using OpenTK.Mathematics;
 
-namespace open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
+namespace open_tk_renderer.Renderer.UI.Widgets.Utils;
 
 public struct BoxConstraints
 {
@@ -95,9 +95,9 @@ public struct BoxConstraints
   {
     return new BoxConstraints(
       minWidth,
-      maxWidth - edgeInsets.horizontal * 2,
+      maxWidth - edgeInsets.Horizontal,
       minHeight,
-      maxHeight - edgeInsets.vertical * 2
+      maxHeight - edgeInsets.Vertical
     );
   }
 }

@@ -1,4 +1,4 @@
-using open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
+using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
@@ -25,7 +25,7 @@ public class Container : Widget
     this.color = color ?? Colors.DefaultBgColor;
 
     this.padding = padding;
-    this.margin = margin ?? new EdgeInsets(0);
+    this.margin = margin ?? EdgeInsets.All(0);
     this.alignment = alignment;
     this.constraints = constraints;
 
@@ -50,7 +50,7 @@ public class Container : Widget
   {
     size = size == Vector2.Zero
       ? constraints.Biggest
-      : constraints.Constrain(size + margin.size * 2);
+      : constraints.Constrain(margin.InflateSize(size));
 
     foreach (var child in children)
     {

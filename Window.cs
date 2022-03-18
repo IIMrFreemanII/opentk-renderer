@@ -3,7 +3,7 @@ using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
 using open_tk_renderer.Renderer.UI.Widgets.Layout;
-using open_tk_renderer.Renderer.UI.Widgets.Layout.Utils;
+using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -143,7 +143,7 @@ public class Window : GameWindow
     GL.Clear(ClearBufferMask.ColorBufferBit);
 
     root = new Container(
-      margin: new EdgeInsets(10),
+      margin: EdgeInsets.All(10),
       color: Color4.Black,
       child: new Row(
         MainAxisAlignment.Start,
@@ -153,20 +153,20 @@ public class Window : GameWindow
         {
           new Expanded(
             child: new Container(
-              margin: new EdgeInsets(10),
+              margin: EdgeInsets.Symmetric(horizontal: 10),
               color: Colors.Red,
               size: new Vector2(100),
               child: new Container(Color4.Aqua, new Vector2(30))
             )
           ),
           new Container(
-            margin: new EdgeInsets(10),
+            margin: EdgeInsets.All(10),
             color: Colors.Green,
             size: new Vector2(100),
             child: new Container(Color4.Aqua, new Vector2(30))
           ),
           new Container(
-            margin: new EdgeInsets(10),
+            margin: EdgeInsets.All(10),
             color: Colors.Blue,
             size: new Vector2(100),
             child: new Container(Color4.Aqua, new Vector2(30))
