@@ -16,6 +16,7 @@ public class Window : GameWindow
 {
   public static Matrix4 Projection = Matrix4.Identity;
   public static Matrix4 View = Matrix4.Identity;
+  public static Vector2 Resolution = new(0);
 
   public static Material DefaultMaterial;
   public static Mesh QuadMesh;
@@ -41,8 +42,8 @@ public class Window : GameWindow
     base.OnLoad();
 
     QuadMesh = new Mesh(QuadMeshData.vertexAttribs);
-    DefaultMaterial =
-      new Material(new Shader("default", DefaultShader.VertexSrc, DefaultShader.FragSrc));
+    var defaultShader = Shader.FromFile("Assets/default.glsl");
+    DefaultMaterial = new Material(defaultShader);
 
     GL.ClearColor(Colors.DefaultBgColor);
 
@@ -143,36 +144,36 @@ public class Window : GameWindow
     GL.Clear(ClearBufferMask.ColorBufferBit);
 
     root = new Container(
-      margin: EdgeInsets.All(10),
-      color: Color4.Black,
-      child: new Row(
-        MainAxisAlignment.Start,
-        CrossAxisAlignment.Stretch,
-        TextDirection.Ltr,
-        new List<Widget>
-        {
-          new Expanded(
-            child: new Container(
-              margin: EdgeInsets.Symmetric(horizontal: 10),
-              color: Colors.Red,
-              size: new Vector2(100),
-              child: new Container(Color4.Aqua, new Vector2(30))
-            )
-          ),
-          new Container(
-            margin: EdgeInsets.All(10),
-            color: Colors.Green,
-            size: new Vector2(100),
-            child: new Container(Color4.Aqua, new Vector2(30))
-          ),
-          new Container(
-            margin: EdgeInsets.All(10),
-            color: Colors.Blue,
-            size: new Vector2(100),
-            child: new Container(Color4.Aqua, new Vector2(30))
-          )
-        }
-      )
+      // margin: EdgeInsets.All(10),
+      Color4.Black
+      // child: new Row(
+      //   MainAxisAlignment.Start,
+      //   CrossAxisAlignment.Stretch,
+      //   TextDirection.Ltr,
+      //   new List<Widget>
+      //   {
+      //     new Expanded(
+      //       child: new Container(
+      //         margin: EdgeInsets.Symmetric(horizontal: 10),
+      //         color: Colors.Red,
+      //         size: new Vector2(100),
+      //         child: new Container(Color4.Aqua, new Vector2(30))
+      //       )
+      //     ),
+      //     new Container(
+      //       margin: EdgeInsets.All(10),
+      //       color: Colors.Green,
+      //       size: new Vector2(100),
+      //       child: new Container(Color4.Aqua, new Vector2(30))
+      //     ),
+      //     new Container(
+      //       margin: EdgeInsets.All(10),
+      //       color: Colors.Blue,
+      //       size: new Vector2(100),
+      //       child: new Container(Color4.Aqua, new Vector2(30))
+      //     )
+      //   }
+      // )
     );
     LayoutWidget(root);
     SizeAndPositionWidget(root);
@@ -185,22 +186,37 @@ public class Window : GameWindow
   {
     base.OnUpdateFrame(args);
 
+    ShadersController.HandleRecompile();
+
     if (!IsFocused) // Check to see if the window is focused
       return;
 
-    if (IsKeyDown(Keys.Escape)) Close();
+    if (IsKeyPressed(Keys.Escape)) Close();
   }
 
   protected override void OnResize(ResizeEventArgs e)
   {
     base.OnResize(e);
+    Resolution = ClientSize;
 
     // Projection = Matrix4.CreateOrthographic(e.Width, e.Height, -1, 1);
     // Projection = Matrix4.CreateOrthographicOffCenter(0, ClientSize.X, ClientSize.Y, 0, -1, 1);
-    Projection = Matrix4.CreateOrthographicOffCenter(0, Size.X, Size.Y, 0, -1, 1);
+    Projection = Matrix4.CreateOrthographicOffCenter(
+      0,
+      Size.X,
+      Size.Y,
+      0,
+      -1,
+      1
+    );
 
     // on MacOs retina display has more pixels that is why use ClientSize to match pixel size
-    GL.Viewport(0, 0, ClientSize.X, ClientSize.Y);
+    GL.Viewport(
+      0,
+      0,
+      ClientSize.X,
+      ClientSize.Y
+    );
     // GL.Viewport(0, 0, Size.X, Size.X);
 
     Render();

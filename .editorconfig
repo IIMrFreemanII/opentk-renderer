@@ -3,7 +3,7 @@ root = true
 [*]
 
 indent_style = space
-indent_size = 2
+indent_size = 4
 tab_width = 2
 max_line_length = 100
 charset = utf-8
@@ -29,6 +29,12 @@ dotnet_naming_rule.unity_serialized_field_rule_1.resharper_guid = 5f0fdb63-c892-
 dotnet_naming_rule.unity_serialized_field_rule_1.severity = warning
 dotnet_naming_rule.unity_serialized_field_rule_1.style = lower_camel_case_style
 dotnet_naming_rule.unity_serialized_field_rule_1.symbols = unity_serialized_field_symbols_1
+dotnet_naming_rule.unity_serialized_field_rule_2.import_to_resharper = True
+dotnet_naming_rule.unity_serialized_field_rule_2.resharper_description = Unity serialized field
+dotnet_naming_rule.unity_serialized_field_rule_2.resharper_guid = 5f0fdb63-c892-4d2c-9324-15c80b22a7ef
+dotnet_naming_rule.unity_serialized_field_rule_2.severity = warning
+dotnet_naming_rule.unity_serialized_field_rule_2.style = lower_camel_case_style
+dotnet_naming_rule.unity_serialized_field_rule_2.symbols = unity_serialized_field_symbols_2
 dotnet_naming_style.lower_camel_case_style.capitalization = camel_case
 dotnet_naming_symbols.unity_serialized_field_symbols.applicable_accessibilities = *
 dotnet_naming_symbols.unity_serialized_field_symbols.applicable_kinds =
@@ -38,6 +44,10 @@ dotnet_naming_symbols.unity_serialized_field_symbols_1.applicable_accessibilitie
 dotnet_naming_symbols.unity_serialized_field_symbols_1.applicable_kinds =
 dotnet_naming_symbols.unity_serialized_field_symbols_1.resharper_applicable_kinds = unity_serialised_field
 dotnet_naming_symbols.unity_serialized_field_symbols_1.resharper_required_modifiers = instance
+dotnet_naming_symbols.unity_serialized_field_symbols_2.applicable_accessibilities = *
+dotnet_naming_symbols.unity_serialized_field_symbols_2.applicable_kinds =
+dotnet_naming_symbols.unity_serialized_field_symbols_2.resharper_applicable_kinds = unity_serialised_field
+dotnet_naming_symbols.unity_serialized_field_symbols_2.resharper_required_modifiers = instance
 dotnet_style_parentheses_in_arithmetic_binary_operators = never_if_unnecessary:none
 dotnet_style_parentheses_in_other_binary_operators = never_if_unnecessary:none
 dotnet_style_parentheses_in_relational_binary_operators = never_if_unnecessary:none
@@ -56,6 +66,7 @@ resharper_align_multiline_calls_chain = true
 resharper_align_multiline_extends_list = true
 resharper_align_multiline_parameter = true
 resharper_align_multiple_declaration = true
+resharper_align_tuple_components = true
 resharper_autodetect_indent_settings = true
 resharper_csharp_empty_block_style = together_same_line
 resharper_csharp_insert_final_newline = true
@@ -70,6 +81,7 @@ resharper_enforce_line_ending_style = true
 resharper_keep_existing_expr_member_arrangement = false
 resharper_max_formal_parameters_on_line = 2
 resharper_max_initializer_elements_on_line = 1
+resharper_max_invocation_arguments_on_line = 2
 resharper_nested_ternary_style = expanded
 resharper_use_indent_from_vs = false
 resharper_wrap_chained_method_calls = chop_if_long
@@ -89,3 +101,8 @@ resharper_suggest_var_or_type_simple_types_highlighting = hint
 resharper_web_config_module_not_resolved_highlighting = warning
 resharper_web_config_type_not_resolved_highlighting = warning
 resharper_web_config_wrong_module_highlighting = warning
+
+[*.{appxmanifest,asax,ascx,aspx,axaml,build,cg,cginc,compute,cs,cshtml,dtd,fs,fsi,fsscript,fsx,hlsl,hlsli,hlslinc,master,ml,mli,nuspec,paml,razor,resw,resx,shader,skin,usf,ush,vb,xaml,xamlx,xoml,xsd}]
+indent_style = space
+indent_size = 2
+tab_width = 2

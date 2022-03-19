@@ -1,7 +1,7 @@
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using OpenTK.Mathematics;
 
-namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
+namespace open_tk_renderer.Renderer.UI.Widgets.Painting;
 
 public class DecoratedBox : Widget
 {
@@ -30,7 +30,8 @@ public class DecoratedBox : Widget
     _material.uniforms["u_model"].value = model;
     _material.uniforms["u_view"].value = Window.View;
     _material.uniforms["u_projection"].value = Window.Projection;
-    _material.uniforms["u_color"].value = (Vector4)color;
+    // _material.uniforms["u_color"].value = (Vector4)color;
+    _material.uniforms["u_resolution"].value = Window.Resolution;
     Graphics.DrawMesh(_mesh, _material);
   }
 
