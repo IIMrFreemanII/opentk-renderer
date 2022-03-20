@@ -4,46 +4,82 @@ namespace open_tk_renderer.Assets;
 
 public static class TriangleMeshData
 {
-    public static readonly float[] vertices =
-    {
-        -0.5f, -0.5f, 0.0f, // Bottom-left vertex
-        0.5f, -0.5f, 0.0f, // Bottom-right vertex
-        0.0f, 0.5f, 0.0f // Top vertex
-    };
+  public static readonly float[] vertices =
+  {
+    -0.5f, -0.5f, 0.0f, // Bottom-left vertex
+    0.5f, -0.5f, 0.0f, // Bottom-right vertex
+    0.0f, 0.5f, 0.0f // Top vertex
+  };
 
-    public static readonly VertexAttrib[] vertexAttribs =
-    {
-        new("a_position", vertices, VertexAttribTypeCount.Three)
-    };
+  public static readonly VertexAttrib[] vertexAttribs =
+  {
+    new(
+      "a_position",
+      vertices,
+      VertexAttribTypeCount.Three
+    )
+  };
 }
 
 public static class QuadMeshData
 {
-    public static float[] GetQuadVertices(float w, float h, float x = 0, float y = 0)
+  public static float[] GetQuadVertices3D(
+    float w,
+    float h,
+    float x = 0,
+    float y = 0
+  )
+  {
+    return new[]
     {
-        return new[]
-        {
-            x, y, 0, // top-left
-            x, y + h, 0, // bottom-left
-            x + w, y + h, 0, // bottom-right
-            x, y, 0, // top-left
-            x + w, y + h, 0, // bottom-right
-            x + w, y, 0, // top-right
-        };
-    }
-
-    public static readonly float[] vertices =
-    {
-        -0.5f, -0.5f, 0.0f, // Bottom-left vertex
-        0.5f, -0.5f, 0.0f, // Bottom-right vertex
-        0.5f, 0.5f, 0.0f, // Top-right vertex
-        -0.5f, -0.5f, 0.0f, // Bottom-left vertex
-        0.5f, 0.5f, 0.0f, // Top-right vertex
-        -0.5f, 0.5f, 0.0f // Top-left vertex
+      x, y, 0, // top-left
+      x, y + h, 0, // bottom-left
+      x + w, y + h, 0, // bottom-right
+      x, y, 0, // top-left
+      x + w, y + h, 0, // bottom-right
+      x + w, y, 0 // top-right
     };
+  }
 
-    public static readonly VertexAttrib[] vertexAttribs =
+  public static float[] GetQuadVertices2D(
+    float w,
+    float h,
+    float x = 0,
+    float y = 0
+  )
+  {
+    return new[]
     {
-        new("a_position", GetQuadVertices(1, 1), VertexAttribTypeCount.Three)
+      x, y, // top-left
+      x, y + h, // bottom-left
+      x + w, y + h, // bottom-right
+      x, y, // top-left
+      x + w, y + h, // bottom-right
+      x + w, y // top-right
     };
+  }
+
+  public static readonly float[] vertices =
+  {
+    -0.5f, -0.5f, 0.0f, // Bottom-left vertex
+    0.5f, -0.5f, 0.0f, // Bottom-right vertex
+    0.5f, 0.5f, 0.0f, // Top-right vertex
+    -0.5f, -0.5f, 0.0f, // Bottom-left vertex
+    0.5f, 0.5f, 0.0f, // Top-right vertex
+    -0.5f, 0.5f, 0.0f // Top-left vertex
+  };
+
+  public static readonly VertexAttrib[] vertexAttribs =
+  {
+    new(
+      "a_position",
+      GetQuadVertices3D(1, 1),
+      VertexAttribTypeCount.Three
+    ),
+    new(
+      "a_texcoord",
+      GetQuadVertices2D(1, 1),
+      VertexAttribTypeCount.Two
+    )
+  };
 }

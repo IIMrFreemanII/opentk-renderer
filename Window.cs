@@ -17,6 +17,7 @@ public class Window : GameWindow
   public static Matrix4 Projection = Matrix4.Identity;
   public static Matrix4 View = Matrix4.Identity;
   public static Vector2 Resolution = new(0);
+  public static double Time = 0;
 
   public static Material DefaultMaterial;
   public static Mesh QuadMesh;
@@ -40,6 +41,8 @@ public class Window : GameWindow
   protected override void OnLoad()
   {
     base.OnLoad();
+
+    ShadersController.ErrorShader = Shader.FromFile("Assets/error.glsl");
 
     QuadMesh = new Mesh(QuadMeshData.vertexAttribs);
     var defaultShader = Shader.FromFile("Assets/default.glsl");
@@ -117,7 +120,7 @@ public class Window : GameWindow
 
   private void SizeAndPositionWidget(Widget widget)
   {
-    widget.size = Size;
+    // widget.size = Size;
     widget.CalcSize(BoxConstraints.Loose(Size));
     widget.CalcPosition();
   }
@@ -131,6 +134,8 @@ public class Window : GameWindow
   protected override void OnRenderFrame(FrameEventArgs args)
   {
     base.OnRenderFrame(args);
+    Time += args.Time;
+
     Render();
     // if (_shouldRenderUi)
     // {
@@ -145,7 +150,8 @@ public class Window : GameWindow
 
     root = new Container(
       // margin: EdgeInsets.All(10),
-      Color4.Black
+      Color4.Black,
+      new Vector2(300, 100)
       // child: new Row(
       //   MainAxisAlignment.Start,
       //   CrossAxisAlignment.Stretch,

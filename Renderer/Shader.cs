@@ -48,18 +48,31 @@ public class Shader : IDisposable
 
   public void Compile()
   {
-    var fileContent = File.ReadAllText(FilePath);
-    var shaders = Preprocess(fileContent);
+    try
+    {
+      var fileContent = File.ReadAllText(FilePath);
+      var shaders = Preprocess(fileContent);
 
-    var vertexSrc = shaders[0].content;
-    var fragmentSrc = shaders[1].content;
+      var vertexSrc = shaders[0].content;
+      var fragmentSrc = shaders[1].content;
 
-    var vertexShader = CompileShader(ShaderType.VertexShader, vertexSrc);
-    var fragmentShader = CompileShader(ShaderType.FragmentShader, fragmentSrc);
+      var vertexShader = CompileShader(ShaderType.VertexShader, vertexSrc);
+      var fragmentShader = CompileShader(ShaderType.FragmentShader, fragmentSrc);
 
-    Id = CreateProgram(vertexShader, fragmentShader);
+      Id = CreateProgram(vertexShader, fragmentShader);
+    }
+    catch (Exception e)
+    {
+      if (ShadersController.ErrorShader is { } shader)
+      {
+        Id = shader.Id;
+        Console.WriteLine("Using error shader!");
+      }
+
+      Console.WriteLine(e);
+    }
+
     UniformInfos = ExtractUniformInfos();
-
     Recompile?.Invoke();
   }
 

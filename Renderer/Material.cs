@@ -127,4 +127,39 @@ public class Material
   {
     foreach (var uniform in uniforms) uniform.Value.SetUniform();
   }
+
+  public void SetFloat(string name, float value)
+  {
+    if (uniforms.TryGetValue(name, out var uniform)) uniform.value = value;
+  }
+
+  public void SetInt(string name, int value)
+  {
+    if (uniforms.TryGetValue(name, out var uniform)) uniform.value = value;
+  }
+
+  public void SetVector(string name, Vector2 value)
+  {
+    if (uniforms.TryGetValue(name, out var uniform)) uniform.value = value;
+  }
+
+  public void SetVector(string name, Vector3 value)
+  {
+    if (uniforms.TryGetValue(name, out var uniform)) uniform.value = value;
+  }
+
+  public void SetVector(string name, Vector4 value)
+  {
+    if (uniforms.TryGetValue(name, out var uniform)) uniform.value = value;
+  }
+
+  public void SetMatrix(string name, Matrix3 value)
+  {
+    if (uniforms.TryGetValue(name, out var uniform)) uniform.value = value;
+  }
+
+  public void SetMatrix(string name, Matrix4 value)
+  {
+    if (uniforms.TryGetValue(name, out var uniform)) uniform.value = value;
+  }
 }

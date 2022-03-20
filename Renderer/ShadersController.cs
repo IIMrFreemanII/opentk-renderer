@@ -3,6 +3,7 @@ namespace open_tk_renderer.Renderer;
 public static class ShadersController
 {
   public static List<Shader> Shaders = new();
+  public static Shader? ErrorShader;
 
   public static void Add(Shader shader)
   {

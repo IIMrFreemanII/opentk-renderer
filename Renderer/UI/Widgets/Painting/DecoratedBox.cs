@@ -27,29 +27,37 @@ public class DecoratedBox : Widget
   public override void Render()
   {
     UpdateModel();
-    _material.uniforms["u_model"].value = model;
-    _material.uniforms["u_view"].value = Window.View;
-    _material.uniforms["u_projection"].value = Window.Projection;
-    // _material.uniforms["u_color"].value = (Vector4)color;
-    _material.uniforms["u_resolution"].value = Window.Resolution;
+    _material.SetMatrix("u_model", model);
+    _material.SetMatrix("u_view", Window.View);
+    _material.SetMatrix("u_projection", Window.Projection);
+
+    _material.SetVector("u_color", (Vector4)color);
+    _material.SetVector("u_resolution", Window.Resolution);
+    _material.SetFloat("u_time", (float)Window.Time);
+
     Graphics.DrawMesh(_mesh, _material);
   }
 
   private void UpdateModel()
   {
     model =
-      Matrix4.CreateScale(size.X, size.Y, 1) *
-      Matrix4.CreateTranslation(position.X, position.Y, 0);
+      Matrix4.CreateScale(
+        size.X,
+        size.Y,
+        1
+      ) *
+      Matrix4.CreateTranslation(
+        position.X,
+        position.Y,
+        0
+      );
   }
 
   public override void CalcSize(BoxConstraints constraints)
   {
     size = constraints.Biggest;
 
-    foreach (var child in children)
-    {
-      child.CalcSize(constraints);
-    }
+    foreach (var child in children) child.CalcSize(constraints);
   }
 
   public override void CalcPosition()
