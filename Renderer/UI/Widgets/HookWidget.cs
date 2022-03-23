@@ -1,61 +1,58 @@
 namespace open_tk_renderer.Renderer.UI.Widgets;
 
-public class UseStateArgs
+public class UseStateArgs<T>
 {
-    public object value;
-    public readonly Action<object> setter;
+  public T value;
+  public readonly Action<T> setter;
 
-    public UseStateArgs(object value, Action<object> setter)
+  public UseStateArgs(T value, Action<T> setter)
+  {
+    this.value = value;
+
+    this.setter = (arg) =>
     {
-        this.value = value;
+      Task.Delay(0)
+          .ContinueWith(
+            task =>
+            {
+              Console.WriteLine(arg);
+              SetValue(arg);
+              setter(arg);
+            }
+          );
+    };
+  }
 
-        this.setter = (arg) =>
-        {
-            Task.Delay(0)
-                .ContinueWith(
-                    task =>
-                    {
-                        SetValue(arg);
-                        setter(arg);
-                    }
-                );
-        };
-    }
-
-    private void SetValue(object value)
-    {
-        this.value = value;
-    }
+  private void SetValue(T value)
+  {
+    this.value = value;
+  }
 }
 
 public class HookWidget : Widget
 {
-    private readonly List<UseStateArgs> _useStateHooks = new();
-    private int _counter;
+  private readonly List<object> _useStateHooks = new();
+  private int _counter;
 
-    protected (T value, Action<T> setter) UseState<T>(T initialValue)
+  protected (T value, Action<T> setter) UseState<T>(T initialValue)
+  {
+    if (mounted)
     {
-        if (mounted)
-        {
-            var hookArgs = _useStateHooks[_counter++ % _useStateHooks.Count];
-            var value = (T)hookArgs.value;
-            Action<T> setter = (arg) => hookArgs.setter(arg);
-            return (value, setter);
-        }
-
-        var result = new UseStateArgs(
-            initialValue,
-            (value) =>
-            {
-                var child = Build();
-                OnRebuild(child);
-            }
-        );
-        _useStateHooks.Add(result);
-
-        var value1 = (T)result.value;
-        Action<T> setter1 = (arg) => result.setter(arg);
-
-        return (value1, setter1);
+      UseStateArgs<T> hookArgs =
+        _useStateHooks[_counter++ % _useStateHooks.Count] as UseStateArgs<T>;
+      return (hookArgs.value, hookArgs.setter);
     }
+
+    var result = new UseStateArgs<T>(
+      initialValue,
+      (value) =>
+      {
+        var child = Build();
+        OnRebuild(child);
+      }
+    );
+    _useStateHooks.Add(result);
+
+    return (result.value, result.setter);
+  }
 }

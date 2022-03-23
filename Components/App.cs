@@ -9,27 +9,21 @@ public class App : HookWidget
 {
   public override Widget Build()
   {
-    // var (count, setCount) = UseState(1);
+    var (count, setCount) = UseState(1);
     // // var (count1, setCount1) = UseState(10);
-    // Task.Delay(1000)
-    //     .ContinueWith(
-    //       task =>
-    //       {
-    //         // Console.WriteLine("Delay");
-    //         setCount(count + 10);
-    //         // setCount1(count1 + 1);
-    //       }
-    //     );
+    Task.Delay(1000)
+        .ContinueWith(
+          task =>
+          {
+            // Console.WriteLine("Delay");
+            setCount(count + 10);
+            // setCount1(count1 + 1);
+          }
+        );
     //
     // Console.WriteLine($"state1 {count}");
     // // Console.WriteLine($"state2 {count1}");
-    return new Flex(
-      children: new List<Widget>
-      {
-        new Boxes(),
-        new Boxes()
-      }
-    );
+    return this;
 
     // return new Column(new ()
     // {
