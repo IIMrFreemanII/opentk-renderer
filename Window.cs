@@ -151,8 +151,8 @@ public class Window : GameWindow
 
     root = new Container(
       // margin: EdgeInsets.All(10),
-      Color4.Black,
-      new Vector2(300, 100)
+      Color4.Black
+      // new Vector2(300, 100)
       // child: new Row(
       //   MainAxisAlignment.Start,
       //   CrossAxisAlignment.Stretch,
@@ -192,6 +192,14 @@ public class Window : GameWindow
   protected override void OnUpdateFrame(FrameEventArgs args)
   {
     base.OnUpdateFrame(args);
+
+    // var topRightRadius = 0.5f;
+    // var topRightPos = new Vector2(1) - new Vector2(topRightRadius);
+    // var uv = new Vector2(1, 1);
+    // var distance = (uv - topRightPos).Length;
+    // Console.WriteLine(distance - topRightRadius);
+
+    // Thread.Sleep(1000);
 
     ShadersController.HandleRecompile();
 

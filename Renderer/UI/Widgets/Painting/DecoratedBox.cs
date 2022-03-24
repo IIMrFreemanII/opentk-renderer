@@ -34,6 +34,7 @@ public class DecoratedBox : Widget
     _material.SetVector("u_color", (Vector4)color);
     _material.SetVector("u_resolution", Window.Resolution);
     _material.SetFloat("u_time", (float)Window.Time);
+    _material.SetVector("u_size", size);
 
     Graphics.DrawMesh(_mesh, _material);
   }

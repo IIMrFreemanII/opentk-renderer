@@ -24,6 +24,7 @@ out vec4 FragColor;
 
 uniform vec4 u_color;
 uniform vec2 u_resolution;
+uniform vec2 u_size;
 uniform float u_time;
 
 float remap(
@@ -45,23 +46,21 @@ void main()
 {
     // vec2 fragCoord = gl_FragCoord.xy;
     // aspect ratio x/y 
-    float aspect = u_resolution.x / u_resolution.y;   
+    float aspect = u_size.x / u_size.y;
     // aspect ratio (x/y,1)
     vec2 ratio = vec2(aspect, 1.0);
-    // 0.0 .. 1.0
-    // vec2 uv = fragCoord / u_resolution;               
+    // 0.0 .. 1.0               
     vec2 uv = v_textcoord;               
     // -1.0 .. 1.0
     uv = (2.0 * uv - 1.0) * ratio;
     
-    float temp = remap(sin(u_time), minusOneToOne, zeroToOne);
-                     
-    float size = 0;
-    float radius = 0 + temp;
-    // float thickness = 0.9;
-    float distance = length(max(abs(uv), radius) - radius);
-    vec3 color = vec3(step(1 - radius + 0.0001, distance));
-    // color += 1 - step(1 - thickness, distance);
+    // float temp = remap(sin(u_time), minusOneToOne, zeroToOne);
+    vec4 cornerRadii = vec4(0.3, 0.09, 0.02, 0.0);
+    
+    float radius = 1 * (ratio.x > 1 ? ratio.y : ratio.x);
+    vec2 size = vec2(1) * ratio;
+    float distance = length(max(abs(uv) - size + vec2(radius), 0)) - radius;
+    vec3 color = vec3(step(distance, 0));
     
     FragColor = vec4(color, 1);
 }
