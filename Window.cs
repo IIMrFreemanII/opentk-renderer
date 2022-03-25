@@ -83,8 +83,6 @@ public class Window : GameWindow
     //     )
     //   )
     // );
-
-    Interval.Set(ShadersController.HandleRecompile, 750);
   }
 
   private void RunUi(Widget widget)
@@ -136,7 +134,6 @@ public class Window : GameWindow
   protected override void OnRenderFrame(FrameEventArgs args)
   {
     base.OnRenderFrame(args);
-    Time += args.Time;
 
     Render();
     // if (_shouldRenderUi)
@@ -193,9 +190,20 @@ public class Window : GameWindow
     SwapBuffers();
   }
 
+  private double _time = 0;
+  private double delay = 0.5;
   protected override void OnUpdateFrame(FrameEventArgs args)
   {
     base.OnUpdateFrame(args);
+    Time += args.Time;
+    
+    _time += args.Time;
+    // Todo: implement sync timer for handling in the main thread
+    if (_time > delay)
+    {
+      _time = 0;
+      ShadersController.HandleRecompile();
+    }
 
     if (!IsFocused) // Check to see if the window is focused
       return;

@@ -65,7 +65,7 @@ void main()
     // bottom-left = vec2(1, 0)
     vec2 side = step(uv, vec2(0.0));
     // corner radii, starting top left clockwise, (lt, rt, rb, lb)
-    vec4 cornerRadii = vec4(0.2, 0.4, 0.6, 0.8);
+    vec4 cornerRadii = vec4(0.5);
     // select the radius according to the quadrant the point is in
     float radius = mix(
         mix(cornerRadii.z, cornerRadii.y, side.y),
@@ -78,8 +78,8 @@ void main()
     vec4 bgColor = vec4(0, 0, 0, 1);
     vec4 borderColor = vec4(1, 1, 1, 1);
     vec2 size = vec2(1) * ratio;
-    float borderSize = 0.1;
     float smoothness = 0.001;
+    float borderSize = 0.1;
     // to match aspect ratio
     borderSize *= (ratio.x > 1 ? ratio.y : ratio.x);
     float distance = length(max(abs(uv) - size + vec2(radius), 0)) - radius;
