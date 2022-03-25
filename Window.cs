@@ -49,8 +49,6 @@ public class Window : GameWindow
     var defaultShader = Shader.FromFile("Assets/default.glsl");
     DefaultMaterial = new Material(defaultShader);
 
-    GL.ClearColor(Colors.DefaultBgColor);
-
     // ui
     // RunUi(new App());
     // RunUi(
@@ -147,11 +145,14 @@ public class Window : GameWindow
 
   private void Render()
   {
+    GL.ClearColor(Colors.DefaultBgColor);
+    GL.Enable(EnableCap.Blend);
+    GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
     GL.Clear(ClearBufferMask.ColorBufferBit);
 
     root = new Container(
       // margin: EdgeInsets.All(10),
-      Color4.Black
+      Colors.Blue
       // new Vector2(300, 100)
       // child: new Row(
       //   MainAxisAlignment.Start,
@@ -192,14 +193,6 @@ public class Window : GameWindow
   protected override void OnUpdateFrame(FrameEventArgs args)
   {
     base.OnUpdateFrame(args);
-
-    // var topRightRadius = 0.5f;
-    // var topRightPos = new Vector2(1) - new Vector2(topRightRadius);
-    // var uv = new Vector2(1, 1);
-    // var distance = (uv - topRightPos).Length;
-    // Console.WriteLine(distance - topRightRadius);
-
-    // Thread.Sleep(1000);
 
     ShadersController.HandleRecompile();
 

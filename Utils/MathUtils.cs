@@ -14,6 +14,15 @@ public class MathUtils
   /// <param name="y"></param>
   /// <param name="a"></param>
   /// <returns></returns>
+  public double Mix(
+    double x,
+    double y,
+    double a
+  )
+  {
+    return x * (1 - a) + y * a;
+  }
+  
   public float Mix(
     float x,
     float y,
@@ -28,6 +37,41 @@ public class MathUtils
     return x < edge
       ? 0
       : 1;
+  }
+  
+  public double Step(double edge, double x)
+  {
+    return x < edge
+      ? 0
+      : 1;
+  }
+  
+  public float SmoothStep(
+    float edge0,
+    float edge1,
+    float x
+  )
+  {
+    float t = Math.Clamp(
+      (x - edge0) / (edge1 - edge0),
+      0,
+      1
+    );
+    return t * t * (3 - 2 * t);
+  }
+
+  public double SmoothStep(
+    double edge0,
+    double edge1,
+    double x
+  )
+  {
+    double t = Math.Clamp(
+      (x - edge0) / (edge1 - edge0),
+      0,
+      1
+    );
+    return t * t * (3 - 2 * t);
   }
 
   public static float Remap(
