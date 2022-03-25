@@ -5,6 +5,7 @@ using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
 using open_tk_renderer.Renderer.UI.Widgets.Layout;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
+using open_tk_renderer.Utils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -82,6 +83,8 @@ public class Window : GameWindow
     //     )
     //   )
     // );
+
+    Interval.Set(ShadersController.HandleRecompile, 750);
   }
 
   private void RunUi(Widget widget)
@@ -193,8 +196,6 @@ public class Window : GameWindow
   protected override void OnUpdateFrame(FrameEventArgs args)
   {
     base.OnUpdateFrame(args);
-
-    ShadersController.HandleRecompile();
 
     if (!IsFocused) // Check to see if the window is focused
       return;
