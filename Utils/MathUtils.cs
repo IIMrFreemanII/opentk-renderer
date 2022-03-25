@@ -22,7 +22,7 @@ public class MathUtils
   {
     return x * (1 - a) + y * a;
   }
-  
+
   public float Mix(
     float x,
     float y,
@@ -38,14 +38,14 @@ public class MathUtils
       ? 0
       : 1;
   }
-  
+
   public double Step(double edge, double x)
   {
     return x < edge
       ? 0
       : 1;
   }
-  
+
   public float SmoothStep(
     float edge0,
     float edge1,
@@ -96,5 +96,23 @@ public class MathUtils
            (value - inMinMax.X) *
            (outMinMax.Y - outMinMax.X) /
            (inMinMax.Y - inMinMax.X);
+  }
+
+  public static float Normalize(
+    float value,
+    float min,
+    float max
+  )
+  {
+    return (value - min) / (max - min);
+  }
+
+  public static float Lerp(
+    float norm,
+    float min,
+    float max
+  )
+  {
+    return (max - min) * norm + min;
   }
 }
