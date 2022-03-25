@@ -2,6 +2,7 @@ using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
 using open_tk_renderer.Renderer.UI.Widgets.Layout;
 using OpenTK.Mathematics;
+using Timeout = open_tk_renderer.Utils.Timeout;
 
 namespace open_tk_renderer.Components;
 
@@ -11,15 +12,7 @@ public class App : HookWidget
   {
     var (count, setCount) = UseState(1);
     // // var (count1, setCount1) = UseState(10);
-    Task.Delay(1000)
-        .ContinueWith(
-          task =>
-          {
-            // Console.WriteLine("Delay");
-            setCount(count + 10);
-            // setCount1(count1 + 1);
-          }
-        );
+    Timeout.Set(() => setCount(count + 10), 1000);
     //
     // Console.WriteLine($"state1 {count}");
     // // Console.WriteLine($"state2 {count1}");

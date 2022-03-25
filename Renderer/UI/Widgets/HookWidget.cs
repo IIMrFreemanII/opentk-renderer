@@ -1,3 +1,5 @@
+using Timeout = open_tk_renderer.Utils.Timeout;
+
 namespace open_tk_renderer.Renderer.UI.Widgets;
 
 public class UseStateArgs<T>
@@ -11,15 +13,15 @@ public class UseStateArgs<T>
 
     this.setter = (arg) =>
     {
-      Task.Delay(0)
-          .ContinueWith(
-            task =>
-            {
-              Console.WriteLine(arg);
-              SetValue(arg);
-              setter(arg);
-            }
-          );
+      Timeout.Set(
+        () =>
+        {
+          Console.WriteLine(arg);
+          SetValue(arg);
+          setter(arg);
+        },
+        0
+      );
     };
   }
 

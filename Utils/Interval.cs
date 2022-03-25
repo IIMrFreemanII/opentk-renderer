@@ -6,11 +6,11 @@ public static class Interval
   {
     void InnerFunc()
     {
+      callback();
       Task.Delay(ms)
           .ContinueWith(
             (task) =>
             {
-              callback();
               InnerFunc();
             }
           );
