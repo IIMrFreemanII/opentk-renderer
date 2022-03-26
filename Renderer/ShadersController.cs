@@ -1,3 +1,6 @@
+using System.Collections;
+using open_tk_renderer.Utils.Coroutines;
+
 namespace open_tk_renderer.Renderer;
 
 public static class ShadersController
@@ -15,17 +18,22 @@ public static class ShadersController
     Shaders.Remove(shader);
   }
 
-  public static void HandleRecompile()
+  public static IEnumerator HandleRecompile(int delay)
   {
-    foreach (var shader in Shaders)
+    while (true)
     {
-      var lastWriteTime = File.GetLastWriteTime(shader.FilePath);
-      if (shader.lastWriteTime != lastWriteTime)
+      foreach (var shader in Shaders)
       {
-        Console.WriteLine($"Recompile {shader.Name}");
-        shader.lastWriteTime = lastWriteTime;
-        shader.Compile();
+        var lastWriteTime = File.GetLastWriteTime(shader.FilePath);
+        if (shader.lastWriteTime != lastWriteTime)
+        {
+          Console.WriteLine($"Recompile {shader.Name}");
+          shader.lastWriteTime = lastWriteTime;
+          shader.Compile();
+        }
       }
+
+      yield return Wait.FromMs(delay);
     }
   }
 }

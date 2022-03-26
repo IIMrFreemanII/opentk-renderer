@@ -4,12 +4,6 @@ public static class Timeout
 {
   public static void Set(Action callback, int ms)
   {
-    Task.Delay(ms)
-        .ContinueWith(
-          (task) =>
-          {
-            callback();
-          }
-        );
+    Task.Delay(ms).ContinueWith((task) => EventLoop.AddTask(callback));
   }
 }

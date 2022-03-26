@@ -6,14 +6,8 @@ public static class Interval
   {
     void InnerFunc()
     {
-      callback();
-      Task.Delay(ms)
-          .ContinueWith(
-            (task) =>
-            {
-              InnerFunc();
-            }
-          );
+      EventLoop.AddTask(callback);
+      Task.Delay(ms).ContinueWith((task) => InnerFunc());
     }
 
     InnerFunc();

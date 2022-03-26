@@ -1,5 +1,4 @@
 using open_tk_renderer.Assets;
-using open_tk_renderer.Components;
 using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
@@ -83,6 +82,7 @@ public class Window : GameWindow
     //     )
     //   )
     // );
+    Coroutine.Start(ShadersController.HandleRecompile(500));
   }
 
   private void RunUi(Widget widget)
@@ -190,20 +190,13 @@ public class Window : GameWindow
     SwapBuffers();
   }
 
-  private double _time = 0;
-  private double delay = 0.5;
   protected override void OnUpdateFrame(FrameEventArgs args)
   {
     base.OnUpdateFrame(args);
     Time += args.Time;
-    
-    _time += args.Time;
-    // Todo: implement sync timer for handling in the main thread
-    if (_time > delay)
-    {
-      _time = 0;
-      ShadersController.HandleRecompile();
-    }
+
+    EventLoop.HandleTasks();
+    Coroutine.Handle();
 
     if (!IsFocused) // Check to see if the window is focused
       return;
