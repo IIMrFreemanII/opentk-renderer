@@ -18,6 +18,7 @@ public class Window : GameWindow
   public static Matrix4 Projection = Matrix4.Identity;
   public static Matrix4 View = Matrix4.Identity;
   public static Vector2 Resolution = new(0);
+  public static Vector2 WindowSize = new(0);
   public static double Time = 0;
 
   public static Material DefaultMaterial;
@@ -152,8 +153,8 @@ public class Window : GameWindow
 
     root = new Container(
       // margin: EdgeInsets.All(10),
-      Colors.Blue
-      // new Vector2(300, 100)
+      Color4.Black
+      // new Vector2(100, 100)
       // child: new Row(
       //   MainAxisAlignment.Start,
       //   CrossAxisAlignment.Stretch,
@@ -208,6 +209,7 @@ public class Window : GameWindow
   {
     base.OnResize(e);
     Resolution = ClientSize;
+    WindowSize = Size;
 
     // Projection = Matrix4.CreateOrthographic(e.Width, e.Height, -1, 1);
     // Projection = Matrix4.CreateOrthographicOffCenter(0, ClientSize.X, ClientSize.Y, 0, -1, 1);

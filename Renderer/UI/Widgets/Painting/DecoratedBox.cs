@@ -6,10 +6,14 @@ namespace open_tk_renderer.Renderer.UI.Widgets.Painting;
 public class DecoratedBox : Widget
 {
   public Color4 color;
+  public Color4 borderColor = Color4.White;
+  public float borderSize = 1;
+  public Vector4 borderRadius = new(0.1f);
 
   private readonly Material _material;
   private readonly Mesh _mesh;
-  private Matrix4 model = Matrix4.Identity;
+  private Matrix4 backModel = Matrix4.Identity;
+  private Matrix4 frontModel = Matrix4.Identity;
 
   public DecoratedBox(
     Color4? color = null,
@@ -26,22 +30,36 @@ public class DecoratedBox : Widget
 
   public override void Render()
   {
+    RenderRectBack();
+    // RenderRectFront();
+  }
+
+  private void RenderRectBack()
+  {
     UpdateModel();
-    _material.SetMatrix("u_model", model);
+    _material.SetMatrix("u_model", backModel);
     _material.SetMatrix("u_view", Window.View);
     _material.SetMatrix("u_projection", Window.Projection);
 
-    _material.SetVector("u_color", (Vector4)color);
+    _material.SetVector("u_color", (Vector4)borderColor);
+    _material.SetVector("u_border_radius", borderRadius);
+    _material.SetVector("u_size", size);
     _material.SetVector("u_resolution", Window.Resolution);
     _material.SetFloat("u_time", (float)Window.Time);
-    _material.SetVector("u_size", size);
 
+    Graphics.DrawMesh(_mesh, _material);
+  }
+
+  private void RenderRectFront()
+  {
+    _material.SetMatrix("u_model", frontModel);
+    _material.SetVector("u_color", (Vector4)color);
     Graphics.DrawMesh(_mesh, _material);
   }
 
   private void UpdateModel()
   {
-    model =
+    backModel =
       Matrix4.CreateScale(
         size.X,
         size.Y,
@@ -50,6 +68,18 @@ public class DecoratedBox : Widget
       Matrix4.CreateTranslation(
         position.X,
         position.Y,
+        0
+      );
+
+    frontModel =
+      Matrix4.CreateScale(
+        size.X - borderSize * 2,
+        size.Y - borderSize * 2,
+        1
+      ) *
+      Matrix4.CreateTranslation(
+        position.X + borderSize,
+        position.Y + borderSize,
         0
       );
   }

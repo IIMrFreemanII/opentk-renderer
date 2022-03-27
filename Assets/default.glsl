@@ -24,8 +24,11 @@ in vec2 v_textcoord;
 out vec4 FragColor;
 
 uniform vec4 u_color;
-uniform vec2 u_resolution;
+uniform vec4 u_border_radius;
 uniform vec2 u_size;
+
+uniform vec2 u_resolution;
+
 uniform float u_time;
 
 float remap(
@@ -39,6 +42,37 @@ float remap(
            (outMinMax.y - outMinMax.x) /
            (inMinMax.y - inMinMax.x);
   }
+  
+float normalize(float value, float min, float max) {
+    return (value - min) / (max - min);
+}
+
+float lerp(float norm, float min, float max) {
+    return (max - min) * norm + min;
+}
+
+float roundedQuad(vec2 uv, vec2 ratio, vec2 size, vec4 cornerRadii) {
+    // select quadrant the point is in
+    // top-left = vec2(1, 0)
+    // top-right = vec2(0, 0)
+    // bottom-right = vec2(0, 1)
+    // bottom-left = vec2(1, 0)
+    vec2 side = step(uv, vec2(0.0));
+    // select the radius according to the quadrant the point is in
+    float radius = mix(
+        mix(cornerRadii.z, cornerRadii.y, side.y),
+        mix(cornerRadii.w, cornerRadii.x, side.y),
+        side.x
+    );
+    
+    vec2 sizeFactor = size;
+    sizeFactor *= ratio;
+    float sizeFactorValue = (ratio.x > 1 ? sizeFactor.y : sizeFactor.x);
+    float radiusFactor = clamp(lerp(radius, 0, sizeFactorValue), 0, sizeFactorValue);
+    
+    float distance = length(max(abs(uv) - sizeFactor + vec2(radiusFactor), 0)) - radiusFactor;
+    return distance;
+}
 
 const vec2 minusOneToOne = vec2(-1, 1);
 const vec2 zeroToOne = vec2(0, 1);
@@ -58,35 +92,17 @@ void main()
     // 0.0 .. 1.0
     float time = remap(sin(u_time), minusOneToOne, zeroToOne);
     
-    // select quadrant the point is in
-    // top-left = vec2(1, 0)
-    // top-right = vec2(0, 0)
-    // bottom-right = vec2(0, 1)
-    // bottom-left = vec2(1, 0)
-    vec2 side = step(uv, vec2(0.0));
     // corner radii, starting top left clockwise, (lt, rt, rb, lb)
-    vec4 cornerRadii = vec4(0.5);
-    // select the radius according to the quadrant the point is in
-    float radius = mix(
-        mix(cornerRadii.z, cornerRadii.y, side.y),
-        mix(cornerRadii.w, cornerRadii.x, side.y),
-        side.x
-    );
-    // to match aspect ratio
-    radius *= (ratio.x > 1 ? ratio.y : ratio.x);
-    
-    vec4 bgColor = vec4(0, 0, 0, 1);
-    vec4 borderColor = vec4(1, 1, 1, 1);
-    vec2 size = vec2(1) * ratio;
-    float smoothness = 0.001;
-    float borderSize = 0.1;
-    // to match aspect ratio
-    borderSize *= (ratio.x > 1 ? ratio.y : ratio.x);
-    float distance = length(max(abs(uv) - size + vec2(radius), 0)) - radius;
-    vec4 color = vec4(smoothstep(distance, distance + smoothness, 0)) * borderColor;
-    float innerDistance = distance + borderSize;
-    color *= vec4(1 - smoothstep(innerDistance, innerDistance + smoothness, 0));
-    color += vec4(step(distance + borderSize, 0)) * bgColor;
+    vec4 cornerRadii = vec4(0);
+    vec4 bgColor = vec4(1, 1, 1, 1);
+    vec4 borderColor = vec4(0, 0, 0, 1);
+    float smoothness = 0.003;
+    vec2 quadSize = vec2(1);
+    float quadBorderSize = 0.1;
+    quadBorderSize *= (ratio.x > 1 ? ratio.y : ratio.x); // to match aspect ratio
+    float distance = roundedQuad(uv, ratio, quadSize, cornerRadii);
+    vec4 color = vec4(step(distance, 0));
+    //color *= vec4(1 - step(distance, 0));
     
     FragColor = color;
 }
