@@ -6,9 +6,9 @@ namespace open_tk_renderer.Renderer.UI.Widgets.Painting;
 public class DecoratedBox : Widget
 {
   public Color4 color;
-  public Color4 borderColor = Color4.White;
+  public Color4 borderColor = Colors.Blue;
   public float borderSize = 10;
-  public Vector4 borderRadius = new(5);
+  public Vector4 borderRadius = new(20);
 
   private readonly Material _material;
   private readonly Mesh _mesh;
@@ -41,7 +41,8 @@ public class DecoratedBox : Widget
     _material.SetMatrix("u_view", Window.View);
     _material.SetMatrix("u_projection", Window.Projection);
 
-    _material.SetVector("u_color", (Vector4)borderColor);
+    _material.SetVector("u_color", (Vector4)color);
+    _material.SetVector("u_border_color", (Vector4)borderColor);
     _material.SetVector("u_border_radius", borderRadius);
     _material.SetFloat("u_border_size", borderSize);
     _material.SetVector("u_size", size);

@@ -153,7 +153,7 @@ public class Window : GameWindow
 
     root = new Container(
       // margin: EdgeInsets.All(10),
-      Color4.Black
+      Colors.Red
       // child: new Row(
       //   MainAxisAlignment.Start,
       //   CrossAxisAlignment.Stretch,
