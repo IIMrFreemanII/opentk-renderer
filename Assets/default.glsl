@@ -48,6 +48,10 @@ float normalize(float value, float min, float max) {
     return (value - min) / (max - min);
 }
 
+vec4 normalize(vec4 value, float min, float max) {
+    return (value - min) / (max - min);
+}
+
 float lerp(float norm, float min, float max) {
     return (max - min) * norm + min;
 }
@@ -95,13 +99,14 @@ void main()
     float time = remap(sin(u_time), minusOneToOne, zeroToOne);
     
     // corner radii, starting top left clockwise, (lt, rt, rb, lb)
-    vec4 cornerRadii = vec4(0);
+    vec4 cornerRadii = normalize(u_border_radius, 0, u_size.x / 8);
+    cornerRadii *= (ratio.x > 1 ? ratio.x : ratio.y);
     vec4 bgColor = vec4(1, 1, 1, 1);
     vec4 borderColor = vec4(0, 0, 0, 1);
     float smoothness = 0.003;
     float quadSize = 1;
-    float quadBorderSize = normalize(u_border_size, 0, u_size.x);
-    quadBorderSize *= (ratio.x > 1 ? ratio.x : ratio.y);
+    float quadBorderSize = normalize(u_border_size, 0, u_size.x * 0.5);
+    quadBorderSize *= (ratio.x > 1 ? ratio.x : ratio.y); // to match border to element size
     quadBorderSize *= (ratio.x > 1 ? ratio.y : ratio.x); // to match aspect ratio
     
     float distance = roundedQuad(uv, ratio, quadSize, cornerRadii);
