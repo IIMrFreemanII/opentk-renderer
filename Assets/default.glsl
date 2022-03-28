@@ -111,8 +111,8 @@ void main()
     
     float distance = roundedQuad(uv, ratio, quadSize, cornerRadii);
     float innerDistance = roundedQuad(uv, ratio, quadSize - quadBorderSize, cornerRadii);
-    vec4 color = vec4(step(distance, 0));
-    color *= vec4(1 - step(innerDistance, 0));
+    vec4 color = vec4(smoothstep(distance, distance + smoothness, 0));
+    color *= vec4(1 - smoothstep(innerDistance, innerDistance + smoothness, 0));
     
     FragColor = color;
 }
