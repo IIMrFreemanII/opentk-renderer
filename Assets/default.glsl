@@ -56,7 +56,7 @@ float lerp(float norm, float min, float max) {
     return (max - min) * norm + min;
 }
 
-float roundedQuad(vec2 uv, vec2 ratio, float size, vec4 cornerRadii) {
+float roundedQuad(vec2 uv, vec2 ratio, vec2 size, vec4 cornerRadii) {
     size = 1 - size;
     // select quadrant the point is in
     // top-left = vec2(1, 0)
@@ -73,7 +73,7 @@ float roundedQuad(vec2 uv, vec2 ratio, float size, vec4 cornerRadii) {
     
     vec2 sizeFactor = vec2(1);
     sizeFactor *= ratio;
-    float sizeFactorValue = (ratio.x > 1 ? sizeFactor.y : sizeFactor.x) - size;
+    float sizeFactorValue = (ratio.x > 1 ? sizeFactor.y - size.y : sizeFactor.x - size.x);
     float radiusFactor = clamp(lerp(radius, 0, sizeFactorValue), 0, sizeFactorValue);
     
     float distance = length(max(abs(uv) - sizeFactor + vec2(radiusFactor + size), 0)) - radiusFactor;
@@ -104,7 +104,7 @@ void main()
     vec4 bgColor = vec4(1, 1, 1, 1);
     vec4 borderColor = vec4(0, 0, 0, 1);
     float smoothness = 0.003;
-    float quadSize = 1;
+    vec2 quadSize = vec2(1);
     float quadBorderSize = normalize(u_border_size, 0, u_size.x * 0.5);
     quadBorderSize *= (ratio.x > 1 ? ratio.x : ratio.y); // to match border to element size
     quadBorderSize *= (ratio.x > 1 ? ratio.y : ratio.x); // to match aspect ratio

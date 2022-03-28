@@ -8,7 +8,7 @@ public class DecoratedBox : Widget
   public Color4 color;
   public Color4 borderColor = Color4.White;
   public float borderSize = 10;
-  public Vector4 borderRadius = new(6);
+  public Vector4 borderRadius = new(5);
 
   private readonly Material _material;
   private readonly Mesh _mesh;
