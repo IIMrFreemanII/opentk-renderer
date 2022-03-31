@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace open_tk_renderer.Utils;
+namespace open_tk_renderer.Utils.Coroutines;
 
 public class Coroutine : IEnumerator
 {
@@ -45,9 +45,6 @@ public class Coroutine : IEnumerator
     foreach (var coroutine in _coroutines)
     {
       if (coroutine.Current is IEnumerator current && current.MoveNext())
-        continue;
-
-      if (coroutine.Current is Task { IsCompleted: false })
         continue;
 
       if (!coroutine.MoveNext()) _coroutinesToRemove.Add(coroutine._index);
