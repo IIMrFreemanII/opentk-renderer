@@ -24,9 +24,7 @@ in vec2 v_textcoord;
 out vec4 FragColor;
 
 uniform vec4 u_color;
-uniform vec4 u_border_color;
 uniform vec4 u_border_radius;
-uniform float u_border_size;
 uniform vec2 u_size;
 
 uniform vec2 u_resolution;
@@ -102,19 +100,11 @@ void main()
     // corner radii, starting top left clockwise, (lt, rt, rb, lb)
     vec4 cornerRadii = normalize(u_border_radius, 0, u_size.x / 8);
     cornerRadii *= (ratio.x > 1 ? ratio.x : ratio.y);
-    vec4 bgColor = u_color;
-    vec4 borderColor = u_border_color;
     float smoothness = 0.003;
     vec2 quadSize = vec2(1);
-    float quadBorderSize = normalize(u_border_size, 0, u_size.x * 0.5);
-    quadBorderSize *= (ratio.x > 1 ? ratio.x : ratio.y); // to match border to element size
-    quadBorderSize *= (ratio.x > 1 ? ratio.y : ratio.x); // to match aspect ratio
     
     float distance = roundedQuad(uv, ratio, quadSize, cornerRadii);
-    float innerDistance = roundedQuad(uv, ratio, quadSize - quadBorderSize, cornerRadii);
     vec4 color = vec4(smoothstep(distance, distance + smoothness, 0));
-    color *= vec4(1 - smoothstep(innerDistance, innerDistance + smoothness, 0)) * borderColor;
-    color += vec4(smoothstep(innerDistance, innerDistance + smoothness, 0)) * bgColor;
     
-    FragColor = color;
+    FragColor = color * u_color;
 }

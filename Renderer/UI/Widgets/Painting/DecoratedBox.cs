@@ -10,17 +10,18 @@ public class DecoratedBox : Widget
   public float borderSize = 10;
   public Vector4 borderRadius = new(20);
 
-  private readonly Material _material;
+  private readonly Material _roundedRect;
+  private readonly Material _roundedRectFrame;
   private readonly Mesh _mesh;
-  private Matrix4 backModel = Matrix4.Identity;
-  private Matrix4 frontModel = Matrix4.Identity;
+  private Matrix4 model = Matrix4.Identity;
 
   public DecoratedBox(
     Color4? color = null,
     Widget? child = null
   )
   {
-    _material = Window.DefaultMaterial;
+    _roundedRect = new Material(ShadersController.Get("rounded-rect.glsl"));
+    _roundedRectFrame = new Material(ShadersController.Get("rounded-rect-frame.glsl"));
     _mesh = Window.QuadMesh;
 
     this.color = color ?? Colors.DefaultBgColor;
@@ -30,38 +31,45 @@ public class DecoratedBox : Widget
 
   public override void Render()
   {
+    UpdateModel();
     RenderBack();
-    // RenderRectFront();
+    RenderRectFront();
   }
 
   private void RenderBack()
   {
-    UpdateModel();
-    _material.SetMatrix("u_model", backModel);
-    _material.SetMatrix("u_view", Window.View);
-    _material.SetMatrix("u_projection", Window.Projection);
+    _roundedRect.SetMatrix("u_model", model);
+    _roundedRect.SetMatrix("u_view", Window.View);
+    _roundedRect.SetMatrix("u_projection", Window.Projection);
 
-    _material.SetVector("u_color", (Vector4)color);
-    _material.SetVector("u_border_color", (Vector4)borderColor);
-    _material.SetVector("u_border_radius", borderRadius);
-    _material.SetFloat("u_border_size", borderSize);
-    _material.SetVector("u_size", size);
-    _material.SetVector("u_resolution", Window.Resolution);
-    _material.SetFloat("u_time", (float)Window.Time);
+    _roundedRect.SetVector("u_color", (Vector4)color);
+    _roundedRect.SetVector("u_border_radius", borderRadius);
+    _roundedRect.SetVector("u_size", size);
+    _roundedRect.SetVector("u_resolution", Window.Resolution);
+    _roundedRect.SetFloat("u_time", (float)Window.Time);
 
-    Graphics.DrawMesh(_mesh, _material);
+    Graphics.DrawMesh(_mesh, _roundedRect);
   }
 
   private void RenderRectFront()
   {
-    _material.SetMatrix("u_model", frontModel);
-    _material.SetVector("u_color", (Vector4)color);
-    Graphics.DrawMesh(_mesh, _material);
+    _roundedRectFrame.SetMatrix("u_model", model);
+    _roundedRectFrame.SetMatrix("u_view", Window.View);
+    _roundedRectFrame.SetMatrix("u_projection", Window.Projection);
+
+    _roundedRectFrame.SetVector("u_color", (Vector4)borderColor);
+    _roundedRectFrame.SetVector("u_border_radius", borderRadius);
+    _roundedRectFrame.SetVector("u_size", size);
+    _roundedRectFrame.SetFloat("u_border_size", borderSize);
+    _roundedRectFrame.SetVector("u_resolution", Window.Resolution);
+    _roundedRectFrame.SetFloat("u_time", (float)Window.Time);
+
+    Graphics.DrawMesh(_mesh, _roundedRectFrame);
   }
 
   private void UpdateModel()
   {
-    backModel =
+    model =
       Matrix4.CreateScale(
         size.X,
         size.Y,
@@ -70,18 +78,6 @@ public class DecoratedBox : Widget
       Matrix4.CreateTranslation(
         position.X,
         position.Y,
-        0
-      );
-
-    frontModel =
-      Matrix4.CreateScale(
-        size.X - borderSize * 2,
-        size.Y - borderSize * 2,
-        1
-      ) *
-      Matrix4.CreateTranslation(
-        position.X + borderSize,
-        position.Y + borderSize,
         0
       );
   }

@@ -42,8 +42,6 @@ public class Shader : IDisposable
     Name = fileName;
 
     Compile();
-
-    ShadersController.Add(this);
   }
 
   public void Compile()

@@ -22,7 +22,7 @@ public class Window : GameWindow
   public static Vector2 WindowSize = new(0);
   public static double Time = 0;
 
-  public static Material DefaultMaterial;
+  // public static Material DefaultMaterial;
   public static Mesh QuadMesh;
   private HookWidget hookWidget;
 
@@ -48,8 +48,8 @@ public class Window : GameWindow
     ShadersController.ErrorShader = Shader.FromFile("Assets/error.glsl");
 
     QuadMesh = new Mesh(QuadMeshData.vertexAttribs);
-    var defaultShader = Shader.FromFile("Assets/default.glsl");
-    DefaultMaterial = new Material(defaultShader);
+    ShadersController.FromFile("Assets/rounded-rect.glsl");
+    ShadersController.FromFile("Assets/rounded-rect-frame.glsl");
 
     // ui
     // RunUi(new App());

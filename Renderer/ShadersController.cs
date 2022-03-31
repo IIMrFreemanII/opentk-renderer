@@ -8,9 +8,21 @@ public static class ShadersController
   public static List<Shader> Shaders = new();
   public static Shader? ErrorShader;
 
+  public static Shader FromFile(string filePath)
+  {
+    var shader = Shader.FromFile(filePath);
+    Add(shader);
+    return shader;
+  }
+
   public static void Add(Shader shader)
   {
     Shaders.Add(shader);
+  }
+
+  public static Shader? Get(string name)
+  {
+    return Shaders.Find((shader) => shader.Name == name);
   }
 
   public static void Remove(Shader shader)
