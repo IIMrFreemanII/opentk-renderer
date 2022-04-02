@@ -22,7 +22,6 @@ public class Window : GameWindow
   public static Vector2 WindowSize = new(0);
   public static double Time = 0;
 
-  // public static Material DefaultMaterial;
   public static Mesh QuadMesh;
   private HookWidget hookWidget;
 
@@ -45,11 +44,11 @@ public class Window : GameWindow
   {
     base.OnLoad();
     QuadMesh = new Mesh(QuadMeshData.vertexAttribs);
-    
+
     ShadersController.ErrorShader = Shader.FromFile("Assets/error.glsl");
     var roundedRectShader = ShadersController.FromFile("Assets/rounded-rect.glsl");
     var roundedRectFrameShader = ShadersController.FromFile("Assets/rounded-rect-frame.glsl");
-    
+
     MaterialsController.Create("roundedRect", roundedRectShader);
     MaterialsController.Create("roundedRectFrame", roundedRectFrameShader);
 
@@ -155,36 +154,43 @@ public class Window : GameWindow
     GL.Clear(ClearBufferMask.ColorBufferBit);
 
     root = new Container(
-      // margin: EdgeInsets.All(10),
-      Colors.Red
-      // child: new Row(
-      //   MainAxisAlignment.Start,
-      //   CrossAxisAlignment.Stretch,
-      //   TextDirection.Ltr,
-      //   new List<Widget>
-      //   {
-      //     new Expanded(
-      //       child: new Container(
-      //         margin: EdgeInsets.Symmetric(horizontal: 10),
-      //         color: Colors.Red,
-      //         size: new Vector2(100),
-      //         child: new Container(Color4.Aqua, new Vector2(30))
-      //       )
-      //     ),
-      //     new Container(
-      //       margin: EdgeInsets.All(10),
-      //       color: Colors.Green,
-      //       size: new Vector2(100),
-      //       child: new Container(Color4.Aqua, new Vector2(30))
-      //     ),
-      //     new Container(
-      //       margin: EdgeInsets.All(10),
-      //       color: Colors.Blue,
-      //       size: new Vector2(100),
-      //       child: new Container(Color4.Aqua, new Vector2(30))
-      //     )
-      //   }
-      // )
+      margin: EdgeInsets.All(10),
+      padding: EdgeInsets.All(10),
+      decoration: new BoxDecoration(
+        Colors.Red,
+        Border.All(Color4.Black, 10)
+        // BorderRadius.All(10)
+      ),
+      child: new Row(
+        MainAxisAlignment.Start,
+        CrossAxisAlignment.Stretch,
+        TextDirection.Ltr,
+        new List<Widget>
+        {
+          new Expanded(
+            child: new Container(
+              // margin: EdgeInsets.Symmetric(horizontal: 10),
+              new BoxDecoration(
+                Color4.Aquamarine
+              ),
+              new Vector2(100),
+              new Container(size: new Vector2(30))
+            )
+          ),
+          new Container(
+            // margin: EdgeInsets.All(10),
+            new BoxDecoration(Colors.Green),
+            new Vector2(100),
+            new Container(size: new Vector2(30))
+          ),
+          new Container(
+            // margin: EdgeInsets.All(10),
+            new BoxDecoration(Colors.Blue),
+            new Vector2(100),
+            new Container(size: new Vector2(30))
+          )
+        }
+      )
     );
     LayoutWidget(root);
     SizeAndPositionWidget(root);

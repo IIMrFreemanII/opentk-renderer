@@ -26,9 +26,9 @@ public class Boxes : HookWidget
     return new Flex(
       children: new List<Widget>
       {
-        new Container(Color4.Red, new Vector2(100 + count, 100)),
-        new Container(Color4.Green, new Vector2(100 + count, 100)),
-        new Container(Color4.Blue, new Vector2(100 + count, 100))
+        // new Container(Color4.Red, new Vector2(100 + count, 100)),
+        // new Container(Color4.Green, new Vector2(100 + count, 100)),
+        // new Container(Color4.Blue, new Vector2(100 + count, 100))
       }
     );
   }

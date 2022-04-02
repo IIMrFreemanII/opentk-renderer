@@ -11,9 +11,10 @@ public class Container : Widget
   public EdgeInsets margin;
   public Alignment? alignment;
   public BoxConstraints? constraints;
+  public BoxDecoration decoration;
 
   public Container(
-    Color4? color = null,
+    BoxDecoration? decoration = null,
     Vector2? size = null,
     Widget? child = null,
     EdgeInsets? margin = null,
@@ -23,7 +24,7 @@ public class Container : Widget
   )
   {
     this.size = size ?? Vector2.Zero;
-    this.color = color ?? Colors.DefaultBgColor;
+    this.decoration = decoration ?? new BoxDecoration();
 
     this.padding = padding;
     this.margin = margin ?? EdgeInsets.All(0);
@@ -34,7 +35,7 @@ public class Container : Widget
       new Padding(
         margin,
         new DecoratedBox(
-          color,
+          decoration,
           new Padding(
             padding,
             new Align(
@@ -54,11 +55,9 @@ public class Container : Widget
       : constraints.Constrain(margin.InflateSize(size));
 
     foreach (var child in children)
-    {
       child.CalcSize(
         this.constraints ?? BoxConstraints.Loose(size)
       );
-    }
   }
 
   public override void CalcPosition()

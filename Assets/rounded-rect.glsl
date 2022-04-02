@@ -57,26 +57,25 @@ float lerp(float norm, float min, float max) {
 
 float roundedQuad(vec2 uv, vec2 ratio, vec2 size, vec4 cornerRadii) {
     size = 1 - size;
-    // select quadrant the point is in
-    // top-left = vec2(1, 0)
-    // top-right = vec2(0, 0)
-    // bottom-right = vec2(0, 1)
-    // bottom-left = vec2(1, 0)
+    
     vec2 side = step(uv, vec2(0.0));
     // select the radius according to the quadrant the point is in
-    float radius = mix(
-        mix(cornerRadii.z, cornerRadii.y, side.y),
-        mix(cornerRadii.w, cornerRadii.x, side.y),
-        side.x
-    );
+    float radius = 0;
+    // top-left
+    if (side == vec2(1, 1)) radius = cornerRadii.x;
+    // top-right
+    if (side == vec2(0, 1)) radius = cornerRadii.y;
+    // bottom-right
+    if (side == vec2(0, 0)) radius = cornerRadii.z;
+    // bottom-left
+    if (side == vec2(1, 0)) radius = cornerRadii.w;
     
     vec2 sizeFactor = vec2(1);
     sizeFactor *= ratio;
     float sizeFactorValue = (ratio.x > 1 ? sizeFactor.y - size.y : sizeFactor.x - size.x);
     float radiusFactor = clamp(lerp(radius, 0, sizeFactorValue), 0, sizeFactorValue);
     
-    float distance = length(max(abs(uv) - sizeFactor + vec2(radiusFactor + size), 0)) - radiusFactor;
-    return distance;
+    return length(max(abs(uv) - sizeFactor + vec2(radiusFactor + size), 0)) - radiusFactor;
 }
 
 const vec2 minusOneToOne = vec2(-1, 1);
@@ -98,13 +97,12 @@ void main()
     float time = remap(sin(u_time), minusOneToOne, zeroToOne);
     
     // corner radii, starting top left clockwise, (lt, rt, rb, lb)
-    vec4 cornerRadii = normalize(u_border_radius, 0, u_size.x / 8);
-    cornerRadii *= (ratio.x > 1 ? ratio.x : ratio.y);
+    vec4 cornerRadii = normalize(u_border_radius, 0, 50);
     float smoothness = 0.003;
     vec2 quadSize = vec2(1);
     
     float distance = roundedQuad(uv, ratio, quadSize, cornerRadii);
-    vec4 color = vec4(smoothstep(distance, distance + smoothness, 0));
+    vec4 color = vec4(step(distance, 0));
     color *= u_color;
     
     FragColor = color;

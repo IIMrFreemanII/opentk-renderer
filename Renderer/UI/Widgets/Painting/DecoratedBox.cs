@@ -1,3 +1,4 @@
+using open_tk_renderer.Renderer.UI.Widgets.Layout;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using OpenTK.Mathematics;
 
@@ -5,19 +6,16 @@ namespace open_tk_renderer.Renderer.UI.Widgets.Painting;
 
 public class DecoratedBox : Widget
 {
-  public Color4 color;
-  public Color4 borderColor = Colors.Blue;
-  public float borderSize = 10;
-  public Vector4 borderRadius = new(20);
+  public BoxDecoration boxDecoration;
 
   private static Material? _roundedRect;
   private static Material? _roundedRectFrame;
   private static Mesh? _mesh;
-  
+
   private Matrix4 model = Matrix4.Identity;
 
   public DecoratedBox(
-    Color4? color = null,
+    BoxDecoration? boxDecoration = null,
     Widget? child = null
   )
   {
@@ -25,9 +23,15 @@ public class DecoratedBox : Widget
     _roundedRectFrame ??= MaterialsController.Get("roundedRectFrame");
     _mesh ??= Window.QuadMesh;
 
-    this.color = color ?? Colors.DefaultBgColor;
+    this.boxDecoration = boxDecoration ?? new BoxDecoration();
 
-    if (child != null) children.Add(child);
+    if (child != null)
+      children.Add(
+        new Padding(
+          this.boxDecoration.padding,
+          child
+        )
+      );
   }
 
   public override void Render()
@@ -43,8 +47,8 @@ public class DecoratedBox : Widget
     _roundedRect.SetMatrix("u_view", Window.View);
     _roundedRect.SetMatrix("u_projection", Window.Projection);
 
-    _roundedRect.SetVector("u_color", (Vector4)color);
-    _roundedRect.SetVector("u_border_radius", borderRadius);
+    _roundedRect.SetVector("u_color", (Vector4)boxDecoration.color);
+    _roundedRect.SetVector("u_border_radius", boxDecoration.borderRadius.ToVec4());
     _roundedRect.SetVector("u_size", size);
     _roundedRect.SetVector("u_resolution", Window.Resolution);
     _roundedRect.SetFloat("u_time", (float)Window.Time);
@@ -58,10 +62,10 @@ public class DecoratedBox : Widget
     _roundedRectFrame.SetMatrix("u_view", Window.View);
     _roundedRectFrame.SetMatrix("u_projection", Window.Projection);
 
-    _roundedRectFrame.SetVector("u_color", (Vector4)borderColor);
-    _roundedRectFrame.SetVector("u_border_radius", borderRadius);
+    _roundedRectFrame.SetVector("u_color", (Vector4)boxDecoration.border.color);
+    _roundedRectFrame.SetVector("u_border_radius", boxDecoration.borderRadius.ToVec4());
     _roundedRectFrame.SetVector("u_size", size);
-    _roundedRectFrame.SetFloat("u_border_size", borderSize);
+    _roundedRectFrame.SetFloat("u_border_size", boxDecoration.border.bottom);
     _roundedRectFrame.SetVector("u_resolution", Window.Resolution);
     _roundedRectFrame.SetFloat("u_time", (float)Window.Time);
 
