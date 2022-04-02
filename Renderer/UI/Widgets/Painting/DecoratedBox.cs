@@ -10,9 +10,10 @@ public class DecoratedBox : Widget
   public float borderSize = 10;
   public Vector4 borderRadius = new(20);
 
-  private readonly Material _roundedRect;
-  private readonly Material _roundedRectFrame;
-  private readonly Mesh _mesh;
+  private static Material? _roundedRect;
+  private static Material? _roundedRectFrame;
+  private static Mesh? _mesh;
+  
   private Matrix4 model = Matrix4.Identity;
 
   public DecoratedBox(
@@ -20,9 +21,9 @@ public class DecoratedBox : Widget
     Widget? child = null
   )
   {
-    _roundedRect = new Material(ShadersController.Get("rounded-rect.glsl"));
-    _roundedRectFrame = new Material(ShadersController.Get("rounded-rect-frame.glsl"));
-    _mesh = Window.QuadMesh;
+    _roundedRect ??= new Material(ShadersController.Get("rounded-rect.glsl"));
+    _roundedRectFrame ??= new Material(ShadersController.Get("rounded-rect-frame.glsl"));
+    _mesh ??= Window.QuadMesh;
 
     this.color = color ?? Colors.DefaultBgColor;
 

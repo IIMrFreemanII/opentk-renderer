@@ -103,7 +103,7 @@ void main()
     float smoothness = 0.003;
     vec2 quadSize = vec2(1);
     
-    float distance = roundedQuad(uv, ratio, quadSize - 0.1, cornerRadii);
+    float distance = roundedQuad(uv, ratio, quadSize, cornerRadii);
     vec4 color = vec4(smoothstep(distance, distance + smoothness, 0));
     color *= u_color;
     
