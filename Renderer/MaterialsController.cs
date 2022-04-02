@@ -2,7 +2,7 @@ namespace open_tk_renderer.Renderer;
 
 public class MaterialsController
 {
-  public static List<Material> materials = new();
+  public static readonly List<Material> Materials = new();
 
   public static Material Create(string name, Shader shader)
   {
@@ -13,22 +13,22 @@ public class MaterialsController
 
   public static Material? Get(string name)
   {
-    return materials.Find((material) => material.name == name);
+    return Materials.Find((material) => material.name == name);
   }
 
   public static void Add(Material material)
   {
-    materials.Add(material);
+    Materials.Add(material);
   }
 
   public static void Remove(Material material)
   {
-    materials.Remove(material);
+    Materials.Remove(material);
   }
 
   public static void Remove(string name)
   {
-    int index = materials.FindIndex((material) => material.name == name);
-    materials.RemoveAt(index);
+    var index = Materials.FindIndex((material) => material.name == name);
+    Materials.RemoveAt(index);
   }
 }

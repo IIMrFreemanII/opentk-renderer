@@ -11,6 +11,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Image = open_tk_renderer.Renderer.UI.Widgets.Painting.Image;
 
 namespace open_tk_renderer;
 
@@ -45,46 +46,18 @@ public class Window : GameWindow
     base.OnLoad();
     QuadMesh = new Mesh(QuadMeshData.vertexAttribs);
 
+    TextureController.FromFile("Assets/images/wall.jpeg");
+    TextureController.FromFile("Assets/images/awesomeface.png");
+
     ShadersController.ErrorShader = Shader.FromFile("Assets/error.glsl");
     var roundedRectShader = ShadersController.FromFile("Assets/rounded-rect.glsl");
     var roundedRectFrameShader = ShadersController.FromFile("Assets/rounded-rect-frame.glsl");
+    var textureShader = ShadersController.FromFile("Assets/texture.glsl");
 
     MaterialsController.Create("roundedRect", roundedRectShader);
     MaterialsController.Create("roundedRectFrame", roundedRectFrameShader);
+    MaterialsController.Create("texture", textureShader);
 
-    // ui
-    // RunUi(new App());
-    // RunUi(
-    //   new Container(
-    //     margin: new EdgeInsets(10),
-    //     child: new Flex(
-    //       mainAxisAlignment: MainAxisAlignment.Center,
-    //       crossAxisAlignment: CrossAxisAlignment.Center,
-    //       textDirection: TextDirection.Rtl,
-    //       children: new List<Widget>
-    //       {
-    //         new Container(
-    //           margin: new EdgeInsets(10),
-    //           color: Colors.Red,
-    //           size: new Vector2(100),
-    //           child: new Container(Color4.Aqua, new Vector2(30))
-    //         ),
-    //         new Container(
-    //           margin: new EdgeInsets(10),
-    //           color: Colors.Green,
-    //           size: new Vector2(100),
-    //           child: new Container(Color4.Aqua, new Vector2(30))
-    //         ),
-    //         new Container(
-    //           margin: new EdgeInsets(10),
-    //           color: Colors.Blue,
-    //           size: new Vector2(100),
-    //           child: new Container(Color4.Aqua, new Vector2(30))
-    //         )
-    //       }
-    //     )
-    //   )
-    // );
     Coroutine.Start(ShadersController.HandleRecompile(500));
   }
 
@@ -168,14 +141,10 @@ public class Window : GameWindow
         new List<Widget>
         {
           new Expanded(
-            child: new Container(
-              // margin: EdgeInsets.Symmetric(horizontal: 10),
-              new BoxDecoration(
-                Color4.Aquamarine
-              ),
-              new Vector2(100),
-              new Container(size: new Vector2(30))
-            )
+            child: new Image("wall.jpeg")
+          ),
+          new Expanded(
+            child: new Image("awesomeface.png")
           ),
           new Container(
             // margin: EdgeInsets.All(10),

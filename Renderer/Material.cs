@@ -38,6 +38,7 @@ public class Material
     { ActiveUniformType.Bool, false },
     { ActiveUniformType.Float, 0.0f },
     { ActiveUniformType.Int, 0 },
+    { ActiveUniformType.Sampler2D, 0 },
     { ActiveUniformType.FloatVec2, new Vector2() },
     { ActiveUniformType.FloatVec3, new Vector3() },
     { ActiveUniformType.FloatVec4, new Vector4() },
@@ -54,6 +55,10 @@ public class Material
     {
       ActiveUniformType.Float,
       (int location, ref object value) => { GL.Uniform1(location, (float)value); }
+    },
+    {
+      ActiveUniformType.Sampler2D,
+      (int location, ref object value) => { GL.Uniform1(location, (int)value); }
     },
     {
       ActiveUniformType.Int,
