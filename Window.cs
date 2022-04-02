@@ -44,12 +44,14 @@ public class Window : GameWindow
   protected override void OnLoad()
   {
     base.OnLoad();
-
-    ShadersController.ErrorShader = Shader.FromFile("Assets/error.glsl");
-
     QuadMesh = new Mesh(QuadMeshData.vertexAttribs);
-    ShadersController.FromFile("Assets/rounded-rect.glsl");
-    ShadersController.FromFile("Assets/rounded-rect-frame.glsl");
+    
+    ShadersController.ErrorShader = Shader.FromFile("Assets/error.glsl");
+    var roundedRectShader = ShadersController.FromFile("Assets/rounded-rect.glsl");
+    var roundedRectFrameShader = ShadersController.FromFile("Assets/rounded-rect-frame.glsl");
+    
+    MaterialsController.Create("roundedRect", roundedRectShader);
+    MaterialsController.Create("roundedRectFrame", roundedRectFrameShader);
 
     // ui
     // RunUi(new App());

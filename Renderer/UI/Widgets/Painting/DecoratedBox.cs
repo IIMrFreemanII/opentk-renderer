@@ -21,8 +21,8 @@ public class DecoratedBox : Widget
     Widget? child = null
   )
   {
-    _roundedRect ??= new Material(ShadersController.Get("rounded-rect.glsl"));
-    _roundedRectFrame ??= new Material(ShadersController.Get("rounded-rect-frame.glsl"));
+    _roundedRect ??= MaterialsController.Get("roundedRect");
+    _roundedRectFrame ??= MaterialsController.Get("roundedRectFrame");
     _mesh ??= Window.QuadMesh;
 
     this.color = color ?? Colors.DefaultBgColor;

@@ -95,11 +95,13 @@ public class Material
     }
   };
 
+  public string name;
   public Shader shader;
   public Dictionary<string, UniformData> uniforms;
 
-  public Material(Shader shader)
+  public Material(string name, Shader shader)
   {
+    this.name = name;
     this.shader = shader;
     this.shader.Recompile += ExtractUniforms;
 
