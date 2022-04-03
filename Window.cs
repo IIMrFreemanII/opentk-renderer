@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.Primitives;
 using open_tk_renderer.Renderer.UI;
@@ -12,6 +11,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using SharpFont;
 using Image = open_tk_renderer.Renderer.UI.Widgets.Painting.Image;
 
 namespace open_tk_renderer;
@@ -46,9 +46,9 @@ public class Window : GameWindow
   {
     base.OnLoad();
 
-    // Library library = new Library();
-    // var absPath = PathUtils.FromLocal("Assets/fonts/Fira_Code/static/FiraCode-Regular.ttf");
-    // Face face = new Face(library, absPath);
+    Library library = new Library();
+    var absPath = PathUtils.FromLocal("Assets/fonts/Fira_Code/static/FiraCode-Regular.ttf");
+    Face face = new Face(library, absPath);
 
     QuadMesh = new Mesh(Quad.vertexAttribs);
 

@@ -11,10 +11,19 @@
     <ItemGroup>
         <PackageReference Include="OpenTK" Version="4.7.1" />
         <PackageReference Include="SixLabors.ImageSharp" Version="2.1.0" />
+        <PackageReference Include="SpaceWizards.SharpFont" Version="1.0.1" />
     </ItemGroup>
 
-<!--    <ItemGroup>-->
-<!--        <Content Include="Assets/**/*"/>-->
-<!--    </ItemGroup>-->
+    <ItemGroup>
+      <Reference Include="SharpFont, Version=4.0.1.200, Culture=neutral, PublicKeyToken=48add4c483071cdf">
+        <HintPath>SharpFont.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <None Update="libfreetype.6.dylib">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 
 </Project>
