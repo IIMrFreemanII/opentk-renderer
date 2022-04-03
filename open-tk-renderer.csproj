@@ -9,13 +9,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="OpenTK" Version="4.7.1" />
-      <PackageReference Include="SharpFont" Version="4.0.1" />
-      <PackageReference Include="SixLabors.ImageSharp" Version="2.1.0" />
+        <PackageReference Include="OpenTK" Version="4.7.1" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="2.1.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Assets\images" />
-    </ItemGroup>
+<!--    <ItemGroup>-->
+<!--        <Content Include="Assets/**/*"/>-->
+<!--    </ItemGroup>-->
 
 </Project>

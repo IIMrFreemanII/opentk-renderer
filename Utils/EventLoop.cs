@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace open_tk_renderer.Utils;
 
 public static class EventLoop

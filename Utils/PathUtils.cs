@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+
 namespace open_tk_renderer.Utils;
 
 public static class PathUtils

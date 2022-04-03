@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using open_tk_renderer.Utils;
 using OpenTK.Graphics.OpenGL4;
 using SixLabors.ImageSharp;

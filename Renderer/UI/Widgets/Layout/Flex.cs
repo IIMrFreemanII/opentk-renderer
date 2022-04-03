@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using open_tk_renderer.Extensions;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using OpenTK.Mathematics;

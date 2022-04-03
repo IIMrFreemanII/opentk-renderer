@@ -1,5 +1,6 @@
-using open_tk_renderer.Assets;
+using System.Collections.Generic;
 using open_tk_renderer.Renderer;
+using open_tk_renderer.Renderer.Primitives;
 using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
 using open_tk_renderer.Renderer.UI.Widgets.Layout;
@@ -44,7 +45,12 @@ public class Window : GameWindow
   protected override void OnLoad()
   {
     base.OnLoad();
-    QuadMesh = new Mesh(QuadMeshData.vertexAttribs);
+
+    // Library library = new Library();
+    // var absPath = PathUtils.FromLocal("Assets/fonts/Fira_Code/static/FiraCode-Regular.ttf");
+    // Face face = new Face(library, absPath);
+
+    QuadMesh = new Mesh(Quad.vertexAttribs);
 
     TextureController.FromFile("Assets/images/wall.jpeg");
     TextureController.FromFile("Assets/images/awesomeface.png");
