@@ -1,3 +1,4 @@
+using System.Collections;
 using open_tk_renderer.Utils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -27,97 +28,109 @@ public class Font
     return font;
   }
 
-  public Dictionary<char, Character> GetCharsBySize(uint fontSize)
+  public Character GetCharBySize(char character, uint fontSize)
   {
     if (_charactersBySize.TryGetValue(fontSize, out var characters))
     {
-      return characters;
+      if (characters.TryGetValue(character, out var outChar))
+      {
+        return outChar;
+      }
+
+      var tempCharacter = CreateCharacterBySize(character, fontSize);
+      characters.Add(character, tempCharacter);
+      return tempCharacter;
     }
 
-    var newCharacters = CreateCharactersBySize(fontSize);
-    _charactersBySize.Add(fontSize, newCharacters);
-    return newCharacters;
+    var newChar = CreateCharacterBySize(character, fontSize);
+    var newCharactersBySize = new Dictionary<char, Character>
+      { { character, newChar } };
+    _charactersBySize.Add(fontSize, newCharactersBySize);
+    return newChar;
   }
 
-  private Dictionary<char, Character> CreateCharactersBySize(uint fontSize)
+  private Character CreateCharacterBySize(char character, uint size)
   {
-    Dictionary<char, Character> characters = new();
-    _face.SetPixelSizes(0, fontSize);
-
     // set 1 byte pixel alignment 
     GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
 
-    try
-    {
-      for (uint c = 0; c < 128; c++)
-      {
-        _face.LoadChar(
-          c,
-          LoadFlags.Render,
-          LoadTarget.Normal
-        );
-        var glyph = _face.Glyph;
-        var bitmap = glyph.Bitmap;
+    _face.SetPixelSizes(0, size);
+    _face.LoadChar(
+      character,
+      LoadFlags.Render,
+      LoadTarget.Normal
+    );
+    var glyph = _face.Glyph;
+    var bitmap = glyph.Bitmap;
 
-        // create glyph texture
-        var texObj = GL.GenTexture();
-        GL.BindTexture(TextureTarget.Texture2D, texObj);
+    // create glyph texture
+    var texObj = GL.GenTexture();
+    GL.BindTexture(TextureTarget.Texture2D, texObj);
 
-        // set texture parameters
-        GL.TexParameter(
-          TextureTarget.Texture2D,
-          TextureParameterName.TextureMinFilter,
-          (int)TextureMinFilter.Linear
-        );
-        GL.TexParameter(
-          TextureTarget.Texture2D,
-          TextureParameterName.TextureMagFilter,
-          (int)TextureMagFilter.Linear
-        );
-        GL.TexParameter(
-          TextureTarget.Texture2D,
-          TextureParameterName.TextureWrapS,
-          (int)TextureWrapMode.ClampToEdge
-        );
-        GL.TexParameter(
-          TextureTarget.Texture2D,
-          TextureParameterName.TextureWrapT,
-          (int)TextureWrapMode.ClampToEdge
-        );
+    // set texture parameters
+    GL.TexParameter(
+      TextureTarget.Texture2D,
+      TextureParameterName.TextureMinFilter,
+      (int)TextureMinFilter.Linear
+    );
+    GL.TexParameter(
+      TextureTarget.Texture2D,
+      TextureParameterName.TextureMagFilter,
+      (int)TextureMagFilter.Linear
+    );
+    GL.TexParameter(
+      TextureTarget.Texture2D,
+      TextureParameterName.TextureWrapS,
+      (int)TextureWrapMode.ClampToEdge
+    );
+    GL.TexParameter(
+      TextureTarget.Texture2D,
+      TextureParameterName.TextureWrapT,
+      (int)TextureWrapMode.ClampToEdge
+    );
 
-        GL.TexImage2D(
-          TextureTarget.Texture2D,
-          0,
-          PixelInternalFormat.R8,
-          bitmap.Width,
-          bitmap.Rows,
-          0,
-          PixelFormat.Red,
-          PixelType.UnsignedByte,
-          bitmap.Buffer
-        );
-
-        // add character
-        var character = new Character
-        {
-          TextureId = texObj,
-          Size = new Vector2(bitmap.Width, bitmap.Rows),
-          Bearing = new Vector2(glyph.BitmapLeft, glyph.BitmapTop),
-          Advance = glyph.Advance.X.Value
-        };
-        characters.Add((char)c, character);
-      }
-    }
-    catch (Exception e)
-    {
-      Console.WriteLine(e);
-    }
+    GL.TexImage2D(
+      TextureTarget.Texture2D,
+      0,
+      PixelInternalFormat.R8,
+      bitmap.Width,
+      bitmap.Rows,
+      0,
+      PixelFormat.Red,
+      PixelType.UnsignedByte,
+      bitmap.Buffer
+    );
 
     // bind default texture
     GL.BindTexture(TextureTarget.Texture2D, 0);
     // set default (4 byte) pixel alignment 
     GL.PixelStore(PixelStoreParameter.UnpackAlignment, 4);
 
-    return characters;
+    return new Character
+    {
+      TextureId = texObj,
+      Size = new Vector2(bitmap.Width, bitmap.Rows),
+      Bearing = new Vector2(glyph.BitmapLeft, glyph.BitmapTop),
+      Advance = glyph.Advance.X.Value
+    };
   }
+
+  // private Dictionary<char, Character> CreateCharactersBySize(uint fontSize)
+  // {
+  //   Dictionary<char, Character> characters = new();
+  //
+  //   try
+  //   {
+  //     for (uint c = 0; c < 128; c++)
+  //     {
+  //       characters.Add((char)c, CreateCharacterBySize((char)c, fontSize));
+  //     }
+  //   }
+  //   catch (Exception e)
+  //   {
+  //     Console.WriteLine(e);
+  //   }
+  //
+  //   return characters;
+  // }
 }

@@ -38,7 +38,6 @@ public static class Graphics
       Console.WriteLine($"Font: '{fontName}' is not found!");
       return;
     }
-    var characters = font.GetCharsBySize(fontSize);
 
     GL.ActiveTexture(TextureUnit.Texture0);
 
@@ -53,13 +52,8 @@ public static class Graphics
     float charX = 0;
     foreach (var c in text)
     {
-      if (!characters.ContainsKey(c))
-      {
-        Console.WriteLine($"Character: '{c}' is not supported!");
-        continue;
-      }
-      
-      var character = characters[c];
+      var character = font.GetCharBySize(c, fontSize);
+
       Vector3 size = new(
         character.Size.X,
         character.Size.Y,

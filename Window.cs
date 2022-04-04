@@ -167,6 +167,13 @@ public class Window : GameWindow
       16,
       Color4.White
     );
+    Graphics.DrawText(
+      "FiraCode-Regular",
+      "Привет, как дела?",
+      new Vector2(0, 16),
+      16,
+      Color4.White
+    );
     
     SwapBuffers();
   }
