@@ -6,6 +6,12 @@ public static class TextureController
 {
   public static readonly List<Texture> Textures = new();
 
+  public static void Init()
+  {
+    FromFile("Assets/images/wall.jpeg");
+    FromFile("Assets/images/awesomeface.png");
+  }
+
   public static Texture FromFile(string path)
   {
     var texture = new Texture(path);

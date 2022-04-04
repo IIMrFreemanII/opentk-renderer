@@ -43,7 +43,7 @@ public class Shader : IDisposable
     lastWriteTime = File.GetLastWriteTime(absPath);
 
     FilePath = absPath;
-    Name = fileName;
+    Name = fileName.Split('.').First();
 
     Compile();
   }

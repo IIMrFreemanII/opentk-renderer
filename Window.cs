@@ -1,5 +1,6 @@
 using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.Primitives;
+using open_tk_renderer.Renderer.Text;
 using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
 using open_tk_renderer.Renderer.UI.Widgets.Layout;
@@ -11,7 +12,6 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using SharpFont;
 using Image = open_tk_renderer.Renderer.UI.Widgets.Painting.Image;
 
 namespace open_tk_renderer;
@@ -46,23 +46,12 @@ public class Window : GameWindow
   {
     base.OnLoad();
 
-    Library library = new Library();
-    var absPath = PathUtils.FromLocal("Assets/fonts/Fira_Code/static/FiraCode-Regular.ttf");
-    Face face = new Face(library, absPath);
-
     QuadMesh = new Mesh(Quad.vertexAttribs);
 
-    TextureController.FromFile("Assets/images/wall.jpeg");
-    TextureController.FromFile("Assets/images/awesomeface.png");
-
-    ShadersController.ErrorShader = Shader.FromFile("Assets/error.glsl");
-    var roundedRectShader = ShadersController.FromFile("Assets/rounded-rect.glsl");
-    var roundedRectFrameShader = ShadersController.FromFile("Assets/rounded-rect-frame.glsl");
-    var textureShader = ShadersController.FromFile("Assets/texture.glsl");
-
-    MaterialsController.Create("roundedRect", roundedRectShader);
-    MaterialsController.Create("roundedRectFrame", roundedRectFrameShader);
-    MaterialsController.Create("texture", textureShader);
+    FontsController.Init();
+    TextureController.Init();
+    ShadersController.Init();
+    MaterialsController.Init();
 
     Coroutine.Start(ShadersController.HandleRecompile(500));
   }
@@ -149,9 +138,9 @@ public class Window : GameWindow
           new Expanded(
             child: new Image("wall.jpeg")
           ),
-          new Expanded(
-            child: new Image("awesomeface.png")
-          ),
+          // new Expanded(
+          //   child: new Image("awesomeface.png")
+          // ),
           new Container(
             // margin: EdgeInsets.All(10),
             new BoxDecoration(Colors.Green),
@@ -171,6 +160,14 @@ public class Window : GameWindow
     SizeAndPositionWidget(root);
     RenderWidget(root);
 
+    Graphics.DrawText(
+      "FiraCode-Regular",
+      "(C) LearnOpenGL.com",
+      new Vector2(0, 0),
+      16,
+      Color4.White
+    );
+    
     SwapBuffers();
   }
 

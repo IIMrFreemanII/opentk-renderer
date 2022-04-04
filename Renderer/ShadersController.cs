@@ -1,7 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using open_tk_renderer.Utils.Coroutines;
 
 namespace open_tk_renderer.Renderer;
@@ -10,6 +7,15 @@ public static class ShadersController
 {
   public static List<Shader> Shaders = new();
   public static Shader? ErrorShader;
+
+  public static void Init()
+  {
+    ErrorShader = Shader.FromFile("Assets/error.glsl");
+    FromFile("Assets/rounded-rect.glsl");
+    FromFile("Assets/rounded-rect-frame.glsl");
+    FromFile("Assets/texture.glsl");
+    FromFile("Assets/text.glsl");
+  }
 
   public static Shader FromFile(string filePath)
   {

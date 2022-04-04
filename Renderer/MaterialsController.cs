@@ -1,10 +1,16 @@
-using System.Collections.Generic;
-
 namespace open_tk_renderer.Renderer;
 
 public class MaterialsController
 {
   public static readonly List<Material> Materials = new();
+
+  public static void Init()
+  {
+    Create("roundedRect", ShadersController.Get("rounded-rect"));
+    Create("roundedRectFrame", ShadersController.Get("rounded-rect-frame"));
+    Create("texture", ShadersController.Get("texture"));
+    Create("text", ShadersController.Get("text"));
+  }
 
   public static Material Create(string name, Shader shader)
   {
