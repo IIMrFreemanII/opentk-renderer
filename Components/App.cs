@@ -20,6 +20,9 @@ public class App : Component<App.Props>
   );
 
   public Row row = new(
+    // mainAxisAlignment: MainAxisAlignment.Start,
+    // CrossAxisAlignment.Stretch,
+    // textDirection: TextDirection.Ltr,
     children: new List<Widget>
     {
       new Container(

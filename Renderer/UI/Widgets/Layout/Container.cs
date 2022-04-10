@@ -13,6 +13,8 @@ public class Container : Widget
   public BoxConstraints? constraints;
   public BoxDecoration decoration;
 
+  private Widget lastChild;
+
   public Container(
     BoxDecoration? decoration = null,
     Vector2? size = null,
@@ -31,6 +33,10 @@ public class Container : Widget
     this.alignment = alignment;
     this.constraints = constraints;
 
+    lastChild = new Align(
+      alignment,
+      child
+    );
     children.Add(
       new Padding(
         margin,
@@ -38,14 +44,17 @@ public class Container : Widget
           decoration,
           new Padding(
             padding,
-            new Align(
-              alignment,
-              child
-            )
+            lastChild
           )
         )
       )
     );
+  }
+
+  public override void Append(Widget widget)
+  {
+    lastChild.children.Add(widget);
+    widget.parent = lastChild;
   }
 
   public override void CalcSize(BoxConstraints constraints)

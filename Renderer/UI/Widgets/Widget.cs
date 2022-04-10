@@ -25,7 +25,7 @@ public class Widget
     return this;
   }
 
-  public void Append(Widget widget)
+  public virtual void Append(Widget widget)
   {
     widget.parent = this;
     children.Add(widget);
