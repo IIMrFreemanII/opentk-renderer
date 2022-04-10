@@ -1,28 +1,49 @@
 using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
 using open_tk_renderer.Renderer.UI.Widgets.Layout;
+using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using OpenTK.Mathematics;
-using Timeout = open_tk_renderer.Utils.Timeout;
 
 namespace open_tk_renderer.Components;
 
-public class App : HookWidget
+public class App : Component<App.Props>
 {
-  public override Widget Build()
-  {
-    var (count, setCount) = UseState(1);
-    // // var (count1, setCount1) = UseState(10);
-    Timeout.Set(() => setCount(count + 10), 1000);
-    //
-    // Console.WriteLine($"state1 {count}");
-    // // Console.WriteLine($"state2 {count1}");
-    return this;
+  public class Props { }
 
-    // return new Column(new ()
-    // {
-    //   new Container(Color4.Red, new(100, 100)),
-    //   new Container(Color4.Green, new(100, 100)),
-    //   new Container(Color4.Blue, new(100, 100)),
-    // });
+  public Container container = new(
+    size: new Vector2(100),
+    decoration: new BoxDecoration(
+      Colors.Blue,
+      Border.All(Color4.Black, 10),
+      BorderRadius.All(10)
+    )
+  );
+
+  public Row row = new(
+    children: new List<Widget>
+    {
+      new Container(
+        size: new Vector2(100),
+        decoration: new BoxDecoration(
+          Colors.Blue,
+          Border.All(Color4.Black, 10),
+          BorderRadius.All(10)
+        )
+      ),
+      new Container(
+        size: new Vector2(100),
+        decoration: new BoxDecoration(
+          Colors.Green,
+          Border.All(Color4.Black, 10),
+          BorderRadius.All(10)
+        )
+      )
+    }
+  );
+
+  public App(Widget target, Props props) : base(target, props)
+  {
+    target.Append(row);
+    // var boxes = new Boxes(elem, new Boxes.Props());
   }
 }

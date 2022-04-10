@@ -1,3 +1,4 @@
+using open_tk_renderer.Components;
 using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.Primitives;
 using open_tk_renderer.Renderer.Text;
@@ -12,7 +13,6 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using Image = open_tk_renderer.Renderer.UI.Widgets.Painting.Image;
 
 namespace open_tk_renderer;
 
@@ -25,10 +25,8 @@ public class Window : GameWindow
   public static double Time = 0;
 
   public static Mesh QuadMesh;
-  private HookWidget hookWidget;
 
-  private Widget root;
-
+  public Widget root;
   private bool _shouldRenderUi = false;
 
   public Window(
@@ -40,13 +38,6 @@ public class Window : GameWindow
   )
   {
     VSync = VSyncMode.On;
-  }
-
-  protected override void OnLoad()
-  {
-    base.OnLoad();
-
-    QuadMesh = new Mesh(Quad.vertexAttribs);
 
     FontsController.Init();
     TextureController.Init();
@@ -54,18 +45,16 @@ public class Window : GameWindow
     MaterialsController.Init();
 
     Coroutine.Start(ShadersController.HandleRecompile(500));
+
+    QuadMesh = new Mesh(Quad.vertexAttribs);
+    root = new Container();
   }
 
-  private void RunUi(Widget widget)
+  protected override void OnLoad()
   {
-    // this.hookWidget = hookWidget;
-    var result = BuildWidget(widget);
-    // var result = widget;
-    LayoutWidget(result);
-    SizeAndPositionWidget(result);
-    MountWidget(result);
+    base.OnLoad();
 
-    root = result;
+    // var app = new App(root, new App.Props());
   }
 
   private Widget BuildWidget(Widget widget)
@@ -75,12 +64,6 @@ public class Window : GameWindow
       child.children[i] = BuildWidget(child.children[i]);
 
     return child;
-  }
-
-  private void MountWidget(Widget widget)
-  {
-    widget.Mount();
-    foreach (var widgetChild in widget.children) MountWidget(widgetChild);
   }
 
   private void LayoutWidget(Widget widget)
@@ -121,60 +104,27 @@ public class Window : GameWindow
     GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
     GL.Clear(ClearBufferMask.ColorBufferBit);
 
-    root = new Container(
-      margin: EdgeInsets.All(10),
-      padding: EdgeInsets.All(10),
-      decoration: new BoxDecoration(
-        Colors.Red,
-        Border.All(Color4.Black, 10)
-        // BorderRadius.All(10)
-      ),
-      child: new Row(
-        MainAxisAlignment.Start,
-        CrossAxisAlignment.Stretch,
-        TextDirection.Ltr,
-        new List<Widget>
-        {
-          new Expanded(
-            child: new Image("wall.jpeg")
-          ),
-          // new Expanded(
-          //   child: new Image("awesomeface.png")
-          // ),
-          new Container(
-            // margin: EdgeInsets.All(10),
-            new BoxDecoration(Colors.Green),
-            new Vector2(100),
-            new Container(size: new Vector2(30))
-          ),
-          new Container(
-            // margin: EdgeInsets.All(10),
-            new BoxDecoration(Colors.Blue),
-            new Vector2(100),
-            new Container(size: new Vector2(30))
-          )
-        }
-      )
-    );
+    root = new Container();
+    var app = new App(root, new App.Props());
     LayoutWidget(root);
     SizeAndPositionWidget(root);
     RenderWidget(root);
 
-    Graphics.DrawText(
-      "FiraCode-Regular",
-      "(C) LearnOpenGL.com",
-      new Vector2(0, 0),
-      16,
-      Color4.White
-    );
-    Graphics.DrawText(
-      "FiraCode-Regular",
-      "Привет, как дела?",
-      new Vector2(0, 16),
-      16,
-      Color4.White
-    );
-    
+    // Graphics.DrawText(
+    //   "FiraCode-Regular",
+    //   "(C) LearnOpenGL.com",
+    //   new Vector2(0, 0),
+    //   16,
+    //   Color4.White
+    // );
+    // Graphics.DrawText(
+    //   "FiraCode-Regular",
+    //   "Привет, как дела?",
+    //   new Vector2(0, 16),
+    //   16,
+    //   Color4.White
+    // );
+
     SwapBuffers();
   }
 

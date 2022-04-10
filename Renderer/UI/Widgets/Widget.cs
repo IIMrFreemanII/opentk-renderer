@@ -25,14 +25,10 @@ public class Widget
     return this;
   }
 
-  public virtual void Mount()
+  public void Append(Widget widget)
   {
-    mounted = true;
-  }
-
-  public virtual void UnMount()
-  {
-    mounted = false;
+    widget.parent = this;
+    children.Add(widget);
   }
 
   public virtual void Layout() { }
