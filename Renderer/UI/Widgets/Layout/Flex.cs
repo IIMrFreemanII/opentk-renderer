@@ -85,11 +85,13 @@ public class Flex : Widget
       : vertical;
 
     var size = this.size;
+    var ownConstraint = constraints;
     if (crossAxisAlignment == CrossAxisAlignment.Stretch)
     {
       // for cross axis swap x and y of axisMultiplier
       axisMultiplier = axisMultiplier.Yx;
       size = this.size * axisMultiplier;
+      ownConstraint = constraints with { minWidth = size.X, minHeight = size.Y };
     }
 
     int totalFlexFactor = 0;
@@ -101,7 +103,7 @@ public class Flex : Widget
       }
     }
 
-    var ownConstraint = constraints with { minWidth = size.X, minHeight = size.Y };
+    
     axisMultiplier = axisMultiplier.Yx;
     var expandSize = this.size * axisMultiplier;
     foreach (var child in children)

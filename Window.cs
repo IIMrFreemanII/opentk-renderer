@@ -104,7 +104,7 @@ public class Window : GameWindow
     GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
     GL.Clear(ClearBufferMask.ColorBufferBit);
 
-    root = new Container();
+    root = new Column();
     var app = new App(root, new App.Props());
     LayoutWidget(root);
     SizeAndPositionWidget(root);
