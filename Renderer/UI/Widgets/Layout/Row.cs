@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
@@ -9,7 +8,8 @@ public class Row : Flex
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.Start,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.Start,
     TextDirection textDirection = TextDirection.Ltr,
-    List<Widget>? children = null
+    List<Widget>? children = null,
+    Ref<Row>? @ref = null
   ) : base(
     Axis.Horizontal,
     mainAxisAlignment,
@@ -17,5 +17,8 @@ public class Row : Flex
     textDirection,
     VerticalDirection.Down,
     children
-  ) { }
+  )
+  {
+    if (@ref is { }) @ref.value = this;
+  }
 }

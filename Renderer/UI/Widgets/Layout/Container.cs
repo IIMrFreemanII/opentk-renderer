@@ -22,9 +22,12 @@ public class Container : Widget
     EdgeInsets? margin = null,
     EdgeInsets? padding = null,
     Alignment? alignment = null,
-    BoxConstraints? constraints = null
+    BoxConstraints? constraints = null,
+    Ref<Container>? @ref = null
   )
   {
+    if (@ref is { }) @ref.value = this;
+    
     this.size = size ?? Vector2.Zero;
     this.decoration = decoration ?? new BoxDecoration();
 

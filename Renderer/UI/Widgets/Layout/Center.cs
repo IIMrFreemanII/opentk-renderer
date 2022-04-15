@@ -7,8 +7,14 @@ public class Center : Widget
 {
   public Vector2? sizeFactor;
 
-  public Center(Widget? child = null, Vector2? sizeFactor = null)
+  public Center(
+    Widget? child = null,
+    Vector2? sizeFactor = null,
+    Ref<Center>? @ref = null
+  )
   {
+    if (@ref is { }) @ref.value = this;
+
     if (child != null) children.Add(child);
 
     this.sizeFactor = sizeFactor;

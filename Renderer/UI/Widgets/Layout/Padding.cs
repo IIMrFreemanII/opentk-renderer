@@ -8,9 +8,12 @@ public class Padding : Widget
 
   public Padding(
     EdgeInsets? padding = null,
-    Widget? child = null
+    Widget? child = null,
+    Ref<Padding>? @ref = null
   )
   {
+    if (@ref is { }) @ref.value = this;
+    
     this.padding = padding ?? EdgeInsets.All(0);
     if (child is not null) children.Add(child);
   }

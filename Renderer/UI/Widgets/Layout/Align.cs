@@ -11,11 +11,14 @@ public class Align : Widget
   public Align(
     Alignment? alignment = null,
     Widget? child = null,
-    Vector2? sizeFactor = null
+    Vector2? sizeFactor = null,
+    Ref<Align>? @ref = null
   )
   {
     this.alignment = alignment ?? Alignment.TopLeft;
     this.sizeFactor = sizeFactor;
+
+    if (@ref is { }) @ref.value = this;
 
     if (child != null) children.Add(child);
   }

@@ -20,9 +20,11 @@ public class Flex : Widget
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.Start,
     TextDirection textDirection = TextDirection.Ltr,
     VerticalDirection verticalDirection = VerticalDirection.Down,
-    List<Widget>? children = null
+    List<Widget>? children = null,
+    Ref<Flex>? @ref = null
   )
   {
+    if (@ref is { }) @ref.value = this;
     this.direction = direction;
     this.mainAxisAlignment = mainAxisAlignment;
     this.crossAxisAlignment = crossAxisAlignment;
