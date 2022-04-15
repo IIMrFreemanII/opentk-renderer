@@ -6,14 +6,14 @@ namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
 
 public class Container : Widget
 {
-  public Color4 color;
   public EdgeInsets? padding;
   public EdgeInsets margin;
   public Alignment? alignment;
   public BoxConstraints? constraints;
-  public BoxDecoration decoration;
+  public BoxDecoration? decoration;
+  public Widget? Child { get; set; }
 
-  private Widget lastChild;
+  private Widget? lastElem;
 
   public Container(
     BoxDecoration? decoration = null,
@@ -27,37 +27,60 @@ public class Container : Widget
   )
   {
     if (@ref is { }) @ref.value = this;
-    
+
     this.size = size ?? Vector2.Zero;
-    this.decoration = decoration ?? new BoxDecoration();
+    this.decoration = decoration;
 
     this.padding = padding;
     this.margin = margin ?? EdgeInsets.All(0);
     this.alignment = alignment;
     this.constraints = constraints;
 
-    lastChild = new Align(
-      alignment,
-      child
-    );
-    children.Add(
-      new Padding(
-        margin,
-        new DecoratedBox(
-          decoration,
-          new Padding(
-            padding,
-            lastChild
-          )
-        )
-      )
-    );
+    Padding? marginWidget = null;
+    if (margin is { }) marginWidget = new Padding(this.margin);
+
+    DecoratedBox? decoratedBoxWidget = null;
+    if (decoration is { }) decoratedBoxWidget = new DecoratedBox(this.decoration);
+
+    Padding? paddingWidget = null;
+    if (padding is { }) paddingWidget = new Padding(this.padding);
+
+    Align? alignWidget = null;
+    if (alignment is { }) alignWidget = new Align(this.alignment);
+
+    Widget?[] widgets = { marginWidget, decoratedBoxWidget, paddingWidget, alignWidget };
+    foreach (var widget in widgets)
+      if (widget is { })
+        AppendToEnd(widget);
+
+    if (child is { })
+    {
+      Child = child;
+      AppendToEnd(child);
+    }
   }
 
   public override void Append(Widget widget)
   {
-    lastChild.children.Add(widget);
-    widget.parent = lastChild;
+    if (Child is { }) throw new Exception("Container can only have one child");
+
+    Child = widget;
+    base.Append(widget);
+  }
+
+  private void AppendToEnd(Widget widget)
+  {
+    if (lastElem is { })
+    {
+      lastElem.Append(widget);
+      lastElem = widget;
+    }
+    else
+    {
+      widget.parent = this;
+      children.Add(widget);
+      lastElem = widget;
+    }
   }
 
   public override void CalcSize(BoxConstraints constraints)
