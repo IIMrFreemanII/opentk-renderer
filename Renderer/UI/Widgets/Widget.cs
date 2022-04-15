@@ -18,11 +18,6 @@ public class Widget
     Rebuild?.Invoke(widget);
   }
 
-  public virtual Widget Build()
-  {
-    return this;
-  }
-
   public virtual void Append(Widget widget)
   {
     widget.parent = this;

@@ -56,16 +56,7 @@ public class Window : GameWindow
 
     // var app = new App(root, new App.Props());
   }
-
-  private Widget BuildWidget(Widget widget)
-  {
-    var child = widget.Build();
-    for (var i = 0; i < child.children.Count; i++)
-      child.children[i] = BuildWidget(child.children[i]);
-
-    return child;
-  }
-
+  
   private void LayoutWidget(Widget widget)
   {
     widget.Layout();
