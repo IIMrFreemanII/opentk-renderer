@@ -2,7 +2,7 @@ using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Utils;
 
-public struct Alignment
+public class Alignment
 {
   public Vector2 pivot;
 

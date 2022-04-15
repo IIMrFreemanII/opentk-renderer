@@ -2,7 +2,7 @@ using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Utils;
 
-public struct EdgeInsets
+public class EdgeInsets
 {
   public readonly int left;
   public readonly int top;
