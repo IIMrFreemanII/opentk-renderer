@@ -89,9 +89,16 @@ public class DecoratedBox : Widget
 
   public override void CalcSize(BoxConstraints constraints)
   {
-    size = constraints.Biggest;
+    foreach (var child in children)
+    {
+      child.CalcSize(constraints);
+      size = constraints.Constrain(child.size);
+    }
 
-    foreach (var child in children) child.CalcSize(constraints);
+    if (children.Count == 0)
+    {
+      size = constraints.Biggest;
+    }
   }
 
   public override void CalcPosition()

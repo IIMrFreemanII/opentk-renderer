@@ -2,7 +2,6 @@ using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
 using open_tk_renderer.Renderer.UI.Widgets.Layout;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
-using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Components;
 
@@ -13,8 +12,10 @@ public class App : Component<App.Props>
   public App(Widget target, Props props) : base(target, props)
   {
     Container container = new(
-      size: new Vector2(100, 100),
-      margin: EdgeInsets.All(10),
+      width: 100,
+      height: 100,
+      // margin: EdgeInsets.All(10),
+      // padding: EdgeInsets.All(10),
       decoration: new BoxDecoration(Colors.Red)
     );
     target.Append(container);

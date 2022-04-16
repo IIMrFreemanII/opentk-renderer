@@ -23,14 +23,14 @@ public class Boxes : Component<Boxes.Props>
       // new Expanded(
       //   child: new Image("awesomeface.png")
       // )
-      new Container(
-        new BoxDecoration(Colors.Green),
-        new Vector2(100)
-      ),
-      new Container(
-        new BoxDecoration(Colors.Blue),
-        new Vector2(100)
-      )
+      // new Container(
+      //   new BoxDecoration(Colors.Green),
+      //   new Vector2(100)
+      // ),
+      // new Container(
+      //   new BoxDecoration(Colors.Blue),
+      //   new Vector2(100)
+      // )
     }
   );
 

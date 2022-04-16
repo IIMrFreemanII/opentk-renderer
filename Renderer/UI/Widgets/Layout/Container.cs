@@ -6,6 +6,8 @@ namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
 
 public class Container : Widget
 {
+  public float? width;
+  public float? height;
   public EdgeInsets? padding;
   public EdgeInsets margin;
   public Alignment? alignment;
@@ -16,8 +18,9 @@ public class Container : Widget
   private Widget? lastElem;
 
   public Container(
+    float? width = null,
+    float? height = null,
     BoxDecoration? decoration = null,
-    Vector2? size = null,
     Widget? child = null,
     EdgeInsets? margin = null,
     EdgeInsets? padding = null,
@@ -28,7 +31,9 @@ public class Container : Widget
   {
     if (@ref is { }) @ref.value = this;
 
-    this.size = size ?? Vector2.Zero;
+    this.width = width;
+    this.height = height;
+    // this.size = size ?? Vector2.Zero;
     this.decoration = decoration;
 
     this.padding = padding;
@@ -39,6 +44,9 @@ public class Container : Widget
     Padding? marginWidget = null;
     if (margin is { }) marginWidget = new Padding(this.margin);
 
+    SizedBox? sizedBoxWidget = null;
+    if (width is { } || height is { }) sizedBoxWidget = new SizedBox(this.width, this.height);
+
     DecoratedBox? decoratedBoxWidget = null;
     if (decoration is { }) decoratedBoxWidget = new DecoratedBox(this.decoration);
 
@@ -48,7 +56,8 @@ public class Container : Widget
     Align? alignWidget = null;
     if (alignment is { }) alignWidget = new Align(this.alignment);
 
-    Widget?[] widgets = { marginWidget, decoratedBoxWidget, paddingWidget, alignWidget };
+    Widget?[] widgets =
+      { marginWidget, decoratedBoxWidget, sizedBoxWidget, paddingWidget, alignWidget };
     foreach (var widget in widgets)
       if (widget is { })
         AppendToEnd(widget);
@@ -85,14 +94,11 @@ public class Container : Widget
 
   public override void CalcSize(BoxConstraints constraints)
   {
-    size = size == Vector2.Zero
-      ? constraints.Biggest
-      : constraints.Constrain(margin.InflateSize(size));
-
     foreach (var child in children)
-      child.CalcSize(
-        this.constraints ?? BoxConstraints.Loose(size)
-      );
+    {
+      child.CalcSize(constraints);
+      size = child.size;
+    }
   }
 
   public override void CalcPosition()
