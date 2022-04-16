@@ -1,6 +1,7 @@
 using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
 using open_tk_renderer.Renderer.UI.Widgets.Layout;
+using open_tk_renderer.Renderer.UI.Widgets.Painting;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
 
 namespace open_tk_renderer.Components;
@@ -11,14 +12,18 @@ public class App : Component<App.Props>
 
   public App(Widget target, Props props) : base(target, props)
   {
-    Container container = new(
-      width: 100,
-      height: 100,
-      // margin: EdgeInsets.All(10),
-      // padding: EdgeInsets.All(10),
-      decoration: new BoxDecoration(Colors.Red)
+    Widget root = new Center(
+      new Container(
+        // width: 100,
+        // height: 100,
+        // margin: EdgeInsets.All(10),
+        // padding: EdgeInsets.All(10),
+        alignment: Alignment.Center,
+        decoration: new BoxDecoration(Colors.Red),
+        child: new Rect(Colors.Green, new (100))
+      )
     );
-    target.Append(container);
+    target.Append(root);
     // {
     //   Container container = new(
     //     size: new Vector2(500, 100),

@@ -21,11 +21,12 @@ public class Padding : Widget
   public override void CalcSize(BoxConstraints constraints)
   {
     size = constraints.Biggest;
+    var newConstraints = BoxConstraints.Loose(size);
 
     foreach (var child in children)
     {
-      child.CalcSize(constraints.Deflate(padding));
-      size = constraints.Constrain(padding.InflateSize(child.size));
+      child.CalcSize(newConstraints.Deflate(padding));
+      size = newConstraints.Constrain(padding.InflateSize(child.size));
     }
   }
 

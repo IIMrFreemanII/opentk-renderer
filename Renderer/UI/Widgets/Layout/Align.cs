@@ -26,11 +26,12 @@ public class Align : Widget
   public override void CalcSize(BoxConstraints constraints)
   {
     size = constraints.Biggest;
+    var newConstraints = BoxConstraints.Loose(constraints.Biggest);
 
     foreach (var child in children)
     {
-      child.CalcSize(constraints);
-      if (sizeFactor.HasValue) size = constraints.Constrain(child.size * sizeFactor.Value);
+      child.CalcSize(newConstraints);
+      if (sizeFactor.HasValue) size = newConstraints.Constrain(child.size * sizeFactor.Value);
     }
   }
 

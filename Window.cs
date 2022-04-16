@@ -66,7 +66,7 @@ public class Window : GameWindow
   private void SizeAndPositionWidget(Widget widget)
   {
     // widget.size = Size;
-    widget.CalcSize(BoxConstraints.Loose(Size));
+    widget.CalcSize(BoxConstraints.Tight(Size));
     widget.CalcPosition();
   }
 
@@ -94,8 +94,8 @@ public class Window : GameWindow
     GL.Enable(EnableCap.Blend);
     GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
     GL.Clear(ClearBufferMask.ColorBufferBit);
-
-    root = new Column();
+ 
+    root = new SizedBox();
     var app = new App(root, new App.Props());
     LayoutWidget(root);
     SizeAndPositionWidget(root);

@@ -44,12 +44,11 @@ public class Container : Widget
     Padding? marginWidget = null;
     if (margin is { }) marginWidget = new Padding(this.margin);
 
-    SizedBox? sizedBoxWidget = null;
-    if (width is { } || height is { }) sizedBoxWidget = new SizedBox(this.width, this.height);
-
     DecoratedBox? decoratedBoxWidget = null;
     if (decoration is { }) decoratedBoxWidget = new DecoratedBox(this.decoration);
 
+    SizedBox sizedBoxWidget = new SizedBox(this.width, this.height);
+    
     Padding? paddingWidget = null;
     if (padding is { }) paddingWidget = new Padding(this.padding);
 
@@ -94,9 +93,11 @@ public class Container : Widget
 
   public override void CalcSize(BoxConstraints constraints)
   {
+    var newConstraints = BoxConstraints.Loose(constraints.Biggest);
+
     foreach (var child in children)
     {
-      child.CalcSize(constraints);
+      child.CalcSize(newConstraints);
       size = child.size;
     }
   }

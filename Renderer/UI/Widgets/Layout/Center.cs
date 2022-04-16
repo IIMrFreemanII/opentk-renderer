@@ -23,7 +23,11 @@ public class Center : Widget
   public override void CalcSize(BoxConstraints constraints)
   {
     size = constraints.Biggest;
-    foreach (var child in children) child.CalcSize(constraints);
+    var newConstraints = BoxConstraints.Loose(size);
+    foreach (var child in children)
+    {
+      child.CalcSize(newConstraints);
+    }
   }
 
   public override void CalcPosition()
@@ -32,6 +36,7 @@ public class Center : Widget
     {
       if (sizeFactor != null) size = child.size * (Vector2)sizeFactor;
       child.position = size / 2 - child.size / 2;
+      child.CalcPosition();
     }
   }
 }
