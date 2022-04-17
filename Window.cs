@@ -51,8 +51,6 @@ public class Window : GameWindow
     QuadMesh = new Mesh(Quad.vertexAttribs);
   }
 
-  private Throttle _throttle = new();
-  private FileSystemWatcher _watcher;
   protected override void OnLoad()
   {
     base.OnLoad();
@@ -62,6 +60,8 @@ public class Window : GameWindow
     app = new App(root, new App.Props());
   }
 
+  private Throttle _throttle = new();
+  private FileSystemWatcher _watcher;
   private void InitWatcher()
   {
     var path = PathUtils.FromLocal("");
@@ -86,7 +86,7 @@ public class Window : GameWindow
             ms: 100
           );
         },
-        100
+        ms: 500
       );
     };
   }
@@ -110,6 +110,21 @@ public class Window : GameWindow
     foreach (var widgetChild in widget.children) RenderWidget(widgetChild);
   }
 
+  private void HandleHierarchyRender(Widget widget)
+  {
+    if (widget.dirty)
+    {
+      // do re-render stuff
+      LayoutWidget(widget);
+      SizeAndPositionWidget(widget);
+      RenderWidget(widget);
+    }
+    else
+    {
+      foreach (var child in widget.children) HandleHierarchyRender(child);
+    }
+  }
+
   protected override void OnRenderFrame(FrameEventArgs args)
   {
     base.OnRenderFrame(args);
@@ -118,8 +133,11 @@ public class Window : GameWindow
     // if (_shouldRenderUi)
     // {
     //   Render();
+    //   // Render();
     //   _shouldRenderUi = false;
     // }
+
+    // SwapBuffers();
   }
 
   private void Render()
@@ -131,6 +149,7 @@ public class Window : GameWindow
 
     // root = new SizedBox();
     // var app = new App(root, new App.Props());
+    // HandleHierarchyRender(root);
     LayoutWidget(root);
     SizeAndPositionWidget(root);
     RenderWidget(root);

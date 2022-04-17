@@ -5,18 +5,11 @@ namespace open_tk_renderer.Renderer.UI.Widgets;
 
 public class Widget
 {
-  protected bool mounted = false;
   public Widget? parent;
   public List<Widget> children = new();
-  public Vector2 position = new(0);
-  public Vector2 size = new(0);
-
-  public event Action<Widget>? Rebuild;
-
-  protected void OnRebuild(Widget widget)
-  {
-    Rebuild?.Invoke(widget);
-  }
+  public Vector2 position = new(value: 0);
+  public Vector2 size = new(value: 0);
+  public bool dirty = true;
 
   public virtual void Append(Widget widget)
   {
@@ -24,11 +17,24 @@ public class Widget
     children.Add(widget);
   }
 
+  public virtual void Remove()
+  {
+    if (parent is { }) parent.children.Remove(this);
+  }
+
+  public virtual void Clear()
+  {
+    children.Clear();
+  }
+
   public virtual void Layout() { }
 
   public virtual void CalcSize(BoxConstraints constraints) { }
 
-  public virtual void CalcPosition() { }
+  public virtual void CalcPosition()
+  {
+    dirty = false;
+  }
 
   public virtual void Render() { }
 }

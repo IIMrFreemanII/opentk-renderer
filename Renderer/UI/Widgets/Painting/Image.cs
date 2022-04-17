@@ -25,12 +25,12 @@ public class Image : Widget
       Matrix4.CreateScale(
         size.X,
         size.Y,
-        1
+        z: 1
       ) *
       Matrix4.CreateTranslation(
         position.X,
         position.Y,
-        0
+        z: 0
       );
   }
 
@@ -42,7 +42,7 @@ public class Image : Widget
     _material.SetMatrix("u_view", Window.View);
     _material.SetMatrix("u_projection", Window.Projection);
 
-    _material.SetInt("u_texture0", 0);
+    _material.SetInt("u_texture0", value: 0);
     _texture.Use(TextureUnit.Texture0);
 
     Graphics.DrawMesh(_mesh, _material);
@@ -57,6 +57,7 @@ public class Image : Widget
 
   public override void CalcPosition()
   {
+    base.CalcPosition();
     foreach (var child in children)
     {
       child.position = position;

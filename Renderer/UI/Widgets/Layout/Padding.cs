@@ -13,8 +13,8 @@ public class Padding : Widget
   )
   {
     if (@ref is { }) @ref.value = this;
-    
-    this.padding = padding ?? EdgeInsets.All(0);
+
+    this.padding = padding ?? EdgeInsets.All(value: 0);
     if (child is not null) children.Add(child);
   }
 
@@ -32,6 +32,7 @@ public class Padding : Widget
 
   public override void CalcPosition()
   {
+    base.CalcPosition();
     foreach (var child in children)
     {
       child.position = position + padding.TopLeft;

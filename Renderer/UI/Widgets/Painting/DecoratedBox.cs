@@ -78,12 +78,12 @@ public class DecoratedBox : Widget
       Matrix4.CreateScale(
         size.X,
         size.Y,
-        1
+        z: 1
       ) *
       Matrix4.CreateTranslation(
         position.X,
         position.Y,
-        0
+        z: 0
       );
   }
 
@@ -96,14 +96,12 @@ public class DecoratedBox : Widget
       size = newConstraints.Constrain(child.size);
     }
 
-    if (children.Count == 0)
-    {
-      size = newConstraints.Biggest;
-    }
+    if (children.Count == 0) size = newConstraints.Biggest;
   }
 
   public override void CalcPosition()
   {
+    base.CalcPosition();
     foreach (var child in children)
     {
       child.position = position;

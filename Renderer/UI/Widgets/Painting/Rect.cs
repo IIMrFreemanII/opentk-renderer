@@ -8,7 +8,7 @@ public class Rect : Widget
   public Rect(Color4? color, Vector2? size)
   {
     this.size = size ?? Vector2.Zero;
-    
+
     DecoratedBox? decoratedBoxWidget = null;
     if (color is { }) decoratedBoxWidget = new DecoratedBox(new BoxDecoration(color));
 
@@ -23,14 +23,12 @@ public class Rect : Widget
   {
     size = constraints.Constrain(size);
     var newConstraints = BoxConstraints.Loose(size);
-    foreach (var child in children)
-    {
-      child.CalcSize(newConstraints);
-    }
+    foreach (var child in children) child.CalcSize(newConstraints);
   }
 
   public override void CalcPosition()
   {
+    base.CalcPosition();
     foreach (var child in children)
     {
       child.position = position;

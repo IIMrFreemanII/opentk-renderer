@@ -5,14 +5,14 @@ namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
 
 public class SizedBox : Widget
 {
-  public float? width;
-  public float? height;
+  public float width;
+  public float height;
 
   public Widget? Child { get; set; }
 
   public SizedBox(
-    float? width = null,
-    float? height = null,
+    float width = 0,
+    float height = 0,
     Widget? child = null,
     Ref<SizedBox>? @ref = null
   )
@@ -32,19 +32,19 @@ public class SizedBox : Widget
 
   public override void CalcSize(BoxConstraints constraints)
   {
-    Vector2 temp = new(width ?? 0, height ?? 0);
+    Vector2 temp = new(width, height);
     temp = constraints.Constrain(temp);
 
-    float minWidth = temp.X;
-    float minHeight = temp.Y;
-    float maxWidth = temp.X == 0
+    var minWidth = temp.X;
+    var minHeight = temp.Y;
+    var maxWidth = temp.X == 0
       ? constraints.maxWidth
       : temp.X;
-    float maxHeight = temp.Y == 0
+    var maxHeight = temp.Y == 0
       ? constraints.maxHeight
       : temp.Y;
 
-    BoxConstraints tempConstraints = new BoxConstraints(
+    var tempConstraints = new BoxConstraints(
       minWidth,
       maxWidth,
       minHeight,
@@ -57,14 +57,12 @@ public class SizedBox : Widget
       size = tempConstraints.Constrain(child.size);
     }
 
-    if (children.Count == 0)
-    {
-      size = tempConstraints.Smallest;
-    }
+    if (children.Count == 0) size = tempConstraints.Smallest;
   }
 
   public override void CalcPosition()
   {
+    base.CalcPosition();
     foreach (var child in children)
     {
       child.position = position;

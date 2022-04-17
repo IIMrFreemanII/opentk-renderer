@@ -29,6 +29,7 @@ public class Expanded : Widget
 
   public override void CalcPosition()
   {
+    base.CalcPosition();
     foreach (var child in children)
     {
       child.position = position;

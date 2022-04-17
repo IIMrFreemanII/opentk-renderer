@@ -6,60 +6,71 @@ namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
 
 public class Container : Widget
 {
-  public float? width;
-  public float? height;
-  public EdgeInsets? padding;
-  public EdgeInsets margin;
-  public Alignment? alignment;
-  public BoxConstraints? constraints;
-  public BoxDecoration? decoration;
+  public float Width
+  {
+    get => _sizedBox.width;
+    set => _sizedBox.width = value;
+  }
+  public float Height
+  {
+    get => _sizedBox.height;
+    set => _sizedBox.height = value;
+  }
+  public readonly EdgeInsets padding;
+  public readonly EdgeInsets margin;
+  // public Alignment? alignment;
+  // public BoxConstraints? constraints;
+  public readonly BoxDecoration decoration;
   public Widget? Child { get; set; }
 
   private Widget? lastElem;
 
+  private Padding _margin;
+  private DecoratedBox _decoratedBox;
+  private SizedBox _sizedBox;
+  private Padding _padding;
+
   public Container(
-    float? width = null,
-    float? height = null,
+    float width = 0,
+    float height = 0,
     BoxDecoration? decoration = null,
     Widget? child = null,
     EdgeInsets? margin = null,
     EdgeInsets? padding = null,
-    Alignment? alignment = null,
-    BoxConstraints? constraints = null,
+    // Alignment? alignment = null,
+    // BoxConstraints? constraints = null,
     Ref<Container>? @ref = null
   )
   {
     if (@ref is { }) @ref.value = this;
 
-    this.width = width;
-    this.height = height;
-    // this.size = size ?? Vector2.Zero;
-    this.decoration = decoration;
+    this.padding = padding ?? EdgeInsets.All(value: 0);
+    this.margin = margin ?? EdgeInsets.All(value: 0);
+    // this.alignment = alignment;
+    // this.constraints = constraints;
 
-    this.padding = padding;
-    this.margin = margin ?? EdgeInsets.All(0);
-    this.alignment = alignment;
-    this.constraints = constraints;
+    _margin = new Padding(this.margin);
+    // if (margin is { }) marginWidget = new Padding(this.margin);
 
-    Padding? marginWidget = null;
-    if (margin is { }) marginWidget = new Padding(this.margin);
+    this.decoration = decoration ?? new BoxDecoration();
+    _decoratedBox = new DecoratedBox(this.decoration);
+    // if (decoration is { }) decoratedBoxWidget = new DecoratedBox(this.decoration);
 
-    DecoratedBox? decoratedBoxWidget = null;
-    if (decoration is { }) decoratedBoxWidget = new DecoratedBox(this.decoration);
+    _sizedBox = new SizedBox();
+    Width = width;
+    Height = height;
 
-    SizedBox sizedBoxWidget = new SizedBox(this.width, this.height);
-    
-    Padding? paddingWidget = null;
-    if (padding is { }) paddingWidget = new Padding(this.padding);
+    _padding = new Padding(this.padding);
+    // if (padding is { }) paddingWidget = new Padding(this.padding);
 
-    Align? alignWidget = null;
-    if (alignment is { }) alignWidget = new Align(this.alignment);
+    // Align? alignWidget = null;
+    // if (alignment is { }) alignWidget = new Align(this.alignment);
 
-    Widget?[] widgets =
-      { marginWidget, decoratedBoxWidget, sizedBoxWidget, paddingWidget, alignWidget };
+    Widget[] widgets =
+      { _margin, _decoratedBox, _sizedBox, _padding };
     foreach (var widget in widgets)
-      if (widget is { })
-        AppendToEnd(widget);
+      AppendToEnd(widget);
+
 
     if (child is { })
     {
@@ -104,6 +115,7 @@ public class Container : Widget
 
   public override void CalcPosition()
   {
+    base.CalcPosition();
     foreach (var child in children)
     {
       child.position = position;

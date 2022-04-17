@@ -24,14 +24,12 @@ public class Center : Widget
   {
     size = constraints.Biggest;
     var newConstraints = BoxConstraints.Loose(size);
-    foreach (var child in children)
-    {
-      child.CalcSize(newConstraints);
-    }
+    foreach (var child in children) child.CalcSize(newConstraints);
   }
 
   public override void CalcPosition()
   {
+    base.CalcPosition();
     foreach (var child in children)
     {
       if (sizeFactor != null) size = child.size * (Vector2)sizeFactor;

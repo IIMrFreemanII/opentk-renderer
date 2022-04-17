@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using open_tk_renderer.Extensions;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using OpenTK.Mathematics;
 
@@ -13,6 +10,7 @@ public class Flex : Widget
   public Axis direction;
   public TextDirection textDirection;
   public VerticalDirection verticalDirection;
+  private List<Widget> _children = new();
 
   public Flex(
     Axis direction = Axis.Horizontal,
@@ -37,6 +35,8 @@ public class Flex : Widget
 
   public override void Layout()
   {
+    _children = new List<Widget>(children);
+
     switch (direction)
     {
       case Axis.Horizontal:
@@ -49,7 +49,7 @@ public class Flex : Widget
           }
           case TextDirection.Rtl:
           {
-            children.Reverse();
+            _children.Reverse();
             break;
           }
         }
@@ -66,7 +66,7 @@ public class Flex : Widget
           }
           case VerticalDirection.Up:
           {
-            children.Reverse();
+            _children.Reverse();
             break;
           }
         }
@@ -80,8 +80,8 @@ public class Flex : Widget
   {
     this.size = constraints.Biggest;
 
-    var horizontal = new Vector2(1, 0);
-    var vertical = new Vector2(0, 1);
+    var horizontal = new Vector2(x: 1, y: 0);
+    var vertical = new Vector2(x: 0, y: 1);
     var axisMultiplier = direction == Axis.Horizontal
       ? horizontal
       : vertical;
@@ -96,49 +96,50 @@ public class Flex : Widget
       ownConstraint = constraints with { minWidth = size.X, minHeight = size.Y };
     }
 
-    int totalFlexFactor = 0;
-    foreach (var child in children)
-    {
+    var totalFlexFactor = 0;
+    foreach (var child in _children)
       if (child is Expanded expanded)
-      {
         totalFlexFactor += expanded.flex;
-      }
-    }
 
-    
+
     axisMultiplier = axisMultiplier.Yx;
     var expandSize = this.size * axisMultiplier;
-    foreach (var child in children)
-    {
+    foreach (var child in _children)
       if (child is not Expanded)
       {
         child.CalcSize(ownConstraint);
         expandSize -= child.size * axisMultiplier;
       }
-    }
 
-    expandSize = Vector2.Clamp(expandSize, Vector2.Zero, Vector2.PositiveInfinity);
+    expandSize = Vector2.Clamp(
+      expandSize,
+      Vector2.Zero,
+      Vector2.PositiveInfinity
+    );
 
-    foreach (var child in children)
-    {
+    foreach (var child in _children)
       if (child is Expanded expanded)
       {
         var elemSize = expandSize * expanded.flex / totalFlexFactor + size;
         child.CalcSize(BoxConstraints.Tight(elemSize));
       }
-    }
   }
 
   public override void CalcPosition()
   {
-    var horizontal = new Vector2(1, 0);
-    var vertical = new Vector2(0, 1);
+    base.CalcPosition();
+
+    // reset child positions
+    foreach (var child in _children) child.position = Vector2.Zero;
+
+    var horizontal = new Vector2(x: 1, y: 0);
+    var vertical = new Vector2(x: 0, y: 1);
     var axisMultiplier = direction == Axis.Horizontal
       ? horizontal
       : vertical;
 
     var totalChildrenSize = Vector2.Zero;
-    foreach (var child in children) totalChildrenSize += child.size;
+    foreach (var child in _children) totalChildrenSize += child.size;
     totalChildrenSize *= axisMultiplier;
 
     var size = this.size * axisMultiplier;
@@ -149,7 +150,7 @@ public class Flex : Widget
       case MainAxisAlignment.Start:
       {
         var nextPosition = position;
-        foreach (var child in children)
+        foreach (var child in _children)
         {
           child.position += nextPosition;
           nextPosition += child.size * axisMultiplier;
@@ -160,7 +161,7 @@ public class Flex : Widget
       case MainAxisAlignment.Center:
       {
         var startPosition = position + size / 2 - totalChildrenSize / 2;
-        foreach (var child in children)
+        foreach (var child in _children)
         {
           child.position = startPosition;
           startPosition += child.size * axisMultiplier;
@@ -171,7 +172,7 @@ public class Flex : Widget
       case MainAxisAlignment.End:
       {
         var startPosition = size - totalChildrenSize;
-        foreach (var child in children)
+        foreach (var child in _children)
         {
           child.position += position + startPosition;
           startPosition += child.size * axisMultiplier;
@@ -182,10 +183,10 @@ public class Flex : Widget
       case MainAxisAlignment.SpaceBetween:
       {
         var freeSpace = size - totalChildrenSize;
-        var spaceBetween = freeSpace / (children.Count - 1);
+        var spaceBetween = freeSpace / (_children.Count - 1);
 
         var nextPosition = position;
-        foreach (var child in children)
+        foreach (var child in _children)
         {
           child.position += nextPosition;
           nextPosition += child.size * axisMultiplier + spaceBetween;
@@ -196,10 +197,10 @@ public class Flex : Widget
       case MainAxisAlignment.SpaceEvenly:
       {
         var freeSpace = size - totalChildrenSize;
-        var spaceBetween = freeSpace / (children.Count + 1);
+        var spaceBetween = freeSpace / (_children.Count + 1);
 
         var nextPosition = position;
-        foreach (var child in children)
+        foreach (var child in _children)
         {
           nextPosition += spaceBetween;
           child.position += nextPosition;
@@ -211,12 +212,12 @@ public class Flex : Widget
       case MainAxisAlignment.SpaceAround:
       {
         var freeSpace = size - totalChildrenSize;
-        var spaceBetween = freeSpace / children.Count;
+        var spaceBetween = freeSpace / _children.Count;
 
         var nextPosition = position;
-        for (var i = 0; i < children.Count; i++)
+        for (var i = 0; i < _children.Count; i++)
         {
-          var child = children[i];
+          var child = _children[i];
           if (i == 0)
           {
             nextPosition += spaceBetween / 2;
@@ -244,7 +245,7 @@ public class Flex : Widget
       case CrossAxisAlignment.Start:
       {
         var nextPosition = position;
-        foreach (var child in children)
+        foreach (var child in _children)
           child.position += nextPosition;
 
         break;
@@ -252,7 +253,7 @@ public class Flex : Widget
       case CrossAxisAlignment.Center:
       {
         var nextPosition = position;
-        foreach (var child in children)
+        foreach (var child in _children)
         {
           var halfOfParentSize = size / 2;
           var halfOfChildSize = child.size * axisMultiplier / 2;
@@ -264,13 +265,13 @@ public class Flex : Widget
       }
       case CrossAxisAlignment.End:
       {
-        foreach (var child in children)
+        foreach (var child in _children)
           child.position += position + size - child.size * axisMultiplier;
         break;
       }
       case CrossAxisAlignment.Stretch:
       {
-        foreach (var child in children) child.position += position;
+        foreach (var child in _children) child.position += position;
 
         break;
       }
@@ -281,7 +282,7 @@ public class Flex : Widget
       }
     }
 
-    foreach (var child in children)
+    foreach (var child in _children)
       child.CalcPosition();
   }
 }

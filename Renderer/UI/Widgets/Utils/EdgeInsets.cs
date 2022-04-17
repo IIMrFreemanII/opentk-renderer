@@ -4,10 +4,10 @@ namespace open_tk_renderer.Renderer.UI.Widgets.Utils;
 
 public class EdgeInsets
 {
-  public readonly int left;
-  public readonly int top;
-  public readonly int right;
-  public readonly int bottom;
+  public int left;
+  public int top;
+  public int right;
+  public int bottom;
 
   /// <summary>
   /// The total offset in the vertical direction.
@@ -19,7 +19,7 @@ public class EdgeInsets
   /// </summary>
   public int Horizontal => left + right;
 
-  public Vector2 TopLeft => new (left, top);
+  public Vector2 TopLeft => new(left, top);
 
   private EdgeInsets(
     int left,
@@ -36,7 +36,12 @@ public class EdgeInsets
 
   public static EdgeInsets All(int value)
   {
-    return new EdgeInsets(value, value, value, value);
+    return new EdgeInsets(
+      value,
+      value,
+      value,
+      value
+    );
   }
 
   public static EdgeInsets Only(
@@ -46,7 +51,12 @@ public class EdgeInsets
     int bottom = 0
   )
   {
-    return new EdgeInsets(left, top, right, bottom);
+    return new EdgeInsets(
+      left,
+      top,
+      right,
+      bottom
+    );
   }
 
   public static EdgeInsets Symmetric(int vertical = 0, int horizontal = 0)
@@ -66,7 +76,12 @@ public class EdgeInsets
     int bottom
   )
   {
-    return new EdgeInsets(left, top, right, bottom);
+    return new EdgeInsets(
+      left,
+      top,
+      right,
+      bottom
+    );
   }
 
   /// <summary>
