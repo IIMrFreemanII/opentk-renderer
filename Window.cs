@@ -13,6 +13,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Timeout = open_tk_renderer.Utils.Timeout;
 
 namespace open_tk_renderer;
 
@@ -20,13 +21,14 @@ public class Window : GameWindow
 {
   public static Matrix4 Projection = Matrix4.Identity;
   public static Matrix4 View = Matrix4.Identity;
-  public static Vector2 Resolution = new(0);
-  public static Vector2 WindowSize = new(0);
+  public static Vector2 Resolution = new(value: 0);
+  public static Vector2 WindowSize = new(value: 0);
   public static double Time = 0;
 
   public static Mesh QuadMesh;
 
   public Widget root;
+  public App app;
   private bool _shouldRenderUi = false;
 
   public Window(
@@ -44,19 +46,51 @@ public class Window : GameWindow
     ShadersController.Init();
     MaterialsController.Init();
 
-    Coroutine.Start(ShadersController.HandleRecompile(500));
+    Coroutine.Start(ShadersController.HandleRecompile(delay: 500));
 
     QuadMesh = new Mesh(Quad.vertexAttribs);
-    root = new Container();
   }
 
+  private Throttle _throttle = new();
+  private FileSystemWatcher _watcher;
   protected override void OnLoad()
   {
     base.OnLoad();
+    InitWatcher();
 
-    // var app = new App(root, new App.Props());
+    root = new SizedBox();
+    app = new App(root, new App.Props());
   }
-  
+
+  private void InitWatcher()
+  {
+    var path = PathUtils.FromLocal("");
+    _watcher = new FileSystemWatcher(path);
+    _watcher.NotifyFilter = NotifyFilters.LastWrite;
+    _watcher.IncludeSubdirectories = true;
+    _watcher.EnableRaisingEvents = true;
+    _watcher.Changed += (obj, e) =>
+    {
+      if (e.ChangeType != WatcherChangeTypes.Changed) return;
+
+      _throttle.Call(
+        () =>
+        {
+          Timeout.Set(
+            () =>
+            {
+              root = new SizedBox();
+              app = new App(root, new App.Props());
+              Console.WriteLine("Hot reload!");
+            },
+            ms: 100
+          );
+        },
+        100
+      );
+    };
+  }
+
   private void LayoutWidget(Widget widget)
   {
     widget.Layout();
@@ -94,9 +128,9 @@ public class Window : GameWindow
     GL.Enable(EnableCap.Blend);
     GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
     GL.Clear(ClearBufferMask.ColorBufferBit);
- 
-    root = new SizedBox();
-    var app = new App(root, new App.Props());
+
+    // root = new SizedBox();
+    // var app = new App(root, new App.Props());
     LayoutWidget(root);
     SizeAndPositionWidget(root);
     RenderWidget(root);
@@ -142,18 +176,18 @@ public class Window : GameWindow
     // Projection = Matrix4.CreateOrthographic(e.Width, e.Height, -1, 1);
     // Projection = Matrix4.CreateOrthographicOffCenter(0, ClientSize.X, ClientSize.Y, 0, -1, 1);
     Projection = Matrix4.CreateOrthographicOffCenter(
-      0,
+      left: 0,
       Size.X,
       Size.Y,
-      0,
-      -1,
-      1
+      top: 0,
+      depthNear: -1,
+      depthFar: 1
     );
 
     // on MacOs retina display has more pixels that is why use ClientSize to match pixel size
     GL.Viewport(
-      0,
-      0,
+      x: 0,
+      y: 0,
       ClientSize.X,
       ClientSize.Y
     );

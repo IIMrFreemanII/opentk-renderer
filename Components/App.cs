@@ -3,6 +3,7 @@ using open_tk_renderer.Renderer.UI.Widgets;
 using open_tk_renderer.Renderer.UI.Widgets.Layout;
 using open_tk_renderer.Renderer.UI.Widgets.Painting;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
+using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Components;
 
@@ -20,7 +21,7 @@ public class App : Component<App.Props>
         // padding: EdgeInsets.All(10),
         alignment: Alignment.Center,
         decoration: new BoxDecoration(Colors.Red),
-        child: new Rect(Colors.Green, new (100))
+        child: new Rect(Colors.Green, new Vector2(value: 100))
       )
     );
     target.Append(root);
