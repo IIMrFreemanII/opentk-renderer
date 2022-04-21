@@ -2,6 +2,7 @@ using open_tk_renderer.Aspects;
 using open_tk_renderer.Components;
 using open_tk_renderer.Renderer.UI.Widgets.Painting;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
+using open_tk_renderer.temp;
 using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
@@ -18,6 +19,9 @@ public class Container : Widget
     get => _sizedBox.height;
     set => _sizedBox.height = value;
   }
+  private Bind<float>? bindedWidth;
+  private Bind<float>? bindedHeight;
+  
   public readonly EdgeInsets padding;
   public readonly EdgeInsets margin;
   // public Alignment? alignment;
@@ -34,8 +38,8 @@ public class Container : Widget
   private Bindings _bindings;
 
   public Container(
-    float width = 0,
-    float height = 0,
+    Bind<float>? width = null,
+    Bind<float>? height = null,
     BoxDecoration? decoration = null,
     Widget? child = null,
     EdgeInsets? margin = null,
@@ -66,8 +70,18 @@ public class Container : Widget
     // if (decoration is { }) decoratedBoxWidget = new DecoratedBox(this.decoration);
 
     _sizedBox = new SizedBox();
-    Width = width;
-    Height = height;
+    if (width is { })
+    {
+      Width = width.Value;
+      bindedWidth = width;
+      bindedWidth.ValueChanged += OnWidthChange;
+    }
+    if (height is { })
+    {
+      Height = height.Value;
+      bindedHeight = height;
+      bindedHeight.ValueChanged += OnHeightChange;
+    }
 
     _padding = new Padding(this.padding);
     // if (padding is { }) paddingWidget = new Padding(this.padding);
@@ -86,6 +100,28 @@ public class Container : Widget
       Child = child;
       AppendToEnd(child);
     }
+  }
+
+  ~Container()
+  {
+    if (bindedWidth is { })
+    {
+      bindedWidth.ValueChanged -= OnWidthChange;
+    }
+    if (bindedHeight is { })
+    {
+      bindedHeight.ValueChanged -= OnHeightChange;
+    }
+    Console.WriteLine("Destructor");
+  }
+
+  private void OnWidthChange(float value)
+  {
+    Width = value;
+  }
+  private void OnHeightChange(float value)
+  {
+    Height = value;
   }
 
   public override void Append(Widget widget)

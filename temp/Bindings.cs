@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Reflection;
 
-namespace open_tk_renderer.Components;
+namespace open_tk_renderer.temp;
 
 public class Bindings
 {

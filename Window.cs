@@ -28,7 +28,6 @@ public class Window : GameWindow
   public static Mesh QuadMesh;
 
   public Widget root;
-  public App app;
   private bool _shouldRenderUi = false;
 
   public Window(
@@ -57,7 +56,7 @@ public class Window : GameWindow
     InitWatcher();
 
     root = new SizedBox();
-    app = new App(root);
+    root.Append(new App());
   }
 
   private Throttle _throttle = new();
@@ -80,11 +79,12 @@ public class Window : GameWindow
             () =>
             {
               root = new SizedBox();
-              app = new App(root);
+              root.Append(new App());
               Console.WriteLine("Hot reload!");
             },
             ms: 100
           );
+          
         },
         ms: 500
       );

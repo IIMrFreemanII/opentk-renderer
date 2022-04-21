@@ -89,7 +89,7 @@ public class Flex : Widget
       : vertical;
 
     var size = this.size;
-    var ownConstraint = constraints;
+    var ownConstraint = BoxConstraints.Loose(constraints.Biggest);
     if (crossAxisAlignment == CrossAxisAlignment.Stretch)
     {
       // for cross axis swap x and y of axisMultiplier
