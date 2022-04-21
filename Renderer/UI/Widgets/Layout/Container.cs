@@ -1,3 +1,5 @@
+using open_tk_renderer.Aspects;
+using open_tk_renderer.Components;
 using open_tk_renderer.Renderer.UI.Widgets.Painting;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using OpenTK.Mathematics;
@@ -29,6 +31,7 @@ public class Container : Widget
   private DecoratedBox _decoratedBox;
   private SizedBox _sizedBox;
   private Padding _padding;
+  private Bindings _bindings;
 
   public Container(
     float width = 0,
@@ -39,10 +42,16 @@ public class Container : Widget
     EdgeInsets? padding = null,
     // Alignment? alignment = null,
     // BoxConstraints? constraints = null,
-    Ref<Container>? @ref = null
+    Ref<Container>? @ref = null,
+    Bindings? bindings = null
   )
   {
     if (@ref is { }) @ref.value = this;
+    if (bindings is { })
+    {
+      _bindings = bindings;
+      _bindings.BindTo(this);
+    }
 
     this.padding = padding ?? EdgeInsets.All(value: 0);
     this.margin = margin ?? EdgeInsets.All(value: 0);
@@ -110,16 +119,6 @@ public class Container : Widget
     {
       child.CalcSize(newConstraints);
       size = child.size;
-    }
-  }
-
-  public override void CalcPosition()
-  {
-    base.CalcPosition();
-    foreach (var child in children)
-    {
-      child.position = position;
-      child.CalcPosition();
     }
   }
 }

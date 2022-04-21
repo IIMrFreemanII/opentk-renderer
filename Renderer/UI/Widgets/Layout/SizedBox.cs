@@ -59,14 +59,4 @@ public class SizedBox : Widget
 
     if (children.Count == 0) size = tempConstraints.Smallest;
   }
-
-  public override void CalcPosition()
-  {
-    base.CalcPosition();
-    foreach (var child in children)
-    {
-      child.position = position;
-      child.CalcPosition();
-    }
-  }
 }

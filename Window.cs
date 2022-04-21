@@ -57,7 +57,7 @@ public class Window : GameWindow
     InitWatcher();
 
     root = new SizedBox();
-    app = new App(root, new App.Props());
+    app = new App(root);
   }
 
   private Throttle _throttle = new();
@@ -80,7 +80,7 @@ public class Window : GameWindow
             () =>
             {
               root = new SizedBox();
-              app = new App(root, new App.Props());
+              app = new App(root);
               Console.WriteLine("Hot reload!");
             },
             ms: 100
@@ -94,12 +94,10 @@ public class Window : GameWindow
   private void LayoutWidget(Widget widget)
   {
     widget.Layout();
-    foreach (var widgetChild in widget.children) LayoutWidget(widgetChild);
   }
 
   private void SizeAndPositionWidget(Widget widget)
   {
-    // widget.size = Size;
     widget.CalcSize(BoxConstraints.Tight(Size));
     widget.CalcPosition();
   }
@@ -107,7 +105,6 @@ public class Window : GameWindow
   private void RenderWidget(Widget widget)
   {
     widget.Render();
-    foreach (var widgetChild in widget.children) RenderWidget(widgetChild);
   }
 
   private void HandleHierarchyRender(Widget widget)

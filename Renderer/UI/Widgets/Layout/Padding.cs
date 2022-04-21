@@ -32,7 +32,6 @@ public class Padding : Widget
 
   public override void CalcPosition()
   {
-    base.CalcPosition();
     foreach (var child in children)
     {
       child.position = position + padding.TopLeft;

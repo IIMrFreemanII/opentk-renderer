@@ -26,14 +26,4 @@ public class Expanded : Widget
       size = child.size;
     }
   }
-
-  public override void CalcPosition()
-  {
-    base.CalcPosition();
-    foreach (var child in children)
-    {
-      child.position = position;
-      child.CalcPosition();
-    }
-  }
 }

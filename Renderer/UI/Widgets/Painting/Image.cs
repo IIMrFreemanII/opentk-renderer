@@ -46,6 +46,8 @@ public class Image : Widget
     _texture.Use(TextureUnit.Texture0);
 
     Graphics.DrawMesh(_mesh, _material);
+    
+    base.Render();
   }
 
   public override void CalcSize(BoxConstraints constraints)
@@ -53,15 +55,5 @@ public class Image : Widget
     size = constraints.Biggest;
 
     foreach (var child in children) child.CalcSize(constraints);
-  }
-
-  public override void CalcPosition()
-  {
-    base.CalcPosition();
-    foreach (var child in children)
-    {
-      child.position = position;
-      child.CalcPosition();
-    }
   }
 }

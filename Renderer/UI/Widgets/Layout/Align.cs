@@ -37,7 +37,6 @@ public class Align : Widget
 
   public override void CalcPosition()
   {
-    base.CalcPosition();
     foreach (var child in children)
     {
       child.position = position + (size / 2 - child.size / 2) +

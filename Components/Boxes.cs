@@ -7,7 +7,7 @@ using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Components;
 
-public class Boxes : Component<Boxes.Props>
+public class Boxes : Component
 {
   public class Props { }
 
@@ -34,7 +34,7 @@ public class Boxes : Component<Boxes.Props>
     }
   );
 
-  public Boxes(Widget target, Props props) : base(target, props)
+  public Boxes()
   {
     target.Append(row);
   }

@@ -74,6 +74,8 @@ public class Flex : Widget
         break;
       }
     }
+    
+    base.Layout();
   }
 
   public override void CalcSize(BoxConstraints constraints)
@@ -127,8 +129,6 @@ public class Flex : Widget
 
   public override void CalcPosition()
   {
-    base.CalcPosition();
-
     // reset child positions
     foreach (var child in _children) child.position = Vector2.Zero;
 

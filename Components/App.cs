@@ -1,3 +1,7 @@
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using open_tk_renderer.Aspects;
 using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.Widgets;
 using open_tk_renderer.Renderer.UI.Widgets.Layout;
@@ -5,95 +9,88 @@ using open_tk_renderer.Renderer.UI.Widgets.Painting;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using open_tk_renderer.Utils;
 using OpenTK.Mathematics;
+using PostSharp;
+using PostSharp.Patterns.Model;
+using Container = open_tk_renderer.Renderer.UI.Widgets.Layout.Container;
 
 namespace open_tk_renderer.Components;
 
-public class App : Component<App.Props>
+[NotifyPropertyChanged]
+public class Cube
+{
+  public float Width { get; set; }
+  public float Height { get; set; }
+}
+
+public class App : Component
 {
   public class Props { }
 
-  public Ref<Container> container = new();
+  // [State(nameof(container1), nameof(Container.Width))]
+  // [State(nameof(container2), nameof(Container.Width))]
+  // public float Width { get; set; } = 100;
+  // public Bind<float> height = new(100);
+  public ObservableCollection<Cube> cubes = new();
 
-  public App(Widget target, Props props) : base(target, props)
+  public App(Widget target)
   {
-    // Widget root = new Center(
-    //   new Container(
-    //     // width: 100,
-    //     // height: 100,
-    //     // margin: EdgeInsets.All(10),
-    //     // padding: EdgeInsets.All(10),
-    //     // alignment: Alignment.Center,
-    //     decoration: new BoxDecoration(Colors.Red),
-    //     child: new Rect(Colors.Green, new Vector2(value: 100)),
-    //     @ref: container
-    //   )
-    // );
-    // target.Append(root);
-    //
-    // Interval.Set(
-    //   () =>
-    //   {
-    //     container.value.padding.top += 10;
-    //     Console.WriteLine(container.value.Width);
-    //   }, 1000);
-    //------------------------------------------------------------
-    {
-      Row row = new(
-        children: new List<Widget>
+    Interval.Set(
+      () =>
+      {
+        foreach (var cube in cubes)
         {
-          new Container(
-            width: 100,
-            height: 100,
-            // margin: EdgeInsets.All(10),
-            padding: EdgeInsets.All(value: 10),
-            // alignment: Alignment.Center,
-            decoration: new BoxDecoration(Colors.Green),
-            child: new Rect(Colors.Red, new Vector2(value: 100))
-          ),
-          new Container(
-            width: 100,
-            height: 100,
-            // margin: EdgeInsets.All(10),
-            padding: EdgeInsets.All(value: 10),
-            // alignment: Alignment.Center,
-            decoration: new BoxDecoration(Colors.Red),
-            child: new Rect(Colors.Green, new Vector2(value: 100))
-          )
+          cube.Width += 1;
+          cube.Height += 1;
         }
-      );
-      target.Append(row);
-    }
-    // {
-    //   Container container = new(
-    //     size: new Vector2(500, 100),
-    //     decoration: new BoxDecoration(
-    //       Colors.Green
-    //     )
-    //   );
-    //   Row row = new(
-    //     children: new List<Widget>
-    //     {
-    //       new Container(
-    //         size: new Vector2(100),
-    //         decoration: new BoxDecoration(
-    //           Colors.Blue,
-    //           Border.All(Colors.DefaultBgColor, 5),
-    //           BorderRadius.All(10)
-    //         ),
-    //         margin: EdgeInsets.Only(right: 10)
-    //       ),
-    //       new Container(
-    //         size: new Vector2(100),
-    //         decoration: new BoxDecoration(
-    //           Colors.Green,
-    //           Border.All(Colors.DefaultBgColor, 5),
-    //           BorderRadius.All(10)
-    //         )
-    //       )
-    //     }
-    //   );
-    //   container.Append(row);
-    //   target.Append(container);
-    // }
+
+        cubes.Add(new Cube { Width = 10, Height = 10 });
+      },
+      1000
+    );
+
+    Init(target);
+  }
+
+  public override void OnUpdate()
+  {
+    
+  }
+
+  public override void OnMount(Widget target)
+  {
+    MountRow(target);
+  }
+
+  private void MountRow(Widget target)
+  {
+    Row row = new();
+    // todo: think how to write less boilerplate
+    // todo: how to bind row to observable collection
+    cubes.CollectionChanged += (obj, e) =>
+    {
+      switch (e.Action)
+      {
+        case NotifyCollectionChangedAction.Add:
+        {
+          if (e.NewItems?[0] is Cube cube)
+          {
+            var container = new Container(
+              width: cube.Width,
+              height: cube.Height,
+              margin: EdgeInsets.All(2),
+              bindings: new Bindings(cube, new()
+              {
+                {nameof(Cube.Width), nameof(Container.Width)},
+                {nameof(Cube.Height), nameof(Container.Height)}
+              }),
+              decoration: new BoxDecoration(Colors.Green)
+            );
+            row.Append(container);
+          }
+          break;
+        }
+      }
+    };
+    target.Append(row);
   }
 }

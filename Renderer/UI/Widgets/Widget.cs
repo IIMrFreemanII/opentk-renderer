@@ -27,14 +27,39 @@ public class Widget
     children.Clear();
   }
 
-  public virtual void Layout() { }
+  public virtual void Layout()
+  {
+    foreach (var child in children)
+    {
+      child.Layout();
+    }
+  }
 
-  public virtual void CalcSize(BoxConstraints constraints) { }
+  public virtual void CalcSize(BoxConstraints constraints)
+  {
+    size = constraints.Biggest;
+    
+    foreach (var child in children)
+    {
+      child.CalcSize(constraints);
+      size = constraints.Constrain(child.size);
+    }
+  }
 
   public virtual void CalcPosition()
   {
-    dirty = false;
+    foreach (var child in children)
+    {
+      child.position = position;
+      child.CalcPosition();
+    }
   }
 
-  public virtual void Render() { }
+  public virtual void Render()
+  {
+    foreach (var child in children)
+    {
+      child.Render();
+    }
+  }
 }

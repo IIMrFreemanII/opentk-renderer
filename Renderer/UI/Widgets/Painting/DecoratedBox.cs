@@ -39,6 +39,8 @@ public class DecoratedBox : Widget
     UpdateModel();
     RenderBack();
     RenderRectFront();
+    
+    base.Render();
   }
 
   private void RenderBack()
@@ -97,15 +99,5 @@ public class DecoratedBox : Widget
     }
 
     if (children.Count == 0) size = newConstraints.Biggest;
-  }
-
-  public override void CalcPosition()
-  {
-    base.CalcPosition();
-    foreach (var child in children)
-    {
-      child.position = position;
-      child.CalcPosition();
-    }
   }
 }

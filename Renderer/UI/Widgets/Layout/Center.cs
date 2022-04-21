@@ -29,7 +29,6 @@ public class Center : Widget
 
   public override void CalcPosition()
   {
-    base.CalcPosition();
     foreach (var child in children)
     {
       if (sizeFactor != null) size = child.size * (Vector2)sizeFactor;

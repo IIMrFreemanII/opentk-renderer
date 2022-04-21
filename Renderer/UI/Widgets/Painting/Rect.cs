@@ -25,14 +25,4 @@ public class Rect : Widget
     var newConstraints = BoxConstraints.Loose(size);
     foreach (var child in children) child.CalcSize(newConstraints);
   }
-
-  public override void CalcPosition()
-  {
-    base.CalcPosition();
-    foreach (var child in children)
-    {
-      child.position = position;
-      child.CalcPosition();
-    }
-  }
 }

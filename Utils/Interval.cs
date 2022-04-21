@@ -1,6 +1,3 @@
-using System;
-using System.Threading.Tasks;
-
 namespace open_tk_renderer.Utils;
 
 public static class Interval
