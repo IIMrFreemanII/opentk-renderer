@@ -39,7 +39,6 @@ public class State : LocationInterceptionAspect
       }
 
       Console.WriteLine($"set {args.Value}");
-      component.OnUpdate();
     }
   }
 }

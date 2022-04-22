@@ -4,18 +4,27 @@ namespace open_tk_renderer.Components;
 
 public class Component : Widget
 {
-  // public Widget target;
-  // public T? props;
-
-  public void Init(Widget target)
+  public Component()
   {
-    // this.target = target;
-    // OnMount(target);
+    var widget = OnMount();
+    if (widget is { })
+    {
+      Append(widget);
+    }
   }
 
-  public virtual void OnUpdate() { }
+  ~Component()
+  {
+    OnUnmount();
+  }
+  
+  public virtual Widget? OnMount()
+  {
+    return null;
+  }
 
-  public virtual void OnMount(Widget target) { }
-
-  public virtual void OnUnMount() { }
+  public virtual void OnUnmount()
+  {
+    
+  }
 }
