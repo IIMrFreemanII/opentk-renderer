@@ -17,14 +17,42 @@ public class Widget
     children.Add(widget);
   }
 
-  public virtual void Remove()
+  public virtual void RemoveSelf()
   {
-    if (parent is { }) parent.children.Remove(this);
+    if (parent is { })
+    {
+      parent.children.Remove(this);
+      parent = null;
+    }
+  }
+
+  public virtual void RemoveAt(int index)
+  {
+    children[index].parent = null;
+    children.RemoveAt(index);
+  }
+  
+  public virtual void Remove(Widget child)
+  {
+    child.parent = null;
+    children.Remove(child);
   }
 
   public virtual void Clear()
   {
+    foreach (var child in children)
+    {
+      child.parent = null;
+    }
     children.Clear();
+  }
+
+  public virtual void Replace(int index, Widget child)
+  {
+    var oldChild = children[index];
+    oldChild.parent = null;
+    child.parent = this;
+    children[index] = child;
   }
 
   public virtual void Layout()

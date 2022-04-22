@@ -1,9 +1,6 @@
-using open_tk_renderer.Aspects;
-using open_tk_renderer.Components;
 using open_tk_renderer.Renderer.UI.Widgets.Painting;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using open_tk_renderer.temp;
-using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Layout;
 
@@ -112,7 +109,6 @@ public class Container : Widget
     {
       bindedHeight.ValueChanged -= OnHeightChange;
     }
-    Console.WriteLine("Destructor");
   }
 
   private void OnWidthChange(float value)
