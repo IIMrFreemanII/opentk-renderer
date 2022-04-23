@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
         <PackageReference Include="OpenTK" Version="4.7.1" />
         <PackageReference Include="PostSharp.Patterns.Model" Version="6.10.9" />
         <PackageReference Include="SixLabors.ImageSharp" Version="2.1.0" />
@@ -25,6 +26,10 @@
       <None Update="libfreetype.6.dylib">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Renderer\ImGui\Utils" />
     </ItemGroup>
 
 </Project>

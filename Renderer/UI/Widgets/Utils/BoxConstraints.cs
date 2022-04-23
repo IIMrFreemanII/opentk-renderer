@@ -1,4 +1,3 @@
-using System;
 using OpenTK.Mathematics;
 
 namespace open_tk_renderer.Renderer.UI.Widgets.Utils;
@@ -9,6 +8,12 @@ public struct BoxConstraints
   public float maxWidth;
   public float minHeight;
   public float maxHeight;
+
+  public override string ToString()
+  {
+    return
+      $"(minW: {minWidth}, maxW: {maxWidth}, minH: {minHeight}, maxH: {maxHeight})";
+  }
 
   /// <summary>
   /// The biggest size that satisfies the constraints.
@@ -47,10 +52,26 @@ public struct BoxConstraints
     float maxHeight = float.PositiveInfinity
   )
   {
-    this.minWidth = Math.Clamp(minWidth, 0, float.PositiveInfinity);
-    this.maxWidth = Math.Clamp(maxWidth, 0, float.PositiveInfinity);
-    this.minHeight = Math.Clamp(minHeight, 0, float.PositiveInfinity);
-    this.maxHeight = Math.Clamp(maxHeight, 0, float.PositiveInfinity);
+    this.minWidth = Math.Clamp(
+      minWidth,
+      0,
+      float.PositiveInfinity
+    );
+    this.maxWidth = Math.Clamp(
+      maxWidth,
+      0,
+      float.PositiveInfinity
+    );
+    this.minHeight = Math.Clamp(
+      minHeight,
+      0,
+      float.PositiveInfinity
+    );
+    this.maxHeight = Math.Clamp(
+      maxHeight,
+      0,
+      float.PositiveInfinity
+    );
   }
 
   /// <summary>
@@ -60,7 +81,12 @@ public struct BoxConstraints
   /// <returns></returns>
   public static BoxConstraints Tight(Vector2 size)
   {
-    return new BoxConstraints(size.X, size.X, size.Y, size.Y);
+    return new BoxConstraints(
+      size.X,
+      size.X,
+      size.Y,
+      size.Y
+    );
   }
 
   /// <summary>
@@ -70,7 +96,12 @@ public struct BoxConstraints
   /// <returns></returns>
   public static BoxConstraints Loose(Vector2 size)
   {
-    return new BoxConstraints(0, size.X, 0, size.Y);
+    return new BoxConstraints(
+      0,
+      size.X,
+      0,
+      size.Y
+    );
   }
 
   /// <summary>

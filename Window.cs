@@ -1,5 +1,6 @@
 using open_tk_renderer.Components;
 using open_tk_renderer.Renderer;
+using open_tk_renderer.Renderer.ImGui;
 using open_tk_renderer.Renderer.Primitives;
 using open_tk_renderer.Renderer.Text;
 using open_tk_renderer.Renderer.UI;
@@ -40,14 +41,15 @@ public class Window : GameWindow
   {
     VSync = VSyncMode.On;
 
+    QuadMesh = new Mesh(Quad.vertexAttribs);
+
     FontsController.Init();
     TextureController.Init();
     ShadersController.Init();
     MaterialsController.Init();
+    Ui.Init();
 
     Coroutine.Start(ShadersController.HandleRecompile(delay: 500));
-
-    QuadMesh = new Mesh(Quad.vertexAttribs);
   }
 
   protected override void OnLoad()
@@ -84,7 +86,6 @@ public class Window : GameWindow
             },
             ms: 100
           );
-          
         },
         ms: 500
       );
@@ -147,9 +148,33 @@ public class Window : GameWindow
     // root = new SizedBox();
     // var app = new App(root, new App.Props());
     // HandleHierarchyRender(root);
-    LayoutWidget(root);
-    SizeAndPositionWidget(root);
-    RenderWidget(root);
+    // LayoutWidget(root);
+    // SizeAndPositionWidget(root);
+    // RenderWidget(root);
+
+    Ui.Page(Size, BoxConstraints.Tight(Size));
+    {
+      Ui.SizedBox(100, 100);
+      {
+        Ui.DecoratedBox(new BoxDecoration(Colors.Red));
+        {
+          Ui.Padding(EdgeInsets.All(10));
+          {
+            Ui.DecoratedBox(new BoxDecoration(Colors.Green));
+          }
+        }
+      }
+      Ui.SizedBox(100, 100);
+      {
+        Ui.DecoratedBox(new BoxDecoration(Colors.Red));
+        {
+          Ui.Padding(EdgeInsets.All(10));
+          {
+            Ui.DecoratedBox(new BoxDecoration(Colors.Green));
+          }
+        }
+      }
+    }
 
     // Graphics.DrawText(
     //   "FiraCode-Regular",
