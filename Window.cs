@@ -1,11 +1,9 @@
-using open_tk_renderer.Components;
 using open_tk_renderer.Renderer;
-using open_tk_renderer.Renderer.ImGui;
 using open_tk_renderer.Renderer.Primitives;
 using open_tk_renderer.Renderer.Text;
 using open_tk_renderer.Renderer.UI;
+using open_tk_renderer.Renderer.UI.ImGui;
 using open_tk_renderer.Renderer.UI.Widgets;
-using open_tk_renderer.Renderer.UI.Widgets.Layout;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using open_tk_renderer.Utils;
 using open_tk_renderer.Utils.Coroutines;
@@ -47,7 +45,6 @@ public class Window : GameWindow
     TextureController.Init();
     ShadersController.Init();
     MaterialsController.Init();
-    Ui.Init();
 
     Coroutine.Start(ShadersController.HandleRecompile(delay: 500));
   }
@@ -154,7 +151,10 @@ public class Window : GameWindow
 
     Ui.Page(Size);
     {
-      Ui.DecoratedBox(new BoxDecoration(Colors.Red));
+      Ui.S_SizedBox(100, 100);
+      Ui.S_DecoratedBox(new BoxDecoration(Colors.Green));
+      Ui.E_DecoratedBox();
+      Ui.E_SizedBox();
     }
     Ui.PageEnd();
 

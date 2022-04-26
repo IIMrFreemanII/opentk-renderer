@@ -1,7 +1,7 @@
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using OpenTK.Mathematics;
 
-namespace open_tk_renderer.Renderer.ImGui;
+namespace open_tk_renderer.Renderer.UI.ImGui;
 
 public class Node
 {
@@ -45,5 +45,10 @@ public class Node
     {
       children[i].Render();
     }
+  }
+
+  public virtual void Delete()
+  {
+    
   }
 }

@@ -1,7 +1,12 @@
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
+using open_tk_renderer.Utils;
 using OpenTK.Mathematics;
 
-namespace open_tk_renderer.Renderer.ImGui;
+namespace open_tk_renderer.Renderer.UI.ImGui.Painting;
+
+public class DecoratedBoxPool : Pool<DecoratedBox>
+{
+}
 
 public class DecoratedBox : Node
 {
@@ -13,16 +18,26 @@ public class DecoratedBox : Node
   
   private Matrix4 model = Matrix4.Identity;
 
-  public DecoratedBox(BoxDecoration? boxDecoration = null)
+  public DecoratedBox()
   {
     // todo: optimize
     _roundedRect ??= MaterialsController.Get("roundedRect");
     _roundedRectFrame ??= MaterialsController.Get("roundedRectFrame");
     _mesh ??= Window.QuadMesh;
-    
-    this.boxDecoration = boxDecoration ?? new BoxDecoration();
   }
-  
+
+  public static DecoratedBox Create(BoxDecoration? boxDecoration = null)
+  {
+    var obj = DecoratedBoxPool.Create();
+    obj.boxDecoration = boxDecoration ?? new BoxDecoration();
+    return obj;
+  }
+
+  public override void Delete()
+  {
+    DecoratedBoxPool.Delete(this);
+  }
+
   public override void Render()
   {
     UpdateModel();
@@ -89,30 +104,5 @@ public class DecoratedBox : Node
     }
     
     if (children.Count == 0) size = newConstraints.Biggest;
-  }
-}
-
-public static partial class Ui
-{
-  public static void DecoratedBox(
-    BoxDecoration? decoration = null
-  )
-  {
-    S_DecoratedBox(decoration);
-    E_DecoratedBox();
-  }
-
-  public static void S_DecoratedBox(
-    BoxDecoration? decoration = null
-  )
-  {
-    var elem = new DecoratedBox(decoration);
-    currentChildren.Peek().Add(elem);
-    currentChildren.Push(elem.children);
-  }
-
-  public static void E_DecoratedBox()
-  {
-    currentChildren.Pop();
   }
 }

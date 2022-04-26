@@ -1,22 +1,31 @@
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
+using open_tk_renderer.Utils;
 using OpenTK.Mathematics;
 
-namespace open_tk_renderer.Renderer.ImGui;
+namespace open_tk_renderer.Renderer.UI.ImGui.Layout;
+
+public class SizedBoxPool : Pool<SizedBox>
+{
+}
 
 public class SizedBox : Node
 {
   public float width;
   public float height;
 
-  public SizedBox(
-    float width = 0,
-    float height = 0
-  )
+  public static SizedBox Create(float width = 0, float height = 0)
   {
-    this.width = width;
-    this.height = height;
+    var obj = SizedBoxPool.Create();
+    obj.width = width;
+    obj.height = height;
+    return obj;
   }
-  
+
+  public override void Delete()
+  {
+    SizedBoxPool.Delete(this);
+  }
+
   public override void CalcSize(BoxConstraints constraints)
   {
     Vector2 temp = new(width, height);
@@ -46,26 +55,5 @@ public class SizedBox : Node
     }
 
     if (children.Count == 0) size = tempConstraints.Smallest;
-  }
-}
-
-public static partial class Ui
-{
-  public static void SizedBox(float width = 0, float height = 0)
-  {
-    S_SizedBox(width, height);
-    E_SizedBox();
-  }
-  
-  public static void S_SizedBox(float width = 0, float height = 0)
-  {
-    var elem = new SizedBox(width, height);
-    currentChildren.Peek().Add(elem);
-    currentChildren.Push(elem.children);
-  }
-
-  public static void E_SizedBox()
-  {
-    currentChildren.Pop();
   }
 }
