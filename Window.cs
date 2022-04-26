@@ -57,8 +57,8 @@ public class Window : GameWindow
     base.OnLoad();
     InitWatcher();
 
-    root = new SizedBox();
-    root.Append(new App());
+    // root = new SizedBox();
+    // root.Append(new App());
   }
 
   private Throttle _throttle = new();
@@ -80,8 +80,8 @@ public class Window : GameWindow
           Timeout.Set(
             () =>
             {
-              root = new SizedBox();
-              root.Append(new App());
+              // root = new SizedBox();
+              // root.Append(new App());
               Console.WriteLine("Hot reload!");
             },
             ms: 100
@@ -152,29 +152,11 @@ public class Window : GameWindow
     // SizeAndPositionWidget(root);
     // RenderWidget(root);
 
-    Ui.Page(Size, BoxConstraints.Tight(Size));
+    Ui.Page(Size);
     {
-      Ui.SizedBox(100, 100);
-      {
-        Ui.DecoratedBox(new BoxDecoration(Colors.Red));
-        {
-          Ui.Padding(EdgeInsets.All(10));
-          {
-            Ui.DecoratedBox(new BoxDecoration(Colors.Green));
-          }
-        }
-      }
-      Ui.SizedBox(100, 100);
-      {
-        Ui.DecoratedBox(new BoxDecoration(Colors.Red));
-        {
-          Ui.Padding(EdgeInsets.All(10));
-          {
-            Ui.DecoratedBox(new BoxDecoration(Colors.Green));
-          }
-        }
-      }
+      Ui.DecoratedBox(new BoxDecoration(Colors.Red));
     }
+    Ui.PageEnd();
 
     // Graphics.DrawText(
     //   "FiraCode-Regular",

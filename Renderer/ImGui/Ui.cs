@@ -5,25 +5,31 @@ namespace open_tk_renderer.Renderer.ImGui;
 
 public static partial class Ui
 {
-  public static Vector2 size;
-  public static Vector2 position;
-  public static BoxConstraints constraints;
-  
-  private static Mesh _mesh;
-  private static Material _roundedRect;
-  private static Material _roundedRectFrame;
+  public static bool initialized = false;
 
-  public static void Init()
+  public static Node? root;
+  public static Stack<List<Node>> currentChildren = new();
+
+  public static void Init() { }
+
+  public static void Page(Vector2 size)
   {
-    _roundedRect = MaterialsController.Get("roundedRect")!;
-    _roundedRectFrame = MaterialsController.Get("roundedRectFrame")!;
-    _mesh = Window.QuadMesh;
+    root = new SizedBox(size.X, size.Y);
+    currentChildren.Push(root.children);
   }
 
-  public static void Page(Vector2 size, BoxConstraints constraints)
+  public static void PageEnd()
   {
-    Ui.constraints = constraints;
-    Ui.size = Ui.constraints.Constrain(size);
-    position = new(0);
+    currentChildren.Pop();
+    
+    root.Layout();
+    root.CalcSize(BoxConstraints.Tight(Window.WindowSize));
+    root.CalcPosition();
+    root.Render();
+
+    if (!initialized)
+    {
+      initialized = true;
+    }
   }
 }

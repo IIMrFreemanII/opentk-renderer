@@ -44,7 +44,7 @@ public class SizedBox : Widget
       ? constraints.maxHeight
       : temp.Y;
 
-    var tempConstraints = new BoxConstraints(
+    var newConstraints = new BoxConstraints(
       minWidth,
       maxWidth,
       minHeight,
@@ -53,10 +53,10 @@ public class SizedBox : Widget
 
     foreach (var child in children)
     {
-      child.CalcSize(tempConstraints);
-      size = tempConstraints.Constrain(child.size);
+      child.CalcSize(newConstraints);
+      size = newConstraints.Constrain(child.size);
     }
 
-    if (children.Count == 0) size = tempConstraints.Smallest;
+    if (children.Count == 0) size = newConstraints.Smallest;
   }
 }

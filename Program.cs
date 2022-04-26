@@ -9,7 +9,8 @@ bool benchmark = false;
 
 if (benchmark)
 {
-  BenchmarkRunner.Run<BindBenchmark>();
+  // BenchmarkRunner.Run<BindBenchmark>();
+  // BenchmarkRunner.Run<ClassAllocBenchmark>();
 }
 else
 {

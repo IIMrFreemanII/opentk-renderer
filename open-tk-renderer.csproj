@@ -27,9 +27,5 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="Renderer\ImGui\Utils" />
-    </ItemGroup>
 
 </Project>
