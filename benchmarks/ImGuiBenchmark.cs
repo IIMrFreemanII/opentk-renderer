@@ -14,13 +14,13 @@ public class ImGuiBenchmark
   [Benchmark(Baseline = true)]
   public void ImGui()
   {
-    Ui.Page(new(500));
+    Ui.S_Page(new(500));
     {
       Ui.S_SizedBox(100, 100);
       Ui.S_DecoratedBox(new BoxDecoration(Colors.Red));
       Ui.E_DecoratedBox();
       Ui.E_SizedBox();
     }
-    Ui.PageEnd(false);
+    Ui.E_Page(false);
   }
 }

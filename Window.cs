@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.Primitives;
 using open_tk_renderer.Renderer.Text;
@@ -149,14 +150,24 @@ public class Window : GameWindow
     // SizeAndPositionWidget(root);
     // RenderWidget(root);
 
-    Ui.Page(Size);
+    Ui.S_Page(Size);
     {
-      Ui.S_SizedBox(100, 100);
-      Ui.S_DecoratedBox(new BoxDecoration(Colors.Green));
-      Ui.E_DecoratedBox();
-      Ui.E_SizedBox();
+      Ui.S_Padding(EdgeInsets.All(10));
+      {
+        Ui.S_DecoratedBox(new BoxDecoration(Colors.Red));
+        {
+          Ui.S_Padding(EdgeInsets.All(10));
+          Ui.S_SizedBox(100, 100);
+          Ui.S_DecoratedBox(new BoxDecoration(Colors.Green));
+          Ui.E_DecoratedBox();
+          Ui.E_SizedBox();
+          Ui.E_Padding();
+        }
+        Ui.E_DecoratedBox();
+      }
+      Ui.E_Padding();
     }
-    Ui.PageEnd();
+    Ui.E_Page();
 
     // Graphics.DrawText(
     //   "FiraCode-Regular",

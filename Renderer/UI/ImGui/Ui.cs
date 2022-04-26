@@ -11,14 +11,14 @@ public static class Ui
   public static List<Node> nodes = new();
   public static Stack<List<Node>> currentChildren = new();
 
-  public static void Page(Vector2 size)
+  public static void S_Page(Vector2 size)
   {
     root = SizedBox.Create(size.X, size.Y);
     nodes.Add(root);
     currentChildren.Push(root.children);
   }
 
-  public static void PageEnd(bool render = true)
+  public static void E_Page(bool render = true)
   {
     currentChildren.Pop();
     
@@ -61,6 +61,19 @@ public static class Ui
   }
 
   public static void E_SizedBox()
+  {
+    currentChildren.Pop();
+  }
+  
+  public static void S_Padding(EdgeInsets? insets = null)
+  {
+    var elem = Padding.Create(insets);
+    nodes.Add(elem);
+    currentChildren.Peek().Add(elem);
+    currentChildren.Push(elem.children);
+  }
+
+  public static void E_Padding()
   {
     currentChildren.Pop();
   }
