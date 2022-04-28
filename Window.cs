@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using open_tk_renderer.benchmarks;
+using open_tk_renderer.ECS.Components;
 using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.Primitives;
 using open_tk_renderer.Renderer.Text;
@@ -120,12 +122,17 @@ public class Window : GameWindow
       foreach (var child in widget.children) HandleHierarchyRender(child);
     }
   }
+  
+  private EcsBenchmark _ecsBenchmark = new ();
 
   protected override void OnRenderFrame(FrameEventArgs args)
   {
     base.OnRenderFrame(args);
 
-    Render();
+    _ecsBenchmark.ECSComponent();
+    _ecsBenchmark.ClassComponent();
+
+    // Render();
     // if (_shouldRenderUi)
     // {
     //   Render();

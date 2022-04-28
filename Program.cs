@@ -9,7 +9,8 @@ bool benchmark = false;
 
 if (benchmark)
 {
-  BenchmarkRunner.Run<ImGuiBenchmark>();
+  BenchmarkRunner.Run<EcsBenchmark>();
+  // BenchmarkRunner.Run<ImGuiBenchmark>();
   // BenchmarkRunner.Run<PoolBenchmark>();
   // BenchmarkRunner.Run<BindBenchmark>();
   // BenchmarkRunner.Run<ClassAllocBenchmark>();
