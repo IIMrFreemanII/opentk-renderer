@@ -28,8 +28,9 @@ public class Padding : Node
     size = constraints.Biggest;
     var newConstraints = BoxConstraints.Loose(size);
 
-    foreach (var child in children)
+    for (int i = 0; i < children.Count; i++)
     {
+      var child = children[i];
       child.CalcSize(newConstraints.Deflate(padding));
       size = newConstraints.Constrain(padding.InflateSize(child.size));
     }
@@ -37,8 +38,9 @@ public class Padding : Node
   
   public override void CalcPosition()
   {
-    foreach (var child in children)
+    for (int i = 0; i < children.Count; i++)
     {
+      var child = children[i];
       child.position = position + padding.TopLeft;
       child.CalcPosition();
     }
