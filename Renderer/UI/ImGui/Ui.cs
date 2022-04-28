@@ -21,22 +21,22 @@ public static class Ui
   public static void E_Page(bool render = true)
   {
     currentChildren.Pop();
-    
+
     root.Layout();
     root.CalcSize(BoxConstraints.Tight(Window.WindowSize));
     root.CalcPosition();
     if (render) root.Render();
-    
+
     for (int i = 0; i < nodes.Count; i++)
     {
       var node = nodes[i];
       node.children.Clear();
       node.Delete();
     }
-    
+
     nodes.Clear();
   }
-  
+
   public static void S_DecoratedBox(
     BoxDecoration? decoration = null
   )
@@ -51,7 +51,7 @@ public static class Ui
   {
     currentChildren.Pop();
   }
-  
+
   public static void S_SizedBox(float width = 0, float height = 0)
   {
     var elem = SizedBox.Create(width, height);
@@ -64,7 +64,7 @@ public static class Ui
   {
     currentChildren.Pop();
   }
-  
+
   public static void S_Padding(EdgeInsets? insets = null)
   {
     var elem = Padding.Create(insets);
@@ -74,6 +74,44 @@ public static class Ui
   }
 
   public static void E_Padding()
+  {
+    currentChildren.Pop();
+  }
+
+  public static void S_Flex(
+    Axis direction = Axis.Horizontal,
+    MainAxisAlignment mainAxisAlignment = MainAxisAlignment.Start,
+    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.Start,
+    TextDirection textDirection = TextDirection.Ltr,
+    VerticalDirection verticalDirection = VerticalDirection.Down
+  )
+  {
+    var elem = Flex.Create(
+      direction,
+      mainAxisAlignment,
+      crossAxisAlignment,
+      textDirection,
+      verticalDirection
+    );
+    nodes.Add(elem);
+    currentChildren.Peek().Add(elem);
+    currentChildren.Push(elem.children);
+  }
+
+  public static void E_Flex()
+  {
+    currentChildren.Pop();
+  }
+
+  public static void S_Expanded(int flex = 0)
+  {
+    var elem = Expanded.Create(flex);
+    nodes.Add(elem);
+    currentChildren.Peek().Add(elem);
+    currentChildren.Push(elem.children);
+  }
+  
+  public static void E_Expanded()
   {
     currentChildren.Pop();
   }

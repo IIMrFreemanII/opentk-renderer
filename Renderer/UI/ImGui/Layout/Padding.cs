@@ -3,9 +3,7 @@ using open_tk_renderer.Utils;
 
 namespace open_tk_renderer.Renderer.UI.ImGui.Layout;
 
-public class PaddingPool : Pool<Padding>
-{
-}
+public class PaddingPool : Pool<Padding> { }
 
 public class Padding : Node
 {
@@ -20,22 +18,22 @@ public class Padding : Node
 
   public override void Delete()
   {
+    base.Delete();
     PaddingPool.Delete(this);
   }
-  
+
   public override void CalcSize(BoxConstraints constraints)
   {
     size = constraints.Biggest;
-    var newConstraints = BoxConstraints.Loose(size);
 
     for (int i = 0; i < children.Count; i++)
     {
       var child = children[i];
-      child.CalcSize(newConstraints.Deflate(padding));
-      size = newConstraints.Constrain(padding.InflateSize(child.size));
+      child.CalcSize(constraints.Deflate(padding));
+      size = constraints.Constrain(padding.InflateSize(child.size));
     }
   }
-  
+
   public override void CalcPosition()
   {
     for (int i = 0; i < children.Count; i++)

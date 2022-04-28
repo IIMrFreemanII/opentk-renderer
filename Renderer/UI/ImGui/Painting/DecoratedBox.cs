@@ -35,6 +35,7 @@ public class DecoratedBox : Node
 
   public override void Delete()
   {
+    base.Delete();
     DecoratedBoxPool.Delete(this);
   }
 

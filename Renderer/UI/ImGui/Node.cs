@@ -49,6 +49,7 @@ public class Node
 
   public virtual void Delete()
   {
-    
+    position = new();
+    size = new();
   }
 }

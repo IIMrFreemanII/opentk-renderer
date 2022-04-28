@@ -126,10 +126,10 @@ public struct BoxConstraints
   public BoxConstraints Deflate(EdgeInsets edgeInsets)
   {
     return new BoxConstraints(
-      minWidth,
-      maxWidth - edgeInsets.Horizontal,
-      minHeight,
-      maxHeight - edgeInsets.Vertical
+      Math.Clamp(minWidth - edgeInsets.Horizontal, 0, maxWidth),
+      Math.Clamp(maxWidth - edgeInsets.Horizontal, 0, maxWidth),
+      Math.Clamp(minHeight - edgeInsets.Vertical, 0, maxHeight),
+      Math.Clamp(maxHeight - edgeInsets.Vertical, 0, maxHeight)
     );
   }
 }

@@ -1,6 +1,3 @@
-using System.Diagnostics;
-using open_tk_renderer.benchmarks;
-using open_tk_renderer.ECS.Components;
 using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.Primitives;
 using open_tk_renderer.Renderer.Text;
@@ -123,16 +120,11 @@ public class Window : GameWindow
     }
   }
   
-  private EcsBenchmark _ecsBenchmark = new ();
-
   protected override void OnRenderFrame(FrameEventArgs args)
   {
     base.OnRenderFrame(args);
 
-    _ecsBenchmark.ECSComponent();
-    _ecsBenchmark.ClassComponent();
-
-    // Render();
+    Render();
     // if (_shouldRenderUi)
     // {
     //   Render();
@@ -159,20 +151,29 @@ public class Window : GameWindow
 
     Ui.S_Page(Size);
     {
-      Ui.S_Padding(EdgeInsets.All(10));
+      Ui.S_Flex(crossAxisAlignment: CrossAxisAlignment.Stretch);
       {
-        Ui.S_DecoratedBox(new BoxDecoration(Colors.Red));
+
+        Ui.S_SizedBox(100, 100);
+        Ui.S_DecoratedBox(new BoxDecoration(Colors.Green));
+        Ui.E_DecoratedBox();
+        Ui.E_SizedBox();
+        
+        Ui.S_Expanded(1);
         {
-          Ui.S_Padding(EdgeInsets.All(10));
           Ui.S_SizedBox(100, 100);
-          Ui.S_DecoratedBox(new BoxDecoration(Colors.Green));
+          Ui.S_DecoratedBox(new BoxDecoration(Colors.Red));
           Ui.E_DecoratedBox();
           Ui.E_SizedBox();
-          Ui.E_Padding();
         }
+        Ui.E_Expanded();
+        
+        Ui.S_SizedBox(100, 100);
+        Ui.S_DecoratedBox(new BoxDecoration(Colors.Blue));
         Ui.E_DecoratedBox();
+        Ui.E_SizedBox();
       }
-      Ui.E_Padding();
+      Ui.E_Flex();
     }
     Ui.E_Page();
 

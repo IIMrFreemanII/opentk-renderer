@@ -23,6 +23,7 @@ public class SizedBox : Node
 
   public override void Delete()
   {
+    base.Delete();
     SizedBoxPool.Delete(this);
   }
 
