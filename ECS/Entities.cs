@@ -2,13 +2,25 @@ namespace open_tk_renderer.ECS;
 
 public class View
 {
-  
+  // components
+
+  // method to iterate on data (using ref modifier)
+}
+
+public class ComponentData
+{
+  public Type type;
+  // component index in components arr
+  public int location;
+  public int entityId;
 }
 
 public class Registry
 {
   private List<Entity> _entities = new(1000);
-  private Dictionary<Type, List<object>> _views = new();
+  // maps entities to its components
+  private Dictionary<int, List<ComponentData>> _entityIndexToComponentData = new(1000);
+  private Dictionary<Type, List<IComponent>> _typeToComponents = new(20);
 
   public Entity Create()
   {
@@ -16,22 +28,69 @@ public class Registry
     _entities.Add(entity);
     return entity;
   }
-
-  public void Emplace<T1>(Entity entity, T1 component) where T1 : struct
+  public void Delete(Entity entity)
   {
-    if (_views.TryGetValue(typeof(T1), out List<object> temp))
+    
+  }
+
+  public void AddComponent<T1>(Entity entity, T1 component) where T1 : IComponent
+  {
+    int location;
+    if (_typeToComponents.TryGetValue(typeof(T1), out List<IComponent> components))
     {
-      temp.Add(component); 
+      location = components.Count;
+      components.Add(component);
     }
     else
     {
-      var view = new List<object> { component };
-      _views.Add(typeof(T1), view);
+      location = 0;
+      _typeToComponents.Add(typeof(T1), new() { component });
+    }
+
+    if (_entityIndexToComponentData.TryGetValue(
+      entity.id,
+      out List<ComponentData> componentsData
+    ))
+    {
+      componentsData.Add(
+        new ComponentData
+        {
+          type = typeof(T1),
+          location = location,
+          entityId = entity.id
+        }
+      );
+    }
+    else
+    {
+      _entityIndexToComponentData.Add(
+        entity.id,
+        new()
+        {
+          new ComponentData
+          {
+            type = typeof(T1),
+            location = location,
+            entityId = entity.id
+          }
+        }
+      );
     }
   }
 
-  public List<T1>? View<T1>()
+  public void RemoveComponent<T1>(Entity entity) where T1 : IComponent
   {
-    return _views[typeof(T1)] as List<T1>;
+    
   }
+
+  public void GetComponent<T1>(Entity entity) where T1 : IComponent
+  {
+    
+  }
+
+  // iterate over a view of components
+  // public List<T1>? View<T1>()
+  // {
+  //   return _views[typeof(T1)] as List<T1>;
+  // }
 }

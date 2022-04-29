@@ -1,3 +1,5 @@
+using open_tk_renderer.ECS;
+using open_tk_renderer.ECS.Components;
 using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.Primitives;
 using open_tk_renderer.Renderer.Text;
@@ -49,10 +51,19 @@ public class Window : GameWindow
     Coroutine.Start(ShadersController.HandleRecompile(delay: 500));
   }
 
+  private Registry _registry = new ();
+
   protected override void OnLoad()
   {
     base.OnLoad();
     InitWatcher();
+
+    _registry.Create();
+    _registry.Create();
+    var entity = _registry.Create();
+    _registry.AddComponent(entity, new Size());
+    _registry.AddComponent(entity, new Position());
+    Console.WriteLine();
 
     // root = new SizedBox();
     // root.Append(new App());
