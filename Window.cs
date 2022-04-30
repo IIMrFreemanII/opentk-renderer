@@ -160,6 +160,16 @@ public class Window : GameWindow
 
         Ui.S_SizedBox(100, 100);
         Ui.S_DecoratedBox(new BoxDecoration(Colors.Green));
+        {
+          Ui.S_Align(alignment: Alignment.Center);
+          {
+            Ui.S_SizedBox(50, 50);
+            Ui.S_DecoratedBox(new BoxDecoration(Colors.Blue));
+            Ui.E_DecoratedBox();
+            Ui.E_SizedBox();
+          }
+          Ui.E_Align();
+        }
         Ui.E_DecoratedBox();
         Ui.E_SizedBox();
         

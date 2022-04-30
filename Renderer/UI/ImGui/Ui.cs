@@ -110,8 +110,34 @@ public static class Ui
     currentChildren.Peek().Add(elem);
     currentChildren.Push(elem.children);
   }
-  
+
   public static void E_Expanded()
+  {
+    currentChildren.Pop();
+  }
+
+  public static void S_Align(Alignment? alignment = null, Vector2? sizeFactor = null)
+  {
+    var elem = Align.Create(alignment, sizeFactor);
+    nodes.Add(elem);
+    currentChildren.Peek().Add(elem);
+    currentChildren.Push(elem.children);
+  }
+
+  public static void E_Align()
+  {
+    currentChildren.Pop();
+  }
+  
+  public static void S_Center(Vector2? sizeFactor = null)
+  {
+    var elem = Center.Create(sizeFactor);
+    nodes.Add(elem);
+    currentChildren.Peek().Add(elem);
+    currentChildren.Push(elem.children);
+  }
+
+  public static void E_Center()
   {
     currentChildren.Pop();
   }
