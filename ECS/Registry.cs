@@ -9,7 +9,7 @@ public class View
 
 public class ComponentData
 {
-  public Type type;
+  public string type = string.Empty;
   // component index in components arr
   public int location;
   public int entityId;
@@ -20,7 +20,7 @@ public class Registry
   private List<Entity> _entities = new(1000);
   // maps entities to its components
   private Dictionary<int, List<ComponentData>> _entityIndexToComponentData = new(1000);
-  private Dictionary<Type, List<IComponent>> _typeToComponents = new(20);
+  private Dictionary<string, List<IComponent>> _typeToComponents = new(20);
 
   /// <summary>
   /// Creates entity
@@ -64,7 +64,7 @@ public class Registry
   public void AddComponent<T1>(Entity entity, T1 component) where T1 : IComponent
   {
     int location;
-    if (_typeToComponents.TryGetValue(typeof(T1), out List<IComponent> components))
+    if (_typeToComponents.TryGetValue(nameof(T1), out List<IComponent> components))
     {
       location = components.Count;
       components.Add(component);
@@ -72,7 +72,7 @@ public class Registry
     else
     {
       location = 0;
-      _typeToComponents.Add(typeof(T1), new() { component });
+      _typeToComponents.Add(nameof(T1), new() { component });
     }
 
     if (_entityIndexToComponentData.TryGetValue(
@@ -83,7 +83,7 @@ public class Registry
       componentsData.Add(
         new ComponentData
         {
-          type = typeof(T1),
+          type = nameof(T1),
           location = location,
           entityId = entity.id
         }
@@ -97,7 +97,7 @@ public class Registry
         {
           new ComponentData
           {
-            type = typeof(T1),
+            type = nameof(T1),
             location = location,
             entityId = entity.id
           }
@@ -111,7 +111,7 @@ public class Registry
     if (_entityIndexToComponentData.TryGetValue(entity.id, out var entityComponentsData))
     {
       var index =
-        entityComponentsData.FindIndex((componentData) => componentData.type == typeof(T1));
+        entityComponentsData.FindIndex((componentData) => componentData.type == nameof(T1));
       if (index != -1)
       {
         var componentData = entityComponentsData[index];
@@ -121,7 +121,7 @@ public class Registry
     }
   }
 
-  public void RemoveComponent(Entity entity, Type type)
+  public void RemoveComponent(Entity entity, string type)
   {
     if (_entityIndexToComponentData.TryGetValue(entity.id, out var entityComponentsData))
     {
@@ -139,7 +139,7 @@ public class Registry
   {
     if (_entityIndexToComponentData.TryGetValue(entity.id, out var componentsData))
     {
-      var componentData = componentsData.Find((componentData) => componentData.type == typeof(T1));
+      var componentData = componentsData.Find((componentData) => componentData.type == nameof(T1));
       if (componentData is { })
       {
         return (T1)_typeToComponents[componentData.type][componentData.location];
@@ -147,6 +147,20 @@ public class Registry
     }
 
     return default;
+  }
+
+  public bool HasComponent<T1>(Entity entity) where T1 : IComponent
+  {
+    if (_entityIndexToComponentData.TryGetValue(entity.id, out var componentsData))
+    {
+      var componentData = componentsData.Find((componentData) => componentData.type == nameof(T1));
+      if (componentData is { })
+      {
+        return true;
+      }
+    }
+    
+    return false;
   }
 
   // iterate over a view of components

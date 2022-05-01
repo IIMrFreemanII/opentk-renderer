@@ -58,6 +58,9 @@ public class Window : GameWindow
     base.OnLoad();
     InitWatcher();
 
+    var entity = _registry.Create();
+    _registry.AddComponent(entity, new Position());
+    Console.WriteLine();
     // root = new SizedBox();
     // root.Append(new App());
   }
