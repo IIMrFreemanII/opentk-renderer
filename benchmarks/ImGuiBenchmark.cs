@@ -1,7 +1,6 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
-using open_tk_renderer.Renderer.UI;
-using open_tk_renderer.Renderer.UI.ImGui;
+using open_tk_renderer.Renderer.UI.ImGui.Layout;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
 
 namespace open_tk_renderer.benchmarks;
@@ -11,16 +10,21 @@ namespace open_tk_renderer.benchmarks;
 [RankColumn]
 public class ImGuiBenchmark
 {
-  [Benchmark(Baseline = true)]
-  public void ImGui()
-  {
-    Ui.S_Page(new(500));
-    {
-      Ui.S_SizedBox(100, 100);
-      Ui.S_DecoratedBox(new BoxDecoration(Colors.Red));
-      Ui.E_DecoratedBox();
-      Ui.E_SizedBox();
-    }
-    Ui.E_Page(false);
-  }
+  // [Benchmark(Baseline = true)]
+  // public void NodeInterface()
+  // {
+  //   var node = new StructSizedBox();
+  //   node.Layout();
+  //   node.CalcSize(BoxConstraints.Loose(new(500)));
+  //   node.CalcPosition();
+  // }
+  //
+  // [Benchmark]
+  // public void NodeClass()
+  // {
+  //   var node = new SizedBox();
+  //   node.Layout();
+  //   node.CalcSize(BoxConstraints.Loose(new(500)));
+  //   node.CalcPosition();
+  // }
 }

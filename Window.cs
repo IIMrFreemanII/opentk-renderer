@@ -1,10 +1,12 @@
 using open_tk_renderer.ECS;
 using open_tk_renderer.ECS.Components;
+using open_tk_renderer.ECS.Systems;
 using open_tk_renderer.Renderer;
 using open_tk_renderer.Renderer.Primitives;
 using open_tk_renderer.Renderer.Text;
 using open_tk_renderer.Renderer.UI;
 using open_tk_renderer.Renderer.UI.ImGui;
+using open_tk_renderer.Renderer.UI.ImGui.Layout;
 using open_tk_renderer.Renderer.UI.Widgets;
 using open_tk_renderer.Renderer.UI.Widgets.Utils;
 using open_tk_renderer.Utils;
@@ -51,16 +53,25 @@ public class Window : GameWindow
     Coroutine.Start(ShadersController.HandleRecompile(delay: 500));
   }
 
-  private Registry _registry = new ();
+  private Registry _uiRegistry;
+  private DecoratedBoxSystem _decoratedBoxSystem;
 
   protected override void OnLoad()
   {
     base.OnLoad();
     InitWatcher();
 
-    var entity = _registry.Create();
-    _registry.AddComponent(entity, new Position());
-    Console.WriteLine();
+    _uiRegistry = new Registry();
+    _decoratedBoxSystem = new DecoratedBoxSystem(_uiRegistry);
+
+    var root = _uiRegistry.Create();
+    _uiRegistry.AddComponent(root, new Position());
+    _uiRegistry.AddComponent(root, new Size { value = new(100) });
+    _uiRegistry.AddComponent(
+      root,
+      new Decoration { value = new BoxDecoration(color: Colors.Red) }
+    );
+
     // root = new SizedBox();
     // root.Append(new App());
   }
@@ -126,7 +137,7 @@ public class Window : GameWindow
       foreach (var child in widget.children) HandleHierarchyRender(child);
     }
   }
-  
+
   protected override void OnRenderFrame(FrameEventArgs args)
   {
     base.OnRenderFrame(args);
@@ -156,43 +167,43 @@ public class Window : GameWindow
     // SizeAndPositionWidget(root);
     // RenderWidget(root);
 
-    Ui.S_Page(Size);
-    {
-      Ui.S_Flex(crossAxisAlignment: CrossAxisAlignment.Stretch);
-      {
-
-        Ui.S_SizedBox(100, 100);
-        Ui.S_DecoratedBox(new BoxDecoration(Colors.Green));
-        {
-          Ui.S_Align(alignment: Alignment.Center);
-          {
-            Ui.S_SizedBox(50, 50);
-            Ui.S_DecoratedBox(new BoxDecoration(Colors.Blue));
-            Ui.E_DecoratedBox();
-            Ui.E_SizedBox();
-          }
-          Ui.E_Align();
-        }
-        Ui.E_DecoratedBox();
-        Ui.E_SizedBox();
-        
-        Ui.S_Expanded(1);
-        {
-          Ui.S_SizedBox(100, 100);
-          Ui.S_DecoratedBox(new BoxDecoration(Colors.Red));
-          Ui.E_DecoratedBox();
-          Ui.E_SizedBox();
-        }
-        Ui.E_Expanded();
-        
-        Ui.S_SizedBox(100, 100);
-        Ui.S_DecoratedBox(new BoxDecoration(Colors.Blue));
-        Ui.E_DecoratedBox();
-        Ui.E_SizedBox();
-      }
-      Ui.E_Flex();
-    }
-    Ui.E_Page();
+    _decoratedBoxSystem.Update();
+    // Ui.S_Page(Size);
+    // {
+    //   Ui.S_Flex(crossAxisAlignment: CrossAxisAlignment.Stretch);
+    //   {
+    //     Ui.S_SizedBox(100, 100);
+    //     Ui.S_DecoratedBox(new BoxDecoration(Colors.Green));
+    //     {
+    //       Ui.S_Align(alignment: Alignment.Center);
+    //       {
+    //         Ui.S_SizedBox(50, 50);
+    //         Ui.S_DecoratedBox(new BoxDecoration(Colors.Blue));
+    //         Ui.E_DecoratedBox();
+    //         Ui.E_SizedBox();
+    //       }
+    //       Ui.E_Align();
+    //     }
+    //     Ui.E_DecoratedBox();
+    //     Ui.E_SizedBox();
+    //
+    //     Ui.S_Expanded(1);
+    //     {
+    //       Ui.S_SizedBox(100, 100);
+    //       Ui.S_DecoratedBox(new BoxDecoration(Colors.Red));
+    //       Ui.E_DecoratedBox();
+    //       Ui.E_SizedBox();
+    //     }
+    //     Ui.E_Expanded();
+    //
+    //     Ui.S_SizedBox(100, 100);
+    //     Ui.S_DecoratedBox(new BoxDecoration(Colors.Blue));
+    //     Ui.E_DecoratedBox();
+    //     Ui.E_SizedBox();
+    //   }
+    //   Ui.E_Flex();
+    // }
+    // Ui.E_Page();
 
     // Graphics.DrawText(
     //   "FiraCode-Regular",
