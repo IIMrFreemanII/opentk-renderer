@@ -64,7 +64,7 @@ public class Registry
   public void AddComponent<T1>(Entity entity, T1 component) where T1 : IComponent
   {
     int location;
-    if (_typeToComponents.TryGetValue(nameof(T1), out List<IComponent> components))
+    if (_typeToComponents.TryGetValue(nameof(T1), out var components))
     {
       location = components.Count;
       components.Add(component);

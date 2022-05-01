@@ -11,6 +11,18 @@ public static class Ui
   public static List<Node> nodes = new();
   public static Stack<List<Node>> currentChildren = new();
 
+  private static void S_Node(Node node)
+  {
+    nodes.Add(node);
+    currentChildren.Peek().Add(node);
+    currentChildren.Push(node.children);
+  }
+
+  private static void E_Node()
+  {
+    currentChildren.Pop();
+  }
+
   public static void S_Page(Vector2 size)
   {
     root = SizedBox.Create(size.X, size.Y);
@@ -41,41 +53,32 @@ public static class Ui
     BoxDecoration? decoration = null
   )
   {
-    var elem = DecoratedBox.Create(decoration);
-    nodes.Add(elem);
-    currentChildren.Peek().Add(elem);
-    currentChildren.Push(elem.children);
+    S_Node(DecoratedBox.Create(decoration));
   }
 
   public static void E_DecoratedBox()
   {
-    currentChildren.Pop();
+    E_Node();
   }
 
   public static void S_SizedBox(float width = 0, float height = 0)
   {
-    var elem = SizedBox.Create(width, height);
-    nodes.Add(elem);
-    currentChildren.Peek().Add(elem);
-    currentChildren.Push(elem.children);
+    S_Node(SizedBox.Create(width, height));
   }
 
   public static void E_SizedBox()
   {
-    currentChildren.Pop();
+    E_Node();
   }
 
   public static void S_Padding(EdgeInsets? insets = null)
   {
-    var elem = Padding.Create(insets);
-    nodes.Add(elem);
-    currentChildren.Peek().Add(elem);
-    currentChildren.Push(elem.children);
+    S_Node(Padding.Create(insets));
   }
 
   public static void E_Padding()
   {
-    currentChildren.Pop();
+    E_Node();
   }
 
   public static void S_Flex(
@@ -86,59 +89,49 @@ public static class Ui
     VerticalDirection verticalDirection = VerticalDirection.Down
   )
   {
-    var elem = Flex.Create(
-      direction,
-      mainAxisAlignment,
-      crossAxisAlignment,
-      textDirection,
-      verticalDirection
+    S_Node(
+      Flex.Create(
+        direction,
+        mainAxisAlignment,
+        crossAxisAlignment,
+        textDirection,
+        verticalDirection
+      )
     );
-    nodes.Add(elem);
-    currentChildren.Peek().Add(elem);
-    currentChildren.Push(elem.children);
   }
 
   public static void E_Flex()
   {
-    currentChildren.Pop();
+    E_Node();
   }
 
   public static void S_Expanded(int flex = 0)
   {
-    var elem = Expanded.Create(flex);
-    nodes.Add(elem);
-    currentChildren.Peek().Add(elem);
-    currentChildren.Push(elem.children);
+    S_Node(Expanded.Create(flex));
   }
 
   public static void E_Expanded()
   {
-    currentChildren.Pop();
+    E_Node();
   }
 
   public static void S_Align(Alignment? alignment = null, Vector2? sizeFactor = null)
   {
-    var elem = Align.Create(alignment, sizeFactor);
-    nodes.Add(elem);
-    currentChildren.Peek().Add(elem);
-    currentChildren.Push(elem.children);
+    S_Node(Align.Create(alignment, sizeFactor));
   }
 
   public static void E_Align()
   {
-    currentChildren.Pop();
+    E_Node();
   }
-  
+
   public static void S_Center(Vector2? sizeFactor = null)
   {
-    var elem = Center.Create(sizeFactor);
-    nodes.Add(elem);
-    currentChildren.Peek().Add(elem);
-    currentChildren.Push(elem.children);
+    S_Node(Center.Create(sizeFactor));
   }
 
   public static void E_Center()
   {
-    currentChildren.Pop();
+    E_Node();
   }
 }
