@@ -1,14 +1,15 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
+using open_tk_renderer.ECS;
 
-namespace open_tk_renderer.benchmarks;
+namespace benchmarks;
 
 [MemoryDiagnoser]
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]
 [RankColumn]
 public class EcsBenchmark
 {
-  // public static Registry registry = new ();
+  public static Registry registry = new ();
   //
   // [Benchmark(Baseline = true)]
   // public void AddComponent()

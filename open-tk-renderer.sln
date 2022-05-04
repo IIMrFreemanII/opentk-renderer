@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "open-tk-renderer", "open-tk-renderer.csproj", "{55E3C641-F121-4A33-BA34-0E52A461E5FE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "open-tk-renderer", "open-tk-renderer/open-tk-renderer.csproj", "{55E3C641-F121-4A33-BA34-0E52A461E5FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "benchmarks", "benchmarks\benchmarks.csproj", "{AB6F45D9-D94D-4E5A-AA02-62FF7D677B9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +14,9 @@ Global
 		{55E3C641-F121-4A33-BA34-0E52A461E5FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55E3C641-F121-4A33-BA34-0E52A461E5FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55E3C641-F121-4A33-BA34-0E52A461E5FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB6F45D9-D94D-4E5A-AA02-62FF7D677B9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB6F45D9-D94D-4E5A-AA02-62FF7D677B9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB6F45D9-D94D-4E5A-AA02-62FF7D677B9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB6F45D9-D94D-4E5A-AA02-62FF7D677B9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

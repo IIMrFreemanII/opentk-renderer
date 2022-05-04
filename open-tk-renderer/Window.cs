@@ -167,7 +167,7 @@ public class Window : GameWindow
     // SizeAndPositionWidget(root);
     // RenderWidget(root);
 
-    _decoratedBoxSystem.Update();
+    // _decoratedBoxSystem.Update();
     // Ui.S_Page(Size);
     // {
     //   Ui.S_Flex(crossAxisAlignment: CrossAxisAlignment.Stretch);
