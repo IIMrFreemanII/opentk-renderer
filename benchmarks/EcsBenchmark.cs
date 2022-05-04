@@ -1,7 +1,5 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
-using open_tk_renderer.ECS;
-using open_tk_renderer.ECS.Components;
 
 namespace open_tk_renderer.benchmarks;
 

@@ -1,17 +1,5 @@
 namespace open_tk_renderer.ECS;
 
-public class View
-{
-  public Registry registry;
-  // public List<IComponent> components;
-  public List<Type> types;
-  // components
-  public View(Registry registry, List<Type> types) { }
-
-
-  // method to iterate on data (using ref modifier)
-}
-
 public class ComponentData
 {
   public Type type;
@@ -31,8 +19,75 @@ public class ComponentData
   }
 }
 
+public class ArchetypeChunk
+{
+  public Dictionary<Type, List<IComponent>> typeToComponentsMap = new();
+  public List<Entity> entities;
+  public int size;
+  public bool isFull;
+
+  public ArchetypeChunk(Type[] types, int size)
+  {
+    this.size = size;
+    entities = new(size);
+
+    for (int i = 0; i < types.Length; i++)
+    {
+      typeToComponentsMap.Add(types[i], new (size));
+    }
+  }
+
+  public void Add(Entity entity)
+  {
+    if (isFull)
+    {
+      return;
+    }
+
+    entities.Add(entity);
+    // foreach (var typeToComponent in typeToComponentsMap)
+    // {
+    //   var component = Activator.CreateInstance(typeToComponent.Key);
+    //   if (component is { })
+    //   {
+    //     typeToComponent.Value.Add((IComponent)component); 
+    //   }
+    // }
+    if (entities.Count == size)
+    {
+      isFull = true;
+    }
+  }
+
+  public void Remove(Entity entity)
+  {
+    for (int i = 0; i < entities.Count; i++)
+    {
+      if (entities[i].id == entity.id)
+      {
+        entities.RemoveAt(i);
+        isFull = false;
+        break;
+      }
+    }
+  }
+}
+
+public class Archetype
+{
+  public List<ArchetypeChunk> chunks = new();
+  public Type[] types;
+  public Archetype(params Type[] types)
+  {
+    this.types = types;
+  }
+}
+
 public class Registry
 {
+  public List<Archetype> archetypes = new();
+
+
   private List<Entity> _entities = new(1000);
   // maps entities to its components
   private Dictionary<int, List<ComponentData>> _entityIndexToComponentData = new(1000);

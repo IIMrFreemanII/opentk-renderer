@@ -1,8 +1,8 @@
 namespace open_tk_renderer.ECS;
 
-public class Entity
+public struct Entity
 {
-  public static int count = 0;
+  public static int count = 1;
   public int id;
 
   public Entity()
