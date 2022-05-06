@@ -1,116 +1,171 @@
 namespace open_tk_renderer.ECS;
 
-public class ComponentData
-{
-  public Type type;
-  // component index in components arr
-  public int location;
-  public int entityId;
+// public struct EntityComponent
+// {
+//   public Type type;
+//   // component index in components arr
+//   public int location;
+//   // public int entityId;
+//
+//   public EntityComponent(
+//     Type type,
+//     int location
+//     // int entityId
+//   )
+//   {
+//     this.type = type;
+//     this.location = location;
+//     // this.entityId = entityId;
+//   }
+// }
 
-  public ComponentData(
-    Type type,
-    int location,
-    int entityId
-  )
-  {
-    this.type = type;
-    this.location = location;
-    this.entityId = entityId;
-  }
-}
-
-public class ArchetypeChunk
+public class Archetype
 {
-  public Dictionary<Type, List<IComponent>> typeToComponentsMap = new();
+  public Dictionary<Type, List<IComponent>> typeToComponent;
   public List<Entity> entities;
-  public int size;
-  public bool isFull;
-
-  public ArchetypeChunk(Type[] types, int size)
+  public List<Type> types;
+  public bool typeless;
+  private int _size = 1000;
+  
+  public Archetype(params Type[] types)
   {
-    this.size = size;
-    entities = new(size);
-
-    for (int i = 0; i < types.Length; i++)
+    if (types.Length == 0)
     {
-      typeToComponentsMap.Add(types[i], new (size));
+      typeless = true;
+    }
+    
+    this.types = new(types);
+    entities = new(_size);
+
+    typeToComponent = new();
+    foreach (var type in types)
+    {
+      typeToComponent.Add(type, new(_size));
     }
   }
 
   public void Add(Entity entity)
   {
-    if (isFull)
-    {
-      return;
-    }
-
     entities.Add(entity);
-    // foreach (var typeToComponent in typeToComponentsMap)
-    // {
-    //   var component = Activator.CreateInstance(typeToComponent.Key);
-    //   if (component is { })
-    //   {
-    //     typeToComponent.Value.Add((IComponent)component); 
-    //   }
-    // }
-    if (entities.Count == size)
+    for (int i = 0; i < types.Count; i++)
     {
-      isFull = true;
-    }
-  }
-
-  public void Remove(Entity entity)
-  {
-    for (int i = 0; i < entities.Count; i++)
-    {
-      if (entities[i].id == entity.id)
+      var type = types[i];
+      var component = Activator.CreateInstance(type);
+      if (component is IComponent temp)
       {
-        entities.RemoveAt(i);
-        isFull = false;
-        break;
+        typeToComponent[type].Add(temp);
       }
     }
   }
-}
-
-public class Archetype
-{
-  public List<ArchetypeChunk> chunks = new();
-  public Type[] types;
-  public Archetype(params Type[] types)
+  
+  public void Remove(Entity entity)
   {
-    this.types = types;
+    int index = entities.FindIndex(
+      (item) => item.id == entity.id
+    );
+    
+    if (index == -1)
+    {
+      throw new Exception("Entity not found");
+    }
+    
+    for (int i = 0; i < types.Count; i++)
+    {
+      typeToComponent[types[i]].RemoveAt(index);
+    }
+    
+    entities.RemoveAt(index);
+  }
+
+  public int IndexOf(Entity entity)
+  {
+    return entities.FindIndex(
+      (item) => item.id == entity.id
+    );
+  }
+
+  public bool Contains(Entity entity)
+  {
+    return entities.Contains(entity);
+  }
+  
+  public bool Contains(Type type)
+  {
+    return types.Contains(type);
+  }
+  
+  public bool Contains(Type[] types)
+  {
+    int count = 0;
+
+    for (int i = 0; i < types.Length; i++)
+    {
+      if (this.types.Contains(types[i]))
+      {
+        count++;
+      }
+    }
+
+    return count == types.Length;
   }
 }
+
+// todo: how to compare archetypes
+// todo: how to add archetype to entity
+// todo: how to move entity from one to another archetype
+// todo: how to add component to entity and move to another archetype
+// todo: how to query components and entities
 
 public class Registry
 {
-  public List<Archetype> archetypes = new();
-
-
-  private List<Entity> _entities = new(1000);
+  public int entitiesCount = 0;
+  public List<Archetype> archetypes = new() { new Archetype() };
+  
+  // private List<Entity> _entities = new(1000);
+  
   // maps entities to its components
-  private Dictionary<int, List<ComponentData>> _entityIndexToComponentData = new(1000);
-  public Dictionary<Type, List<IComponent>> typeToComponents = new(20);
+  // private List<List<EntityComponent>> _entityIndexToItsComponents = new(1000);
+  // public Dictionary<Type, List<IComponent>> typeToComponents = new(20);
 
-  public void Clear()
-  {
-    _entities.Clear();
-    _entityIndexToComponentData.Clear();
-    foreach (var typeToComponent in typeToComponents)
-    {
-      typeToComponent.Value.Clear();
-    }
-  }
-
-  /// <summary>
-  /// Creates entity
-  /// </summary>
-  /// <returns></returns>
   public Entity Create()
   {
-    var entity = new Entity();
-    _entities.Add(entity);
+    var entity = new Entity(entitiesCount++);
+    for (int i = 0; i < archetypes.Count; i++)
+    {
+      var archetype = archetypes[i];
+      if (archetype.typeless)
+      {
+        archetype.Add(entity);
+      }
+    }
+    return entity;
+  }
+
+  public Archetype CreateArchetype(params Type[] types)
+  {
+    for (int i = 0; i < archetypes.Count; i++)
+    {
+      var archetype = archetypes[i];
+      if (archetype.Contains(types))
+      {
+        return archetype;
+      }
+    }
+    return new Archetype(types);
+  }
+  
+  public Entity Create(Archetype archetype)
+  {
+    var entity = new Entity(entitiesCount++);
+    int index = archetypes.IndexOf(archetype);
+    if (index != -1)
+    {
+      archetypes[index].Add(entity);
+    }
+    else
+    {
+      throw new Exception("Archetype not found");
+    }
     return entity;
   }
 
@@ -121,7 +176,8 @@ public class Registry
   /// <returns></returns>
   public Entity Find(int id)
   {
-    return _entities[id];
+    // return _entities[id];
+    throw new Exception();
   }
 
   /// <summary>
@@ -130,118 +186,49 @@ public class Registry
   /// <param name="entity"></param>
   public void Delete(Entity entity)
   {
-    if (_entityIndexToComponentData.TryGetValue(entity.id, out var componentsData))
-    {
-      for (int i = 0; i < componentsData.Count; i++)
-      {
-        var componentData = componentsData[i];
-        typeToComponents[componentData.type].RemoveAt(componentData.location);
-      }
-
-      componentsData.Clear();
-    }
+    throw new Exception();
   }
 
   public void AddComponent<T1>(Entity entity, T1 component) where T1 : IComponent
   {
-    Type type = typeof(T1);
-    int location;
-    if (typeToComponents.TryGetValue(type, out var components))
+    throw new Exception();
+  }
+  
+  public T GetComponent<T>(Entity entity, T component) where T : IComponent, new()
+  {
+    var type = typeof(T);
+    
+    for (int i = 0; i < archetypes.Count; i++)
     {
-      location = components.Count;
-      components.Add(component);
-    }
-    else
-    {
-      location = 0;
-      typeToComponents.Add(type, new() { component });
+      var archetype = archetypes[i];
+      int entityIndex = archetype.IndexOf(entity);
+      if (entityIndex != -1)
+      {
+        return (T)archetype.typeToComponent[type][entityIndex];
+      }
     }
 
-    if (_entityIndexToComponentData.TryGetValue(
-      entity.id,
-      out var componentsData
-    ))
-    {
-      componentsData.Add(
-        new ComponentData(
-          type,
-          location,
-          entity.id
-        )
-      );
-    }
-    else
-    {
-      _entityIndexToComponentData.Add(
-        entity.id,
-        new()
-        {
-          new ComponentData(
-            type,
-            location,
-            entity.id
-          )
-        }
-      );
-    }
+    return new T();
+  }
+  
+  public void SetComponent<T1>(Entity entity, T1 component) where T1 : IComponent
+  {
+    throw new Exception();
   }
 
   public void RemoveComponent<T1>(Entity entity) where T1 : IComponent
   {
-    if (_entityIndexToComponentData.TryGetValue(entity.id, out var entityComponentsData))
-    {
-      var index =
-        entityComponentsData.FindIndex((componentData) => componentData.type == typeof(T1));
-      if (index != -1)
-      {
-        var componentData = entityComponentsData[index];
-        typeToComponents[componentData.type].RemoveAt(componentData.location);
-        entityComponentsData.RemoveAt(index);
-      }
-    }
+    throw new Exception();
   }
-
-  // public void RemoveComponent(Entity entity, Type type)
-  // {
-  //   if (_entityIndexToComponentData.TryGetValue(entity.id, out var entityComponentsData))
-  //   {
-  //     var index = entityComponentsData.FindIndex((componentData) => componentData.type == type);
-  //     if (index != -1)
-  //     {
-  //       var componentData = entityComponentsData[index];
-  //       typeToComponents[componentData.type].RemoveAt(componentData.location);
-  //       entityComponentsData.RemoveAt(index);
-  //     }
-  //   }
-  // }
 
   public T1? GetComponent<T1>(Entity entity) where T1 : IComponent
   {
-    if (_entityIndexToComponentData.TryGetValue(entity.id, out var componentsData))
-    {
-      var componentData =
-        componentsData.Find((componentData) => componentData.type == typeof(T1));
-      if (componentData is { })
-      {
-        return (T1)typeToComponents[componentData.type][componentData.location];
-      }
-    }
-
-    return default;
+    throw new Exception();
   }
 
   public bool HasComponent<T>(Entity entity) where T : IComponent
   {
-    if (_entityIndexToComponentData.TryGetValue(entity.id, out var componentsData))
-    {
-      var componentData = componentsData.Find((componentData) => componentData.type == typeof(T));
-      if (componentData is { })
-      {
-        return true;
-      }
-    }
-
-    return false;
+    throw new Exception();
   }
 
 
@@ -252,31 +239,24 @@ public class Registry
   public void ForEach<T>(ForEachDelegate<T> action)
     where T : IComponent
   {
-    List<int> locations = new(100);
-    List<Entity> entities = new(100);
-
-    Type type = typeof(T);
-    foreach (var data in _entityIndexToComponentData)
+    var type = typeof(T);
+    
+    for (int i = 0; i < archetypes.Count; i++)
     {
-      var temp = data.Value.Find(
-        componentData => componentData.type == type
-      );
-      if (temp is { } componentData)
+      var archetype = archetypes[i];
+
+      if (archetype.Contains(type))
       {
-        locations.Add(componentData.location);
-        entities.Add(_entities[temp.entityId]);
+        var entities = archetype.entities;
+        var components = archetype.typeToComponent[type] as List<T>;
+        
+        for (int j = 0; j < entities.Count; j++)
+        {
+          T component = components[i];
+          action(entities[i], ref component);
+          components[i] = component;
+        }
       }
-    }
-
-    for (int i = 0; i < entities.Count; i++)
-    {
-      var list = typeToComponents[type];
-      int location = locations[i];
-
-      // todo: optimize (in, ref) when in don't copy back
-      T temp = (T)list[location];
-      action(entities[i], ref temp);
-      list[location] = temp;
     }
   }
 }

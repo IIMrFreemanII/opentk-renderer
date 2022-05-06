@@ -2,11 +2,10 @@ namespace open_tk_renderer.ECS;
 
 public struct Entity
 {
-  public static int count = 1;
   public int id;
 
-  public Entity()
+  public Entity(int id)
   {
-    id = count++;
+    this.id = id;
   }
 }

@@ -64,13 +64,18 @@ public class Window : GameWindow
     _uiRegistry = new Registry();
     _decoratedBoxSystem = new DecoratedBoxSystem(_uiRegistry);
 
-    var root = _uiRegistry.Create();
-    _uiRegistry.AddComponent(root, new Position());
-    _uiRegistry.AddComponent(root, new Size { value = new(100) });
-    _uiRegistry.AddComponent(
-      root,
-      new Decoration { value = new BoxDecoration(color: Colors.Red) }
+    var archetype = _uiRegistry.CreateArchetype(
+      typeof(Position),
+      typeof(Size),
+      typeof(Decoration)
     );
+    var root = _uiRegistry.Create(archetype);
+    // _uiRegistry.AddComponent(root, new Position());
+    // _uiRegistry.AddComponent(root, new Size { value = new(100) });
+    // _uiRegistry.AddComponent(
+    //   root,
+    //   new Decoration { value = new BoxDecoration(color: Colors.Red) }
+    // );
 
     // root = new SizedBox();
     // root.Append(new App());
